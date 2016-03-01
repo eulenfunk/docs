@@ -264,6 +264,7 @@ Ab jetzt geht die Konfiguration über das Proxmox Webinterface im Browser:
 Die Anmeldung erfolgt mit Benutzername und Kennwort und gegebenenfalls mit OATH Pin.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-1.png
+----
 
 Nachdem links in der Seitenleiste das Blech ausgewählt wurde rechts im Reiter Network zusätzlich zur vorhandenen vmbr0 über die das Internet rein kommt noch mindestens eine vmbr1 anlegen, über die die Supernodes mit dem Backbone Server kommunizieren.
 
