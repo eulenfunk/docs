@@ -39,9 +39,9 @@ Willst Du immernoch? ( `Ja`_ / `Nein`_ / `Vielleicht`_)
 .. _Vielleicht: http://wwww.freifunk-rheinland.de
 
 Wenn Du also bereit bis, Dir mit uns gemeinsam in totaler Frustresistenz die Nächte um die Ohren zu schlagen.
-- Und am nächsten Tag dann hören darfst "Alles(tm) funktioniert nicht". 
-- Und dann eine informative, freundliche Erklärung präsentieren kannst.
-- Und wenn Du zum gemeinsamen Kochen auch noch was mitbringst, 
+| - Und am nächsten Tag dann hören darfst "Alles(tm) funktioniert nicht". 
+| - Und dann eine informative, freundliche Erklärung präsentieren kannst.
+| - Und wenn Du zum gemeinsamen Kochen auch noch was mitbringst, 
 
 Dann komm doch mal ins allabendliche Eulenmumble:
         mumble.eulenfunk.de:64738 (mumble vom Freifunk Rheinland)
