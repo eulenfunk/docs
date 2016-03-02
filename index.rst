@@ -32,11 +32,11 @@ Du wirst beim eulenfunk vermutlich nicht glücklich wenn Du
    * es Dir wichtig ist, besser als eine andere Person oder Gruppe zu sein.
  
 
-Willst Du immernoch? ( `ja`_ / `Nein`_ / `Vielleich`_)
+Willst Du immernoch? ( `Ja`_ / `Nein`_ / `Vielleicht`_)
 
-.. _ja: mumble://mumble.eulenfunk.de:64738
-.. _nein: http://www.t-online.de
-.. _vielleicht: http://wwww.freifunk-rheinland.de
+.. _Ja: mumble://mumble.eulenfunk.de:64738
+.. _Nein: http://www.t-online.de
+.. _Vielleicht: http://wwww.freifunk-rheinland.de
 
 Wenn Du also bereit bis, Dir mit uns gemeinsam in totaler Frustresistenz die Nächte um die Ohren zu schlagen.
 - Und am nächsten Tag dann hören darfst "Alles(tm) funktioniert nicht". 
