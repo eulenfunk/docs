@@ -98,7 +98,7 @@ Liegt der Key meinsshkey im Benutzerordner
 
 	ssh -i ~/meinsshkey root@111.222.333.444
 
-Nun den Password login auf dem Server deaktivieren, dazu die sshd_conf editieren
+Nun den Password login auf dem Server deaktivieren, dazu die sshd_config editieren
 
 ::
 
@@ -579,11 +579,11 @@ Liegt der Key meinsshkey im Benutzerordner
 
 	ssh -i ~/meinsshkey root@555.666.777.888
 
-Nun den Password login auf dem Server deaktivieren, dazu die sshd_conf editieren
+Nun den Password login auf dem Server deaktivieren, dazu die sshd_config editieren
 
 ::
 
-	sudo nano /etc/ssh/sshd_conf
+	sudo nano /etc/ssh/sshd_config
 
 Die Zeile
 
@@ -1367,11 +1367,11 @@ Liegt der Key meinsshkey im Benutzerordner
 
 	ssh -i ~/meinsshkey root@555.666.777.888
 
-Nun den Password login auf dem Server deaktivieren, dazu die sshd_conf editieren
+Nun den Password login auf dem Server deaktivieren, dazu die sshd_config editieren
 
 ::
 
-	sudo nano /etc/ssh/sshd_conf
+	sudo nano /etc/ssh/sshd_config
 
 Die Zeile
 
