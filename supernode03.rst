@@ -267,7 +267,7 @@ Die Zeile
 	PasswordAuthentication no
 	UsePAM no
 
-Achtung, auch wenn yes auskommentiert ist besteht die Möglichkeit sich per Password zu verbinden, erst wenn no gesetzt ist und nicht auskommentiert ist, ist der Zugriff nur noch per Key möglich.
+Achtung, auch wenn "yes" auskommentiert ist besteht die Möglichkeit sich per Password zu verbinden. Erst wenn "no" gesetzt ist und nicht auskommentiert ist, ist der Zugriff nur noch per Key möglich.
 Den Editor wieder verlassen und den SSH Server neu starten um die Einstellungen zu übernehmen
 
 ::
