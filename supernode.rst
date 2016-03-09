@@ -3,13 +3,6 @@ Server Kochbuch
 
 Anleitung zur Einrichtung eines Freifunk Supernodes auf Basis von Proxmox 4.0 und Ubuntu Server 14.04.3 LTS
 
-.. toctree::
-   :maxdepth: 1
-   
-   supernode01
-   supernode02
-   supernode03
-
 Das Setup besteht im wesentlichen aus 3 Zonen:
 
 * Die Freifunk Zone vor Ort (rosa) damit haben wir nicht viel zu tun
@@ -34,3 +27,12 @@ Und das ist der Rückweg (IPv4):
 
 .. image:: http://freifunk-mk.de/gfx/Eulenschema3.png
 ----
+
+Weiterlesen:
+
+.. toctree::
+   :maxdepth: 1
+   
+   supernode01
+   supernode02
+   supernode03
