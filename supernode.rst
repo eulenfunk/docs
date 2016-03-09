@@ -1,5 +1,5 @@
-Supernode
-=========
+Server Kochbuch
+===============
 
 Anleitung zur Einrichtung eines Freifunk Supernodes auf Basis von Proxmox 4.0 und Ubuntu Server 14.04.3 LTS
 
