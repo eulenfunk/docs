@@ -334,7 +334,16 @@ Batman kann man bei http://www.open-mesh.org/projects/open-mesh/wiki/Download he
 
 Batctl kompilieren
 ^^^^^^^^^^^^^^^^^^
-Hier muss noch was hin
+
+::
+
+	sudo apt-get install pkg-config
+	cd ~
+	sudo wget https://downloads.open-mesh.org/batman/stable/sources/batctl/batctl-2016.0.tar.gz
+	tar -xf batctl-2016.0.tar.gz
+	cd batctl-2016.0
+	make
+	sudo make install
 
 Batman Kernelmodul eintragen
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
