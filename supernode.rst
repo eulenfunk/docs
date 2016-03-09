@@ -10,9 +10,6 @@ Anleitung zur Einrichtung eines Freifunk Supernodes auf Basis von Proxmox 4.0 un
    supernode02
    supernode03
 
-Überblick
----------
-
 Das Setup besteht im wesentlichen aus 3 Zonen:
 
 * Die Freifunk Zone vor Ort (rosa) damit haben wir nicht viel zu tun
