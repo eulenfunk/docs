@@ -1,3 +1,10 @@
+.. toctree::
+   :maxdepth: 2
+   
+   supernode01
+   supernode02
+   supernode03
+
 Supernode
 =========
 
@@ -30,10 +37,3 @@ Und das ist der Rückweg (IPv4):
 
 .. image:: http://freifunk-mk.de/gfx/Eulenschema3.png
 ----
-
-
-.. toctree::
-   :maxdepth: 2
-   
-   supernode01
-   supernode02
