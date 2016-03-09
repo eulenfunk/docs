@@ -33,6 +33,7 @@ Weiterlesen:
 .. toctree::
    :maxdepth: 1
    
+   supernode00
    supernode01
    supernode02
    supernode03
