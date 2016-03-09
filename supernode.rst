@@ -1,14 +1,14 @@
+Supernode
+=========
+
+Anleitung zur Einrichtung eines Freifunk Supernodes auf Basis von Proxmox 4.0 und Ubuntu Server 14.04.3 LTS
+
 .. toctree::
    :maxdepth: 2
    
    supernode01
    supernode02
    supernode03
-
-Supernode
-=========
-
-Anleitung zur Einrichtung eines Freifunk Supernodes auf Basis von Proxmox 4.0 und Ubuntu Server 14.04.3 LTS
 
 Überblick
 ---------
