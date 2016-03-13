@@ -404,7 +404,7 @@ Das Script fragt dann die nötigen Werte ab:
 		Eigene AS Nummer (4711): 4711
 		Zugewiesene FFRL-IPV4-Exit-Adresse (1.2.3.4): 1.2.3.4
 		Eigene öffentliche IPV4 Adresse (5.6.7.8): 5.6.7.8
-		Eigener SSH-Port (22): 92954
+		Eigener SSH-Port (22): 62954
 
 	=== Konfiguration für GRE-Tunnel nach BER_A:
 		IPV4 Adresse für Tunnelendpunkt auf Backbone-Server (3.4.5.6): 3.4.5.6
@@ -742,7 +742,7 @@ in der /etc/network/interfaces legen wir eine eth1 an um den Traffic vom Superno
 
 	sudo nano /etc/network/interfaces
 
-::
+::
 
 	auto eth1
 	iface eth1 inet static
@@ -763,7 +763,10 @@ Zum Routing werden Regeln benötigt, die die Pakete aus dem Freifunk Netz und di
 
 Um eine Menge Handarbeit zu sparen wird das anlegen der Rules für die einzelnen Communities/Supernodes per Script erledigt.
 
-Das script gibt es hier: https://github.com/eulenfunk/scripts/tree/master/konzentrator
+
+
+
+Das Script gibt es hier: https://github.com/eulenfunk/scripts/tree/master/konzentrator
 
 Zuerst müssen die Verzeichnisse für die scripte angelegt werden, dann die scripte heruntergeladen und ausführbar gemacht werden.
 
@@ -774,37 +777,6 @@ Zuerst müssen die Verzeichnisse für die scripte angelegt werden, dann die scri
 	sudo wget https://raw.githubusercontent.com/eulenfunk/scripts/master/konzentrator/bgp-konzentrator-rc.sh
 	sudo wget https://raw.githubusercontent.com/eulenfunk/scripts/master/konzentrator/supernode.sh
 	sudo chmod +x *.sh
-
-
-Im Ordner **config** wird je Supernode ein config file angelegt
-
-::
-
-	cd config
-	sudo nano meinestadt-1
-
-::
-
-Dort müssen folgende Werte eingetragen werden:
-
-::
-
-	# Beschreibender Name "stadt-N"
-	SUPERNODE_NAME=tollestadt-1
-
-	# Soll die Netzwerkkonfiguration automatisch beim Systemstart gesetzt werden
-	AUTOSTART=1
-
-	# IPv4 Konfiguration
-	SUPERNODE_CLIENT_IPV4_NET=<IPv4 Netz fuer die Clients, 172.XX.0.0/16>
-	SUPERNODE_TRANS_IPV4_NET=<IPv4 Transit-Netz, 172.31.YYY.0/24>
-	SUPERNODE_TRANS_IPV4_REMOTE=<Remote IPv4 Adresse Transit-Netz, 172.31.YYY.1>
-
-	# IPv6 Konfiguration
-	SUPERNODE_CLIENT_IPV6_NET=<IPv6 Netz fuer die Clients, 2a03:2260:AAAA:BBBB::/64>
-	SUPERNODE_TRANS_IPV6_NET=<IPv6 Supernetz fuer Transit, 2a03:2260:AAAA:BBBB::/56>
-	SUPERNODE_TRANS_IPV6_LOCAL=<IPv6 Supernetz lokale Adresse, 2a03:2260:AAAA:BBBB::1>
-	SUPERNODE_TRANS_IPV6_REMOTE=<IPv6 Supernetz remote Adresse, 2a03:2260:AAAA:BBB::2>
 
 
 Damit das Script auch beim boot seine Arbeit verrichten kann muss es in die rc.local eingetragen werden.
@@ -820,6 +792,10 @@ Damit das Script auch beim boot seine Arbeit verrichten kann muss es in die rc.l
 	# rc.local
 	/opt/eulenfunk/konzentrator/bgp-konzentrator-rc.sh
 	exit 0
+
+
+Im Ordner **config** wird je Supernode ein config file angelegt. Die Beschreibung zum Hinzufügen von Supernodes erfolgt im Dokument "Supernode einrichten".
+
 
 Monitoring
 ^^^^^^^^^^
