@@ -45,7 +45,7 @@ Im Reiter 'Network' als Netzwerkkarte 'VirtIO' auswählen und die MAC Adresse de
 .. image:: http://freifunk-mk.de/gfx/proxmox-13.png
 ----
 
-Bestätigen und Anlegen, auswählen und anschließend starten. 
+Bestätigen und Anlegen, auswählen und anschließend starten.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-14.png
 
@@ -259,7 +259,7 @@ Die weitere Konfiguration soll per SSH Zugriff erfolgen, daher richten wir diese
 vom PC aus per SSH mit dem Server verbinden
 
 ::
-	
+
 	ssh root@555.666.777.888
 
 Nun den SSH Public Key auf dem Server hinterlegen
@@ -318,7 +318,7 @@ Um es den Script-Kiddies und Bots etwas schwerer zu machen, sollte der Port 22 a
 ::
 
 	Port 22
-        
+
 ändern z.B. in
 
 ::
@@ -355,14 +355,14 @@ Als nächstes steht die Systemaktualisierung an, dafür einmal
 
 	sudo apt-get update
 	sudo apt-get dist-upgrade
-	
+
 Pakete installieren
 ^^^^^^^^^^^^^^^^^^^
 
 ::
 
-	sudo apt-get install bird bird6 xinetd vnstat vnstati gdebi lighttpd ferm
-	
+	sudo apt-get install bird bird6 xinetd vnstat vnstati gdebi lighttpd git ferm
+
 * bird übernimmt das BGP routing
 * bird6 tut das selbe für IPv6
 * ferm hilf beim erstellen von IPtables Regeln
@@ -371,19 +371,93 @@ Pakete installieren
 * lighttpd stellt diese zum Abruf bereit
 * gdebi ermöglicht uns die Installation des Check_mk Agents
 * xinetd übernimmt die Übertragung der Monitoring Daten
+* git wird für die Konfigurationsscripte benötigt.
 
 -> Ja Ferm soll beim Systemstart geladen werden.
+
+Eulenfunk BGP-Konzentrator-Konfigurator
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+** Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben! **
+
+Um die Konfiguration zu vereinfachen, wurde ein Script geschrieben, welches die nötigen Parameter abfragt und daraus die Konfigurationsdateien, bzw. Auszüge daraus erzeugt. Diese müssen dann nur noch an die richtige Stelle kopiert werden.
+
+::
+
+	sudo mkdir -p /opt/eulenfunk/konzentrator
+  cd /opt/eulenfunk/konzentrator
+	git clone https://github.com/eulenfunk/ff-bgp-konzentrator-konfigurator.git
+  cd ff-bgp-konzentrator-konfigurator
+	./bgp-konzentrator-setup.sh
+
+::
+
+Das Script fragt dann die nötigen Werte ab:
+
+::
+	=========================================
+	Konfigurationshelfer für BGP-Konzentrator
+	=========================================
+
+	=== Allgemeine Parameter:
+		AS Nummer vom FF-RL (201701): 201701
+		Eigene AS Nummer (4711): 4711
+		Zugewiesene FFRL-IPV4-Exit-Adresse (1.2.3.4): 1.2.3.4
+		Eigene öffentliche IPV4 Adresse (5.6.7.8): 5.6.7.8
+		Eigener SSH-Port (22): 92954
+
+	=== Konfiguration für GRE-Tunnel nach BER_A:
+		IPV4 Adresse für Tunnelendpunkt auf Backbone-Server (3.4.5.6): 3.4.5.6
+		IPV4 Adresse für Tunnelendpunk auf Konzentrator (6.7.8.9): 6.7.8.9
+		IPV6 Adresse auf Konzentrator (2001:23::1/64): 2001:23:42::1/64
+
+	=== Konfiguration für GRE-Tunnel nach BER_B:
+		IPV4 Adresse für Tunnelendpunkt auf Backbone-Server (55.66.77.88): 55.66.77.88
+		IPV4 Adresse für Tunnelendpunk auf Konzentrator (77.88.56.67): 77.88.56.67
+		IPV6 Adresse auf Konzentrator (2001:42::1/64):
+
+	=== Konfiguration für GRE-Tunnel nach DUS_A:
+		IPV4 Adresse für Tunnelendpunkt auf Backbone-Server (5.3.9.7): 5.3.9.7
+		IPV4 Adresse für Tunnelendpunk auf Konzentrator (7.2.33.2): 7.2.33.2
+		IPV6 Adresse auf Konzentrator (2001:66::2/64):
+
+	=== Konfiguration für GRE-Tunnel nach DUS_B:
+		IPV4 Adresse für Tunnelendpunkt auf Backbone-Server (111.222.333.444):
+		IPV4 Adresse für Tunnelendpunk auf Konzentrator (333.222.111.111):
+		IPV6 Adresse auf Konzentrator (2001:55::2/64):
+
+	=== Ausgaben
+		Konfigurationen geschrieben nach:
+			bird.conf.bgp
+			bird6.conf.bgp
+			interfaces.bgp
+			ferm.conf.bgp
+			20-ff-config.conf.bgp
+
+::
+
+Die erzeugten Dateien sollten nun überprüft werden (Beschreibung hierzu siehe unten) und dann an die passenden Stellen koiert werden:
+
+::
+	sudo cp bird.conf.bgp /etc/bird/bird.conf
+	sudo cp bird6.conf.bgp /etc/bird/bird6.conf
+	sudo ferm.conf.bgp /etc/ferm/ferm.conf
+	sudo cp 20-ff-config.conf.bgp /etc/sysctl.d/20-ff-config.conf
+	sudo cat interfaces.bgp >> /etc/network/interfaces
+
+::
+
+Danach kann das System rebootet werden. Die Konfigurationen für die Supernodes werden später wie unten beschrieben angelegt.
 
 Ferm einrichten
 ^^^^^^^^^^^^^^^^^^^
 
 Ferm lädt beim Systemstart ein Script und erzeugt Iptables Regeln. In folgender Konfigurationsdatei muss die IP Adresse fürs source NAT angepasst werden, dies ist die Adresse über die die Daten ins Internet gehen sollen, (nicht die IPv4 Adresse des Vservers).
-Falls man zuvor den ssh Port geändert hat, muss hier "ssh" durch die Port nummer ersetzt werden 
+Falls man zuvor den ssh Port geändert hat, muss hier "ssh" durch die Port nummer ersetzt werden
 
 ::
 
 	sudo nano /etc/ferm/ferm.conf
-	
+
 ::
 
 	# -*- shell-script -*-
@@ -450,9 +524,6 @@ Falls man zuvor den ssh Port geändert hat, muss hier "ssh" durch die Port numme
 				# nat translation
 				outerface tun-ffrl-+ saddr 172.16.0.0/12 SNAT to 185.66.19x.xx;
 				policy ACCEPT;
-				outerface tun-ffrl-+ {
-					MASQUERADE;
-				}
 			}
 		}
 	}
@@ -467,7 +538,7 @@ Um die IP Adresse über die die Daten zum Freifunk Rheinland gehen sollen einzur
 ::
 
 	sudo nano /etc/network/interfaces
-	
+
 ::
 
 	auto tun-ffrl-uplink
@@ -492,8 +563,8 @@ Um die 'Kabelverbindung' zum Rheinland herzustellen werden GRE Tunnel für jeden
         ttl             255
         mtu             1400
         post-up ip -6 addr add 2a03:2260:0:xxx::2/64 dev $IFACE
-        
-        
+
+
 * Startet das Interface automatisch (Namen anpassen)
 * Legt das Interface an (Namen anpassen)
 * modus GRE Tunnel
@@ -571,13 +642,13 @@ Die Bird conf für IPv4
 	};
 
 	#Dieser Block muss für alle Backbone Standorte wiederholt werden
-	protocol bgp ffrl_ber_a from uplink {	
+	protocol bgp ffrl_ber_a from uplink {
 		#Dies ist die eigene Adresse im GRE Tunnel
         source address 100.64.X.xxx;
-        #Dies ist die BaCkbone Adresse im GRE Tunnel und das AS des FFRL			
+        #Dies ist die BaCkbone Adresse im GRE Tunnel und das AS des FFRL
         neighbor 100.64.X.xxx as 201701;
 	};
-	
+
 
 
 
@@ -638,21 +709,28 @@ Routing
 * Zweite Netzwerkkarte einrichten zur Verbindung mit den Supernodes
 * Einrichtung von Iptables Regeln inclusive NAT mit Ferm
 * Routingregeln einrichten mithilfe von ip route und ip rule
-Forwarding
-..........
-In der /etc/sysctl.conf
+
+Forwarding und Performance-Tuning
+.................................
+Über sysctl müssen einige Kernel-Parameter gesetzt werden, um das Forwarding zu aktivieren und die Netzwerkperformance zu erhöhen.
 
 ::
 
-	sudo nano /etc/sysctl.conf
-	
-folgende Zeilen einkommentieren
+	sudo nano /etc/sysctl.d/20-ff-config.conf
+
+folgende Zeilen dort eintragen
 
 ::
 
-	#net.ipv4.ip_forward=1
-	#net.ipv6.conf.all.forwarding=1
-	
+	net.ipv4.ip_forward=1
+	net.ipv6.conf.all.forwarding=1
+	net.ipv4.tcp_window_scaling = 1
+	net.core.rmem_max = 16777216
+	net.ipv4.tcp_rmem = 4096 87380 16777216
+	net.ipv4.tcp_wmem = 4096 16384 16777216
+	net.ipv4.conf.default.rp_filter=2
+	net.ipv4.conf.all.rp_filter=2
+
 Einrichtung einer eth1
 ......................
 
@@ -661,7 +739,7 @@ in der /etc/network/interfaces legen wir eine eth1 an um den Traffic vom Superno
 ::
 
 	sudo nano /etc/network/interfaces
-	
+
 ::
 
 	auto eth1
@@ -689,37 +767,35 @@ Zuerst müssen die Verzeichnisse für die scripte angelegt werden, dann die scri
 
 ::
 
-	cd /opt
-	sudo mkdir eulenfunk
-	cd eulenfunk
-	sudo mkdir konzentrator
-	cd konzentrator
-	sudo mkdir config
-	sudo mkdir autostart
-	sudo wget https://raw.githubusercontent.com/eulenfunk/scripts/master/konzentrator/bgp-konzentrator-setup.sh
-	sudo chmod +x bgp-konzentrator-setup.sh
+	sudo mkdir -p /opt/eulenfunk/konzentrator/config
+	cd /opt/eulenfunk/konzentrator
+	sudo wget https://raw.githubusercontent.com/eulenfunk/scripts/master/konzentrator/bgp-konzentrator-rc.sh
 	sudo wget https://raw.githubusercontent.com/eulenfunk/scripts/master/konzentrator/supernode.sh
-	sudo chmod +x supernode.sh
+	sudo chmod +x *.sh
 
 
-Im ordner config wird je supernode ein config file angelegt
+Im Ordner **config** wird je Supernode ein config file angelegt
 
 ::
 
 	cd config
 	sudo nano meinestadt-1
 
+::
+
+Dort müssen folgende Werte eingetragen werden:
 
 ::
 
 	# Beschreibender Name "stadt-N"
 	SUPERNODE_NAME=tollestadt-1
 
+  # Soll die Netzwerkkonfiguration automatisch beim Systemstart gesetzt werden
+  AUTOSTART=1
+
 	# IPv4 Konfiguration
 	SUPERNODE_CLIENT_IPV4_NET=<IPv4 Netz fuer die Clients, 172.XX.0.0/16>
 	SUPERNODE_TRANS_IPV4_NET=<IPv4 Transit-Netz, 172.31.YYY.0/24>
-
-	SUPERNODE_TRANS_IPV4_LOCAL=<Lokale IPv4 Adresse Transit-Netz, 172.31.YYY.254>
 	SUPERNODE_TRANS_IPV4_REMOTE=<Remote IPv4 Adresse Transit-Netz, 172.31.YYY.1>
 
 	# IPv6 Konfiguration
@@ -735,12 +811,12 @@ Damit das Script auch beim boot seine Arbeit verrichten kann muss es in die rc.l
 ::
 
 	sudo nano /etc/rc.local
-	
+
 ::
 
 	#!/bin/sh -e
 	# rc.local
-	/opt/eulenfunk/konzentrator/bgp-konzentrator-setup.sh
+	/opt/eulenfunk/konzentrator/bgp-konzentrator-rc.sh
 	exit 0
 
 Monitoring
@@ -756,9 +832,9 @@ Das Monitoring beinhaltet folgende Komponenten:
 Check_MK Agent imstallieren
 ...........................
 
-Den Check_MK Agent steht in der Weboberfläche des Check_MK als .deb Paket bereit: 
+Den Check_MK Agent steht in der Weboberfläche des Check_MK als .deb Paket bereit:
 
-In die CheckMK-Instanz per Webbrowser einloggen. Dann suchen: 
+In die CheckMK-Instanz per Webbrowser einloggen. Dann suchen:
 
 ::
 
@@ -767,14 +843,14 @@ In die CheckMK-Instanz per Webbrowser einloggen. Dann suchen:
         -> Packet Agents
         -> check-mk-agent_1.2.6p15-1_all.deb _(Beispiel)_
 
-Den Download-Link in die Zwischenablage kopieren. 
+Den Download-Link in die Zwischenablage kopieren.
 Im ssh-terminal nun eingeben: (die Download-URL ist individuell und der Name des .deb-Paketes ändert sich ggf.)
 
 ::
 
         wget --no-check-certificate https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb
 
-Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal. 
+Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
 Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 
 ::
@@ -783,7 +859,7 @@ Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 	gdebi check-mk-agent_1.2.6p15-1_all.deb
 
 
-Der Rechner hält ab nun Daten zum Abruf bereit. 
+Der Rechner hält ab nun Daten zum Abruf bereit.
 
 _ToDo: Neuen Rechner im CheckMK eintragen in richtige Gruppe & Monitoring scharf schalten.
 Alternativ JJX Bescheid sagen, der kümmert sich dann darum.
