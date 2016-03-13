@@ -268,6 +268,22 @@ Die Zeile
 	UsePAM no
 
 Achtung, auch wenn "yes" auskommentiert ist besteht die Möglichkeit sich per Password zu verbinden. Erst wenn "no" gesetzt ist und nicht auskommentiert ist, ist der Zugriff nur noch per Key möglich.
+
+Um es den Script-Kiddies und Bots etwas schwerer zu machen, sollte der Port 22 auf einen hohen Port (mindestens über 1024) verändert werden. Dazu die Zeile
+
+::
+
+	Port 22
+
+ändern z.B. in
+
+::
+
+	Port 62954
+
+WICHTIG: Diesen Port muss man sich dann merken, da man ihn später beim Aufruf von ssh angeben muss. Ändernt man diesen Port, muss dieser auch in der Ferm config (weiter unten beschrieben) geändert werden, da ferm sonst nur ssh auf Port 22 zu lässt.
+
+
 Den Editor wieder verlassen und den SSH Server neu starten um die Einstellungen zu übernehmen
 
 ::
@@ -429,11 +445,67 @@ Das Format der Secret Key Zeile anpassen und die Public Key Zeile auskommentiere
 Und den Editor wieder verlassen.
 
 
-### Supernode Konfiguration 
+Verbindung zwischen Supernode und Konzentrator konfigurieren
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Auf dem Supernode
+.................
+
+Zunächst müssen die nötigen Scripte auf den Supernode heruntergeladen und ausführbar gemacht werden:
 
 ::
 
-	cd config
+	sudo mkdir -p /opt/eulenfunk/supernode
+	cd /opt/eulenfunk/supernode
+	sudo wget https://raw.githubusercontent.com/eulenfunk/scripts/master/supernode/supernode-setup.sh
+	sudo wget https://raw.githubusercontent.com/eulenfunk/scripts/master/supernode/supernode-rc.sh
+	sudo chmod +x *.sh
+
+Dann muss die Konfigurationsdatei supernode.config angepasst werden.
+
+::
+
+	SUPERNODE_IPV6_PREFIX=2a03:2260:120:300::/56
+	SUPERNODE_IPV4_CLIENT_NET=172.19.0.0/16
+	SUPERNODE_IPV4_TRANS_ADDR=172.31.254.1
+
+
+Die angepasste Konfiguration wird dann durch für das Setup verwendet:
+
+::
+
+	./supernode-setup.sh
+
+
+::
+	Ausgaben in:
+		interfaces.eulenfunk
+		dhcpd.conf.eulenfunk
+		radvd.conf.eulenfunk
+
+Die so erzeugten Konfigurationsdateien müssen **nach Prüfung** an die passenden Stellen kopiert werden
+
+::
+
+	sudo cp dhcpd.conf.eulenfunk /etc/dhcp/dhcpd.config
+	sudo cp radvd.conf.eulenfunk /etc/radvd.config
+
+und die Netzwerkkonfiguration an die vorhandene angehängt werden:
+
+::
+
+	sudo cat interfaces.eulenfunk >> /etc/network/interfaces
+
+Danach den Supernode rebooten.
+
+Auf dem Konzentrator
+....................
+
+Auf dem Konzentrator muss die zum Supernode passende Konfiguration angelegt werden:
+
+
+::
+
+	cd /opt/eulenfunk/konzentrator/config
 	sudo nano meinestadt-1
 
 ::
@@ -443,7 +515,7 @@ Dort müssen folgende Werte eingetragen werden:
 ::
 
 	# Beschreibender Name "stadt-N"
-	SUPERNODE_NAME=tollestadt-1
+	SUPERNODE_NAME=meinestadt-1
 
 	# Soll die Netzwerkkonfiguration automatisch beim Systemstart gesetzt werden
 	AUTOSTART=1
@@ -458,3 +530,24 @@ Dort müssen folgende Werte eingetragen werden:
 	SUPERNODE_TRANS_IPV6_NET=<IPv6 Supernetz fuer Transit, 2a03:2260:AAAA:BBBB::/56>
 	SUPERNODE_TRANS_IPV6_LOCAL=<IPv6 Supernetz lokale Adresse, 2a03:2260:AAAA:BBBB::1>
 	SUPERNODE_TRANS_IPV6_REMOTE=<IPv6 Supernetz remote Adresse, 2a03:2260:AAAA:BBB::2>
+
+
+Man kann dann die Konfiguration folgendermaßen aktivieren:
+
+::
+
+	cd /opt/eulenfunk/konzentrator
+	sudo ./supernode.sh start meinestadt-1
+
+
+Die Konfiguration kann im laufenden Betrieb auch wieder entfernt werden (damit wird die Stadt allerdings vom Freifunk getrennt!)
+
+::
+
+	cd /opt/eulenfunk/konzentrator
+	sudo ./supernode.sh stop meinestadt-1
+
+
+Durch den Parameter AUTOSTART=1 wird beim Reboot des Konzentrators die Konfiguration für diese Stadt automatisch wieder gesetzt.
+
+Wenn möglich (wenn noch keine anderen Städte über den Konzentrator gehen), den Konzentrator rebooten.
