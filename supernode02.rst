@@ -677,11 +677,6 @@ Nun muss im Proxmox für die vm eine eth1 hinzugefügt werden, die auf der vmbr1
 
 Danach die vm einmal durchbooten.
 
-Ab hier Baustelle!!!
-^^^^^^^^^^^^^^^^^^^^
-
-Ab hier ist die Anleitung noch nicht fertig und von der Benutzung abzuraten.
-
 Routing
 .......
 Zum Routing werden Regeln benötigt, die die Pakete aus dem Freifunk Netz und die Pakete vom FFRL Backbone in eine gesonderte Tabelle (Tabelle 42) leiten. In dieser Tabelle wird vom bird per BGP eine Defaultroute ins Backbone gesetzt und manuell Routen zum eigenen Freifunk Netz (zu den Supernodes).
