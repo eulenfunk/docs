@@ -377,16 +377,16 @@ Pakete installieren
 
 Eulenfunk BGP-Konzentrator-Konfigurator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-** Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben! **
+**Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben!**
 
 Um die Konfiguration zu vereinfachen, wurde ein Script geschrieben, welches die nötigen Parameter abfragt und daraus die Konfigurationsdateien, bzw. Auszüge daraus erzeugt. Diese müssen dann nur noch an die richtige Stelle kopiert werden.
 
 ::
 
 	sudo mkdir -p /opt/eulenfunk/konzentrator
-  cd /opt/eulenfunk/konzentrator
+	cd /opt/eulenfunk/konzentrator
 	git clone https://github.com/eulenfunk/ff-bgp-konzentrator-konfigurator.git
-  cd ff-bgp-konzentrator-konfigurator
+	cd ff-bgp-konzentrator-konfigurator
 	./bgp-konzentrator-setup.sh
 
 ::
@@ -394,6 +394,7 @@ Um die Konfiguration zu vereinfachen, wurde ein Script geschrieben, welches die 
 Das Script fragt dann die nötigen Werte ab:
 
 ::
+
 	=========================================
 	Konfigurationshelfer für BGP-Konzentrator
 	=========================================
@@ -435,9 +436,10 @@ Das Script fragt dann die nötigen Werte ab:
 
 ::
 
-Die erzeugten Dateien sollten nun überprüft werden (Beschreibung hierzu siehe unten) und dann an die passenden Stellen koiert werden:
+Die erzeugten Dateien sollten nun überprüft werden (Beschreibung hierzu siehe unten) und dann an die passenden Stellen kopiert werden:
 
 ::
+
 	sudo cp bird.conf.bgp /etc/bird/bird.conf
 	sudo cp bird6.conf.bgp /etc/bird/bird6.conf
 	sudo ferm.conf.bgp /etc/ferm/ferm.conf
@@ -790,8 +792,8 @@ Dort müssen folgende Werte eingetragen werden:
 	# Beschreibender Name "stadt-N"
 	SUPERNODE_NAME=tollestadt-1
 
-  # Soll die Netzwerkkonfiguration automatisch beim Systemstart gesetzt werden
-  AUTOSTART=1
+	# Soll die Netzwerkkonfiguration automatisch beim Systemstart gesetzt werden
+	AUTOSTART=1
 
 	# IPv4 Konfiguration
 	SUPERNODE_CLIENT_IPV4_NET=<IPv4 Netz fuer die Clients, 172.XX.0.0/16>
