@@ -375,6 +375,18 @@ Pakete installieren
 
 -> Ja Ferm soll beim Systemstart geladen werden.
 
+Hinzufügen einer Schnittstelle eth1
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Nun muss im Proxmox für die vm eine eth1 hinzugefügt werden, die auf der vmbr1 hängt und virtio verwendet.
+
+.. image:: http://freifunk-mk.de/gfx/proxmox-59.png
+
+.. image:: http://freifunk-mk.de/gfx/proxmox-60.png
+
+Danach die vm einmal durchbooten.
+
+
 Eulenfunk BGP-Konzentrator-Konfigurator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 **Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben!**
@@ -733,10 +745,10 @@ folgende Zeilen dort eintragen
 	net.ipv4.conf.default.rp_filter=2
 	net.ipv4.conf.all.rp_filter=2
 
-Einrichtung einer eth1
-......................
+Einrichtung der eth1
+....................
 
-in der /etc/network/interfaces legen wir eine eth1 an um den Traffic vom Supernode über eine vmbr des Blechs entgegen zu nehmen
+In der /etc/network/interfaces legen wir eine eth1 an um den Traffic vom Supernode über eine vmbr des Blechs entgegen zu nehmen
 
 ::
 
@@ -749,22 +761,11 @@ in der /etc/network/interfaces legen wir eine eth1 an um den Traffic vom Superno
         address 172.31.254.254
         netmask 255.255.255.0
 
-Nun muss im Proxmox für die vm eine eth1 hinzugefügt werden, die auf der vmbr1 hängt und virtio verwendet.
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-59.png
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-60.png
-
-Danach die vm einmal durchbooten.
-
 Routing
 .......
 Zum Routing werden Regeln benötigt, die die Pakete aus dem Freifunk Netz und die Pakete vom FFRL Backbone in eine gesonderte Tabelle (Tabelle 42) leiten. In dieser Tabelle wird vom bird per BGP eine Defaultroute ins Backbone gesetzt und manuell Routen zum eigenen Freifunk Netz (zu den Supernodes).
 
 Um eine Menge Handarbeit zu sparen wird das anlegen der Rules für die einzelnen Communities/Supernodes per Script erledigt.
-
-
-
 
 Das Script gibt es hier: https://github.com/eulenfunk/scripts/tree/master/konzentrator
 

@@ -35,7 +35,7 @@ Im Reiter 'Network' als Netzwerkkarte 'VirtIO' auswählen und die MAC Adresse de
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-13.png
 
-Bestätigen und Anlegen, auswählen und anschließend starten. 
+Bestätigen und Anlegen, auswählen und anschließend starten.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-14.png
 
@@ -215,7 +215,7 @@ Die weitere Konfiguration soll per SSH Zugriff erfolgen, daher richten wir diese
 vom PC aus per SSH mit dem Server verbinden
 
 ::
-	
+
 	ssh root@555.666.777.888
 
 Nun den SSH Public Key auf dem Server hinterlegen
@@ -285,7 +285,7 @@ Als nächstes steht die Systemaktualisierung an, dafür einmal
 	sudo apt-get update
 	sudo apt-get dist-upgrade
 	sudo apt-get autoremove
-	
+
 Pakete installieren
 ^^^^^^^^^^^^^^^^^^^
 
@@ -427,3 +427,34 @@ Das Format der Secret Key Zeile anpassen und die Public Key Zeile auskommentiere
 	#public yyy
 
 Und den Editor wieder verlassen.
+
+
+### Supernode Konfiguration 
+
+::
+
+	cd config
+	sudo nano meinestadt-1
+
+::
+
+Dort müssen folgende Werte eingetragen werden:
+
+::
+
+	# Beschreibender Name "stadt-N"
+	SUPERNODE_NAME=tollestadt-1
+
+	# Soll die Netzwerkkonfiguration automatisch beim Systemstart gesetzt werden
+	AUTOSTART=1
+
+	# IPv4 Konfiguration
+	SUPERNODE_CLIENT_IPV4_NET=<IPv4 Netz fuer die Clients, 172.XX.0.0/16>
+	SUPERNODE_TRANS_IPV4_NET=<IPv4 Transit-Netz, 172.31.YYY.0/24>
+	SUPERNODE_TRANS_IPV4_REMOTE=<Remote IPv4 Adresse Transit-Netz, 172.31.YYY.1>
+
+	# IPv6 Konfiguration
+	SUPERNODE_CLIENT_IPV6_NET=<IPv6 Netz fuer die Clients, 2a03:2260:AAAA:BBBB::/64>
+	SUPERNODE_TRANS_IPV6_NET=<IPv6 Supernetz fuer Transit, 2a03:2260:AAAA:BBBB::/56>
+	SUPERNODE_TRANS_IPV6_LOCAL=<IPv6 Supernetz lokale Adresse, 2a03:2260:AAAA:BBBB::1>
+	SUPERNODE_TRANS_IPV6_REMOTE=<IPv6 Supernetz remote Adresse, 2a03:2260:AAAA:BBB::2>
