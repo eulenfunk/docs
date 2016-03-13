@@ -373,7 +373,7 @@ Pakete installieren
 * xinetd übernimmt die Übertragung der Monitoring Daten
 * git wird für die Konfigurationsscripte benötigt.
 
--> Ja Ferm soll beim Systemstart geladen werden.
+-> **Nein! Ferm soll beim Systemstart nicht geladen werden! Wird später nach der Konfiguration aktiviert.**
 
 Hinzufügen einer Schnittstelle eth1
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -459,6 +459,12 @@ Die erzeugten Dateien sollten nun überprüft werden (Beschreibung hierzu siehe 
 	sudo cat interfaces.bgp >> /etc/network/interfaces
 
 ::
+
+Da nun ein eventueller alternativer SSH-Port in die ferm.conf eingetragen wurde, kann das Firewalling aktiviert werden:
+
+::
+
+	update-rc.d ferm defaults
 
 Danach kann das System rebootet werden. Die Konfigurationen für die Supernodes werden später wie unten beschrieben angelegt.
 
@@ -754,7 +760,7 @@ In der /etc/network/interfaces legen wir eine eth1 an um den Traffic vom Superno
 
 	sudo nano /etc/network/interfaces
 
-::
+::
 
 	auto eth1
 	iface eth1 inet static
