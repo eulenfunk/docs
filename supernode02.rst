@@ -389,7 +389,7 @@ Danach die vm einmal durchbooten.
 
 Eulenfunk BGP-Konzentrator-Konfigurator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-**Ist leider noch Baustelle hier... Bis auf weiteres geht es mit unten bei _`Ferm einrichten` weiter**
+**Ist leider noch Baustelle hier...** Bis auf weiteres geht es mit unten bei ferm_einrichten_ weiter.
 
 **Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben!**
 
@@ -466,6 +466,8 @@ Da nun ein eventueller alternativer SSH-Port in die ferm.conf eingetragen wurde,
 	update-rc.d ferm defaults
 
 Danach kann das System rebootet werden. Die Konfigurationen für die Supernodes werden später wie unten beschrieben angelegt.
+
+.. _ferm_einrichten:
 
 Ferm einrichten
 ^^^^^^^^^^^^^^^^
