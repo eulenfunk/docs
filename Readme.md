@@ -19,3 +19,6 @@ Damit die Gliederungsebenen nicht durcheinander kommen hier Reihenfolge der Übe
        
        H6 Gliederungsebene 6 (1.1.1.1.1.1)
        ***********************************
+
+
+Eine Beschreibung der reStructuredText Markups findet sich z.B. [hier](http://docutils.sourceforge.net/docs/user/rst/cheatsheet.txt).

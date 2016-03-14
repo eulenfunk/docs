@@ -389,6 +389,8 @@ Danach die vm einmal durchbooten.
 
 Eulenfunk BGP-Konzentrator-Konfigurator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Ist leider noch Baustelle hier...**
+
 **Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben!**
 
 Um die Konfiguration zu vereinfachen, wurde ein Script geschrieben, welches die nötigen Parameter abfragt und daraus die Konfigurationsdateien, bzw. Auszüge daraus erzeugt. Diese müssen dann nur noch an die richtige Stelle kopiert werden.
@@ -403,52 +405,51 @@ Um die Konfiguration zu vereinfachen, wurde ein Script geschrieben, welches die 
 
 ::
 
-Das Script fragt dann die nötigen Werte ab:
+Das Script fragt dann die nötigen Werte ab.
+
+Beschreibung der abgefragten Werte
+..................................
 
 ::
 
-	=========================================
-	Konfigurationshelfer für BGP-Konzentrator
-	=========================================
+Allgemeine Parameter
+++++++++++++++++++++
+AS Nummer vom FF-RL
+	Hier wird die Nummer des autonomen Systems vom Freifunk Rheinland eingetragen. Aktuell ist das 201701.
+Eigene AS Nummer
+	Ihr benötigt ein eigenes autonomes System. Die Nummer davon gebt ihr hier an. TODO: Link auf Beschreibung zur Beschaffung eines eigenen AS...
+Zugewiesene FFRL-IPV4-Exit-Adresse
+	Vom Freifunk Rheinland bekommt ihr eine Exit-Adresse. Darauf wird der gesamte IPv4 Verkehr aller an diesem Konzentrator angeschlossenen Supernodes bzw. der darüber verbundenen Clients ge-NAT-ed.
+Eigene öffentliche IPV4 Adresse
+	Bei der Einrichtung der VM für diesen Konzentrator habt ihr eine IPv4-Adresse konfiguriert, über die ihr euch auch auf dem Konzentrator eingeloggt habt. Also die IPv4-Adresse von *eth1*.
+Eigener SSH-Port
+	Wenn ihr bei der Konfiguration vom *sshd* einen anderen Port als 22 eingetragen habt, gebt ihr diese hier ein. Damit wird sichergestellt, dass die Firewall (ferm ...) Verbindungen zu dem alternativen Port überhaupt zulässt. Wenn ihr euch hier vertut, kommt ihr nach dem Neustart nicht mehr per SSH auf euren Server!
 
-	=== Allgemeine Parameter:
-		AS Nummer vom FF-RL (201701): 201701
-		Eigene AS Nummer (4711): 4711
-		Zugewiesene FFRL-IPV4-Exit-Adresse (1.2.3.4): 1.2.3.4
-		Eigene öffentliche IPV4 Adresse (5.6.7.8): 5.6.7.8
-		Eigener SSH-Port (22): 62954
+Konfiguration für GRE-Tunnel nach XXX_Y
++++++++++++++++++++++++++++++++++++++++
+Ihr solltet vom Freifunk Rheinland Adressen für 4 Tunnel zum Backbone bekommen haben, jeweils zwei in Berlin und zwei in Düsseldorf. In diesem Abschnitt werden diese konfiguriert. Die folgenden Werte müsst ihr jeweils einmal pro Tunnel passend -- also 4 Mal -- eingeben:
 
-	=== Konfiguration für GRE-Tunnel nach BER_A:
-		IPV4 Adresse für Tunnelendpunkt auf Backbone-Server (3.4.5.6): 3.4.5.6
-		IPV4 Adresse für Tunnelendpunk auf Konzentrator (6.7.8.9): 6.7.8.9
-		IPV6 Adresse auf Konzentrator (2001:23::1/64): 2001:23:42::1/64
+IPV4 Adresse für Tunnelendpunkt auf Backbone-Server
+	Die IPv4 Adresse für den Tunnelendpunkt auf dem **Backbone-Server**.
+IPV4 Adresse für Tunnelendpunk auf Konzentrator
+	Die zugehörige IPv4 Adresse für den Tunnelendpunkt auf **eurem Konzentrator**.
+IPV6 Adresse auf Konzentrator
+	Zusätzlich zu den IPv4-Adressen habt ihr eine IPv6 Adresse für den Tunnel bekommen. Die Adresse mit der ()...)::**1**/64  hinten ist die Adresse auf eurem Konzentrator. Diese gebt ihr hier an. (Die passende Adresse auf dem Backbone-Ende wird durch das Script daraus abgeleitet).
 
-	=== Konfiguration für GRE-Tunnel nach BER_B:
-		IPV4 Adresse für Tunnelendpunkt auf Backbone-Server (55.66.77.88): 55.66.77.88
-		IPV4 Adresse für Tunnelendpunk auf Konzentrator (77.88.56.67): 77.88.56.67
-		IPV6 Adresse auf Konzentrator (2001:42::1/64):
+**TODO: Die bird6.conf Einträge für **filter hostroute** passen noch nicht! Hier stehen statisch die Werte vom Fichtenfunk drin...**
 
-	=== Konfiguration für GRE-Tunnel nach DUS_A:
-		IPV4 Adresse für Tunnelendpunkt auf Backbone-Server (5.3.9.7): 5.3.9.7
-		IPV4 Adresse für Tunnelendpunk auf Konzentrator (7.2.33.2): 7.2.33.2
-		IPV6 Adresse auf Konzentrator (2001:66::2/64):
-
-	=== Konfiguration für GRE-Tunnel nach DUS_B:
-		IPV4 Adresse für Tunnelendpunkt auf Backbone-Server (111.222.333.444):
-		IPV4 Adresse für Tunnelendpunk auf Konzentrator (333.222.111.111):
-		IPV6 Adresse auf Konzentrator (2001:55::2/64):
-
-	=== Ausgaben
-		Konfigurationen geschrieben nach:
-			bird.conf.bgp
-			bird6.conf.bgp
-			interfaces.bgp
-			ferm.conf.bgp
-			20-ff-config.conf.bgp
+Ausgaben
+++++++++
+Das Script erzeugt folgende Dateien:
+* bird.conf.bgp
+* bird6.conf.bgp
+* interfaces.bgp
+* ferm.conf.bgp
+* 20-ff-config.conf.bgp
 
 ::
 
-Die erzeugten Dateien sollten nun überprüft werden (Beschreibung hierzu siehe unten) und dann an die passenden Stellen kopiert werden:
+Die erzeugten Dateien sollten nun **überprüft** werden (Beschreibung hierzu siehe unten) und dann an die passenden Stellen kopiert werden:
 
 ::
 
