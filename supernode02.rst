@@ -389,7 +389,7 @@ Danach die vm einmal durchbooten.
 
 Eulenfunk BGP-Konzentrator-Konfigurator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-**Ist leider noch Baustelle hier...**
+**Ist leider noch Baustelle hier... Bis auf weiteres geht es mit unten bei _`Ferm einrichten` weiter**
 
 **Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben!**
 
@@ -409,8 +409,6 @@ Das Script fragt dann die nötigen Werte ab.
 
 Beschreibung der abgefragten Werte
 ..................................
-
-::
 
 Allgemeine Parameter
 ++++++++++++++++++++
@@ -470,7 +468,7 @@ Da nun ein eventueller alternativer SSH-Port in die ferm.conf eingetragen wurde,
 Danach kann das System rebootet werden. Die Konfigurationen für die Supernodes werden später wie unten beschrieben angelegt.
 
 Ferm einrichten
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 Ferm lädt beim Systemstart ein Script und erzeugt Iptables Regeln. In folgender Konfigurationsdatei muss die IP Adresse fürs source NAT angepasst werden, dies ist die Adresse über die die Daten ins Internet gehen sollen, (nicht die IPv4 Adresse des Vservers).
 Falls man zuvor den ssh Port geändert hat, muss hier "ssh" durch die Port nummer ersetzt werden
