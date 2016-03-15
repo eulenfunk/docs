@@ -322,7 +322,7 @@ Editor schließen
 ::
 
 	sudo apt-get update
-	sudo apt-get install xinetd vnstat vnstati gdebi lighttpd fastd build-essential
+	sudo apt-get install xinetd vnstat vnstati gdebi lighttpd fastd build-essential brctl
 
 * vnstat monitort den Netzwerktraffic
 * vnstati erzeugt daraus Grafiken
@@ -331,6 +331,7 @@ Editor schließen
 * xinetd übernimmt die Übertragung der Monitoring Daten
 * Fastd baut Tunnelverbindungen zu den Routern auf
 * build-essential wird zum kompilieren von Batman benötigt
+* brctl steuert Netzwerkbrücken
 
 Batman kompilieren
 ^^^^^^^^^^^^^^^^^^
