@@ -395,9 +395,16 @@ Eulenfunk BGP-Konzentrator-Konfigurator
 
 Um die Konfiguration zu vereinfachen, wurde ein Script geschrieben, welches die nötigen Parameter abfragt und daraus die Konfigurationsdateien, bzw. Auszüge daraus erzeugt. Diese müssen dann nur noch an die richtige Stelle kopiert werden.
 
+Die nachfolgenden Schritte müssen als User root ausgeführt werden, daher wechseln wir zunächst dahin:
+
 ::
 
-	sudo mkdir -p /opt/eulenfunk/konzentrator
+	sudo -i
+
+
+::
+
+	mkdir -p /opt/eulenfunk/konzentrator
 	cd /opt/eulenfunk/konzentrator
 	git clone https://github.com/eulenfunk/ff-bgp-konzentrator-konfigurator.git
 	cd ff-bgp-konzentrator-konfigurator
@@ -418,6 +425,8 @@ Eigene AS Nummer
 	Ihr benötigt ein eigenes autonomes System. Die Nummer davon gebt ihr hier an. TODO: Link auf Beschreibung zur Beschaffung eines eigenen AS...
 Zugewiesene FFRL-IPV4-Exit-Adresse
 	Vom Freifunk Rheinland bekommt ihr eine Exit-Adresse. Darauf wird der gesamte IPv4 Verkehr aller an diesem Konzentrator angeschlossenen Supernodes bzw. der darüber verbundenen Clients ge-NAT-ed.
+Zugewiesenes FFRL-IPV6-Netz
+	Der IPv6 Prefix, der euch vom Freifunk Rheinland zugewiesen wurde.
 Eigene öffentliche IPV4 Adresse
 	Bei der Einrichtung der VM für diesen Konzentrator habt ihr eine IPv4-Adresse konfiguriert, über die ihr euch auch auf dem Konzentrator eingeloggt habt. Also die IPv4-Adresse von *eth1*.
 Eigener SSH-Port
@@ -439,6 +448,7 @@ IPV6 Adresse auf Konzentrator
 Ausgaben
 ++++++++
 Das Script erzeugt folgende Dateien:
+
 * bird.conf.bgp
 * bird6.conf.bgp
 * interfaces.bgp
@@ -451,11 +461,11 @@ Die erzeugten Dateien sollten nun **überprüft** werden (Beschreibung hierzu si
 
 ::
 
-	sudo cp bird.conf.bgp /etc/bird/bird.conf
-	sudo cp bird6.conf.bgp /etc/bird/bird6.conf
-	sudo ferm.conf.bgp /etc/ferm/ferm.conf
-	sudo cp 20-ff-config.conf.bgp /etc/sysctl.d/20-ff-config.conf
-	sudo cat interfaces.bgp >> /etc/network/interfaces
+	cp bird.conf.bgp /etc/bird/bird.conf
+	cp bird6.conf.bgp /etc/bird/bird6.conf
+	cp ferm.conf.bgp /etc/ferm/ferm.conf
+	cp 20-ff-config.conf.bgp /etc/sysctl.d/20-ff-config.conf
+	cat interfaces.bgp >> /etc/network/interfaces
 
 ::
 
@@ -464,6 +474,7 @@ Da nun ein eventueller alternativer SSH-Port in die ferm.conf eingetragen wurde,
 ::
 
 	update-rc.d ferm defaults
+
 
 Danach kann das System rebootet werden. Die Konfigurationen für die Supernodes werden später wie unten beschrieben angelegt.
 
