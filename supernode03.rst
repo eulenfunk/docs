@@ -487,7 +487,7 @@ Die so erzeugten Konfigurationsdateien müssen **nach Prüfung** an die passende
 
 ::
 
-	sudo cp dhcpd.conf.eulenfunk /etc/dhcp/dhcpd.config
+	sudo cp dhcpd.conf.eulenfunk /etc/dhcp/dhcpd.conf
 	sudo cp radvd.conf.eulenfunk /etc/radvd.config
 
 und die Netzwerkkonfiguration an die vorhandene angehängt werden:
