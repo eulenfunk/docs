@@ -448,20 +448,33 @@ Und den Editor wieder verlassen.
 
 Verbindung zwischen Supernode und Konzentrator konfigurieren
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Voraussetzung für diese Vorgehensweise ist die vorhergehende Konfiguration des BGP-Konzentrators mittels "ff-bgp-konzentrator-konfigurator".
+
 Auf dem Supernode
 .................
+
+Die Konfiguration erfolgt mit Root-Rechten. Also wechseln wir für die nächsten Schritte zum User root:
+
+::
+
+	sudo -i
 
 Zunächst müssen die nötigen Scripte auf den Supernode heruntergeladen und ausführbar gemacht werden:
 
 ::
 
-	sudo mkdir -p /opt/eulenfunk/supernode
+	mkdir -p /opt/eulenfunk/supernode
 	cd /opt/eulenfunk/supernode
-	sudo wget https://raw.githubusercontent.com/eulenfunk/scripts/master/supernode/supernode-setup.sh
-	sudo wget https://raw.githubusercontent.com/eulenfunk/scripts/master/supernode/supernode-rc.sh
-	sudo chmod +x *.sh
+	wget https://raw.githubusercontent.com/eulenfunk/scripts/master/supernode/supernode-setup.sh
+	wget https://raw.githubusercontent.com/eulenfunk/scripts/master/supernode/supernode-rc.sh
+	chmod +x *.sh
 
 Dann muss die Konfigurationsdatei supernode.config angepasst werden.
+
+::
+
+	nano /opt/eulenfunk/supernode/supernode.config
 
 ::
 
@@ -501,6 +514,11 @@ Als letzter Schritt auf dem Supernode muss die /etc/rc.local folgendermassen ang
 
 ::
 
+	nano /etc/rc.local
+
+
+::
+
 	!/bin/sh -e
 	#
 	# rc.local
@@ -520,6 +538,7 @@ Als letzter Schritt auf dem Supernode muss die /etc/rc.local folgendermassen ang
 
 
 Danach den Supernode rebooten.
+
 
 Auf dem Konzentrator
 ....................
