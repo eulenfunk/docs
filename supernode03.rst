@@ -496,6 +496,7 @@ Die angepasste Konfiguration wird dann durch für das Setup verwendet:
 		interfaces.eulenfunk
 		dhcpd.conf.eulenfunk
 		radvd.conf.eulenfunk
+		20-ff-config.conf.eulenfunk
 
 Die so erzeugten Konfigurationsdateien müssen **nach Prüfung** an die passenden Stellen kopiert werden
 
@@ -519,7 +520,7 @@ Als letzter Schritt auf dem Supernode muss die /etc/rc.local folgendermassen ang
 
 ::
 
-	!/bin/sh -e
+	#!/bin/sh -e
 	#
 	# rc.local
 	#
@@ -537,8 +538,13 @@ Als letzter Schritt auf dem Supernode muss die /etc/rc.local folgendermassen ang
 	exit 0
 
 
+Das sorgt dafür, dass beim Systemstart durch das Script supernode-rc.sh die nötigen Routen und Routing-Policies konfiguriert werden.
+
 Danach den Supernode rebooten.
 
+Hier eine grafische Übersicht über die beteiligten Konfigurationsdateien auf dem Supernode:
+
+.. image:: https://raw.githubusercontent.com/eulenfunk/scripts/master/supernode/Supernode-Routing.png
 
 Auf dem Konzentrator
 ....................
@@ -594,3 +600,8 @@ Die Konfiguration kann im laufenden Betrieb auch wieder entfernt werden (damit w
 Durch den Parameter AUTOSTART=1 wird beim Reboot des Konzentrators die Konfiguration für diese Stadt automatisch wieder gesetzt.
 
 Wenn möglich (wenn noch keine anderen Städte über den Konzentrator gehen), den Konzentrator rebooten.
+
+Testen
+......
+
+... TBD ...
