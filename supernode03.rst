@@ -445,6 +445,17 @@ Das Format der Secret Key Zeile anpassen und die Public Key Zeile auskommentiere
 
 Und den Editor wieder verlassen.
 
+Hinzufügen einer Schnittstelle eth1
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Nun muss im Proxmox für die vm eine eth1 hinzugefügt werden, die auf der vmbr1 hängt und virtio verwendet.
+
+.. image:: http://freifunk-mk.de/gfx/proxmox-59.png
+
+.. image:: http://freifunk-mk.de/gfx/proxmox-60.png
+
+Danach die vm einmal durchbooten.
+
 
 Verbindung zwischen Supernode und Konzentrator konfigurieren
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
