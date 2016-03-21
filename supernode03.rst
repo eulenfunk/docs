@@ -502,14 +502,15 @@ Die so erzeugten Konfigurationsdateien müssen **nach Prüfung** an die passende
 
 ::
 
-	sudo cp dhcpd.conf.eulenfunk /etc/dhcp/dhcpd.conf
-	sudo cp radvd.conf.eulenfunk /etc/radvd.config
+	cp dhcpd.conf.eulenfunk /etc/dhcp/dhcpd.conf
+	cp radvd.conf.eulenfunk /etc/radvd.config
+	cp 20-ff-config.conf.eulenfunk /etc/sysctl.d/20-ff-config.conf
 
 und die Netzwerkkonfiguration an die vorhandene angehängt werden:
 
 ::
 
-	sudo cat interfaces.eulenfunk >> /etc/network/interfaces
+	cat interfaces.eulenfunk >> /etc/network/interfaces
 
 Als letzter Schritt auf dem Supernode muss die /etc/rc.local folgendermassen angepasst werden:
 
