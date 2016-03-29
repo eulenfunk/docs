@@ -322,7 +322,7 @@ Editor schließen
 ::
 
 	sudo apt-get update
-	sudo apt-get install xinetd vnstat vnstati gdebi lighttpd fastd build-essential brctl
+	sudo apt-get install xinetd vnstat vnstati gdebi lighttpd fastd build-essential bridge-utils
 
 * vnstat monitort den Netzwerktraffic
 * vnstati erzeugt daraus Grafiken
