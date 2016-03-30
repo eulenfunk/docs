@@ -322,7 +322,7 @@ Editor schließen
 ::
 
 	sudo apt-get update
-	sudo apt-get install xinetd vnstat vnstati gdebi lighttpd fastd build-essential bridge-utils
+	sudo apt-get install xinetd vnstat vnstati gdebi lighttpd fastd build-essential bridge-utils isc-dhcp-server radvd
 
 * vnstat monitort den Netzwerktraffic
 * vnstati erzeugt daraus Grafiken
@@ -331,7 +331,9 @@ Editor schließen
 * xinetd übernimmt die Übertragung der Monitoring Daten
 * Fastd baut Tunnelverbindungen zu den Routern auf
 * build-essential wird zum kompilieren von Batman benötigt
-* brctl steuert Netzwerkbrücken
+* bridge-utils (brctl) steuert Netzwerkbrücken
+* isc-dhcp-server (dhcpd3) verteilt IPv4 Adressen
+* radvd verteilt die IPv6 Range
 
 Batman kompilieren
 ^^^^^^^^^^^^^^^^^^
