@@ -491,8 +491,8 @@ Den Editor wieder verlassen und nun einen fastd Key erzeugen, der in passender S
 
 ::
 
-	fastd --generate-key |sed s/Secret\:\ /#fastd-key\ \"$HOSTNAME\\nsecret\ \"/|sed s/Public\:\ /#public\ \"/| \
-	sed s/\$/\"\;/>secret.conf
+	fastd --generate-key |sed s/Secret\:\ /#fastd-key\ \"$HOSTNAME\\nsecret\ \"/| \
+	sed s/Public\:\ /#public\ \"/|sed s/\$/\"\;/>secret.conf
 
 
 Hinzufügen einer Schnittstelle eth1
@@ -632,7 +632,8 @@ Im ssh-terminal nun eingeben: (die Download-URL ist individuell und der Name des
 
 ::
 
-        wget --no-check-certificate https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb
+        wget --no-check-certificate \
+        https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb
 
 Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
 Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
