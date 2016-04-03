@@ -115,6 +115,14 @@ gefolgt von
 ::      
         
         sudo adduser charly sudo
+        su charly
+        cd /home/charly/
+        mkdir .ssh
+        nano .ssh/authorized_keys
+        
+Im Editor dann den public-ssh-Key ("ssh-rsa AAA.....") einfügen. Wichtig: Alles von diesem Key muss auf eine Zeile. 
+Wenn es mehrere Leute gibt, die Zugriff haben sollen, dann pro Login-Key natürlich eine neue Zeile.
+        
 
 Nun den direkten Rootlogin sperren
 
