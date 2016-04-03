@@ -264,15 +264,17 @@ Dafür fügt ihr in der Domain (z.B. ffdus.de) einen neuen A-Record hinzu
 
 
 .. image :: http://i.imgur.com/dLe1tqm.png
+----
 
 dann dort Werte hinterlegen. 
 
 .. image :: http://i.imgur.com/dRHwsVs.png
+----
 
 und speichern 
 
 .. image :: http://i.imgur.com/jpZIVih.png
-
+----
 
 Abschliessend testen, ob der Host auch erreichbar ist. 
 Von einem anderen host (z.B. dem heimischen Rechner) 
@@ -283,18 +285,18 @@ Von einem anderen host (z.B. dem heimischen Rechner)
 	
 .. image :: http://i.imgur.com/hffSyAY.png	
 
-Bei Erfolg
+Bei Erfolg geht es weiter mit:
 
 **Schritt 2: Letsencrypt einrichten**
 
-Wir benötigen _git_ (Rückfragen mit "J" beantworten)
+Wir benötigen das Paket "git" (Rückfragen mit "J" beantworten)
 
 ::
 
         cd ~
 	apt-get install git
 
-nun wird das aktuele Letsencrypt aus dem git-repositry geholt
+nun wird das aktuele Letsencrypt aus dem git-repository geholt
 
 ::
 
@@ -306,7 +308,7 @@ Nun brauchen wir noch ein Script, welches die notwendigen Folgeschritte übernim
 
         pico /root/le-renew.sh
 
-Bitte im Script den **gewählten hostnamen austauschen**
+Bitte im Script den **gewählten hostnamen austauschen** in der FQDN-Zeile (hier: "ffdus-pm-twin2.ffdus.de") 
         
 ::
 
@@ -319,10 +321,8 @@ Bitte im Script den **gewählten hostnamen austauschen**
 	rm /etc/pve/local/pve-ssl.pem
 	cd /etc/letsencrypt/live/$FQDN
 	cp chain.pem /etc/pve/pve-root-ca.pem
-	cp fullchain.pem /etc/pve/local/pve-ssl.key
 	cp fullchain.pem /etc/pve/local/pveproxy-ssl.pem
 	cp privkey.pem /etc/pve/local/pveproxy-ssl.key
-	cp cert.pem /etc/pve/local/pve-ssl.pem
 	service pveproxy restart
 	service pveproxy status
 	service pvedaemon restart
@@ -345,12 +345,14 @@ Diese sollte eine sein, die auch gelesen wird. Denn dort gibt LetsEncrypt "Besch
 
 .. image :: http://i.imgur.com/MQyGAn8.png
 
-Login auf dem Proxmox sollte nun ohne SSL-Rückfragen auf (hier) https://ffdus-pm-twin2.ffdus.de:8006 möglich sein
+Login auf dem Proxmox sollte nun (und später) ohne SSL-Rückfragen auf (hier) https://ffdus-pm-twin2.ffdus.de:8006 möglich sein
 
 
 Images hochladen
 ^^^^^^^^^^^^^^^^
-Iso Files zur installation können zwar über das Webinterface hochgeladen werden, aber je nach Internetanbindung dauert das lange. Per wget wird das Image direkt auf den Server geladen.
+Iso Files zur installation können zwar über das Webinterface hochgeladen werden, aber je nach Internetanbindung dauert das lange. Per wget wird das Image direkt auf den Server geladen. 
+
+(Achtung: Der Image-Name des Ubuntu-ISOs kann und wird sich gelegentlich ändern. Bitte gegebenenfalls mit dem Browser und Googles' Hilfe selbst auf Suche gehen)
 
 ::
 	
@@ -367,11 +369,14 @@ Der Zugang zum Proxmox ist absolut sicherheitskritisch, wer Zugriff auf den Hype
 
 Netzwerk einrichten
 ^^^^^^^^^^^^^^^^^^^
+
 Ab jetzt geht die Konfiguration über das Proxmox Webinterface im Browser:
 
 ::
 
 	https://111.222.333.444:8006
+	
+(Oder eben die optional gesetzte FQDN: _https://<FQDN>:8006_)
 
 Die Anmeldung erfolgt mit Benutzername und Kennwort und gegebenenfalls mit OATH Pin.
 
@@ -389,7 +394,7 @@ Bei OVH/Soyoustart kann es sein, dass die vmbr schon vorhanden ist, dann müsst 
 .. image:: http://freifunk-mk.de/gfx/proxmox-4.png
 ----
 
-Die vmbr steht erst nach dem Neustart des Blechs zu Verfügung, daher in der Ecke oben rechts restart auswählen.
+Die vmbr steht erst nach dem Neustart des Blechs zu Verfügung, daher in der Ecke oben rechts "Restart" auswählen.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-5.png
 ----
