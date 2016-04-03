@@ -229,7 +229,8 @@ Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 
 	apt-get install gdebi xinetd
 	
-gefolgt von 
+Rückfragen ggf. mit "J" beantworten. 
+Mit dem nun installierten gdebi das checkmk-Paket installieren: 
 
 ::
 	
@@ -246,6 +247,103 @@ Nun ggf. noch die Smart-Überwachung der Festplatten hinzufügen
 Der Rechner hält ab nun Daten zum Abruf bereit. 
 
 _ToDo: Neuen Rechner im CheckMK eintragen in richtige Gruppe & Monitoring scharf schalten.
+
+LetsEncrypt-Certifikat für den Proxmox
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(optional)
+
+Standardmäßig kommt die Webkonsole des Proxmox mit einem "selbstsignierten" SSL-Zertifikat daher. 
+Das ist jedoch mindestens unschön, sondern ein Nutzungshindernis in bestimmten Umgebungen. 
+
+Wenn ihr einen Domain-Hostnamen  (DNS A-record) setzen könnt, dann solltet ihr es tun und ein LE-Zertificat installieren
+
+**Schritt 1: DNS A-record setzen***
+
+Vergebt einen Hostnamen in dem von Euch genutzten DNS-Server (z.B. Provider-Webinterface) für die IP-Adresse. 
+Dafür fügt ihr in der Domain (z.B. ffdus.de) einen neuen A-Record hinzu
+
+
+.. image :: http://i.imgur.com/dLe1tqm.png
+
+dann dort Werte hinterlegen. 
+
+.. image :: http://i.imgur.com/dRHwsVs.png
+
+und speichern 
+
+.. image :: http://i.imgur.com/jpZIVih.png
+
+
+Abschliessend testen, ob der Host auch erreichbar ist. 
+Von einem anderen host (z.B. dem heimischen Rechner) 
+
+::
+	
+	ping ffdus-pm.twin2.ffdus.de
+	
+.. image :: http://i.imgur.com/hffSyAY.png	
+
+Bei Erfolg
+
+**Schritt 2: Letsencrypt einrichten**
+
+Wir benötigen _git_ (Rückfragen mit "J" beantworten)
+
+::
+
+        cd ~
+	apt-get install git
+
+nun wird das aktuele Letsencrypt aus dem git-repositry geholt
+
+::
+
+	git clone https://github.com/letsencrypt/letsencrypt
+
+Nun brauchen wir noch ein Script, welches die notwendigen Folgeschritte übernimmt. 
+
+:: 
+
+        pico /root/le-renew.sh
+
+Bitte im Script den **gewählten hostnamen austauschen**
+        
+::
+
+	#!/bin/bash
+	FQDN=ffdus-pm-twin2.ffdus.de
+	cd /root/letsencrypt
+	./letsencrypt-auto certonly --standalone --standalone-supported-challenges http-01 -d $FQDN
+	rm /etc/pve/pve-root-ca.pem
+	rm /etc/pve/local/pve-ssl.key
+	rm /etc/pve/local/pve-ssl.pem
+	cd /etc/letsencrypt/live/$FQDN
+	cp chain.pem /etc/pve/pve-root-ca.pem
+	cp fullchain.pem /etc/pve/local/pve-ssl.key
+	cp fullchain.pem /etc/pve/local/pveproxy-ssl.pem
+	cp privkey.pem /etc/pve/local/pveproxy-ssl.key
+	cp cert.pem /etc/pve/local/pve-ssl.pem
+	service pveproxy restart
+	service pveproxy status
+	service pvedaemon restart
+
+Das script ausführbar machen 
+
+:: 
+        chmod +x ./le-renew.sh
+        
+Und einmal starten:
+
+::
+
+       ./le-renew.sh
+       
+Dabei gibt es ggf. einige Rückfragen, z.B. nach einer E-Mail-Adresse. 
+Diese sollte eine sein, die auch gelesen wird. Denn dort gibt LetsEncrypt "Bescheid", wenn das Certifikat abläuft und man sich um eine Erneuerung kümmern sollte. 
+
+.. image :: http://i.imgur.com/MQyGAn8.png
+
+Login auf dem Proxmox sollte nun ohne SSL-Rückfragen auf (hier) https://ffdus-pm-twin2.ffdus.de:8006 möglich sein
 
 
 Images hochladen
