@@ -324,6 +324,10 @@ Editor schließen
 	sudo apt-get update
 	sudo apt-get install xinetd vnstat vnstati gdebi lighttpd fastd build-essential bridge-utils isc-dhcp-server radvd
 
+Rückfrage mit "J" bestätigen
+
+Um welche Paket handelt es sich?
+
 * vnstat monitort den Netzwerktraffic
 * vnstati erzeugt daraus Grafiken
 * lighttpd stellt diese zum Abruf bereit
@@ -338,11 +342,16 @@ Editor schließen
 Batman kompilieren
 ^^^^^^^^^^^^^^^^^^
 
-Batman kann man bei http://www.open-mesh.org/projects/open-mesh/wiki/Download herunterladen.
+Batman kann man bei http://www.open-mesh.org/projects/open-mesh/wiki/Download herunterladen
+
+Zur Vorbereitung libnl-3-dev installieren (Rückfrage mit "J" bestätigen)
 
 ::
 
 	sudo apt install libnl-3-dev
+	
+::
+
 	cd ~
 	wget http://downloads.open-mesh.org/batman/stable/sources/batman-adv/batman-adv-2016.0.tar.gz
 	tar -xf batman-adv-2016.0.tar.gz
@@ -354,9 +363,14 @@ Batman kann man bei http://www.open-mesh.org/projects/open-mesh/wiki/Download he
 Batctl kompilieren
 ^^^^^^^^^^^^^^^^^^
 
+Zur Vorbereitung pkg-config installieren (Rückfrage mit "J" bestätigen)
+
 ::
 
 	sudo apt-get install pkg-config
+	
+::
+
 	cd ~
 	sudo wget https://downloads.open-mesh.org/batman/stable/sources/batctl/batctl-2016.0.tar.gz
 	tar -xf batctl-2016.0.tar.gz
@@ -438,12 +452,12 @@ Den soeben erzeugten Key kopieren und in die secret.conf eintragen
 
 	sudo nano secret.conf
 
-Das Format der Secret Key Zeile anpassen und die Public Key Zeile auskommentieren.
+Das Format der Secret Key Zeile anpassen ("-Zeichen und ;) und die Public Key Zeile auskommentieren.
 
 ::
 
 	secret "xxx";
-	#public yyy
+	#public "yyy";
 
 Und den Editor wieder verlassen.
 
