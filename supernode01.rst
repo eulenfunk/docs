@@ -355,7 +355,7 @@ Iso Files zur installation können zwar über das Webinterface hochgeladen werde
 ::
 	
 	cd /vz/template/iso
-	wget http://releases.ubuntu.com/14.04.3/ubuntu-14.04.3-server-amd64.iso
+	wget http://releases.ubuntu.com/14.04.4/ubuntu-14.04.4-server-amd64.iso
 
 
 OATH Two Factor
