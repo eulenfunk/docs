@@ -86,7 +86,7 @@ Die IP zur mac ist beispielsweise die 555.666.777.888
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-29.png
 
-Die subnetzmaske von 255.255.255.0 bleibt in der Regel so
+Die Subnetzmaske von 255.255.255.0 bleibt in der Regel so
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-30.png
 
@@ -322,7 +322,8 @@ Editor schließen
 ::
 
 	sudo apt-get update
-	sudo apt-get install xinetd vnstat vnstati gdebi lighttpd fastd build-essential bridge-utils isc-dhcp-server radvd
+	sudo apt-get install xinetd vnstat vnstati gdebi lighttpd fastd build-essential \
+	bridge-utils isc-dhcp-server radvd python-pip
 
 Rückfrage mit "J" bestätigen
 
@@ -338,6 +339,7 @@ Um welche Paket handelt es sich?
 * bridge-utils (brctl) steuert Netzwerkbrücken
 * isc-dhcp-server (dhcpd3) verteilt IPv4 Adressen
 * radvd verteilt die IPv6 Range
+* python-pip um python-module nachinstallieren zu können
 
 Batman kompilieren
 ^^^^^^^^^^^^^^^^^^
@@ -423,7 +425,7 @@ Fastd einrichten
 	mtu 1406;
 	secure handshakes yes;
 	log to syslog level verbose;
-	status socket "/tmp/fastd.sock";
+	status socket "/run/fastd.client.sock";
 
 	on up "
 			ip link set address 04:EE:EF:CA:FE:3A dev tap0
@@ -489,7 +491,8 @@ Den Editor wieder verlassen und nun einen fastd Key erzeugen, der in passender S
 
 ::
 
-	fastd --generate-key |sed s/Secret\:\ /#fastd-key\ \"$HOSTNAME\\nsecret\ \"/|sed s/Public\:\ /#public\ \"/|sed s/\$/\"\;/>secret.conf
+	fastd --generate-key |sed s/Secret\:\ /#fastd-key\ \"$HOSTNAME\\nsecret\ \"/|sed s/Public\:\ /#public\ \"/| \
+	sed s/\$/\"\;/>secret.conf
 
 
 Hinzufügen einer Schnittstelle eth1
@@ -526,13 +529,23 @@ Zunächst müssen die nötigen Scripte auf den Supernode heruntergeladen und aus
 	cd /opt/eulenfunk/supernode
 	wget https://raw.githubusercontent.com/eulenfunk/scripts/master/supernode/supernode-setup.sh
 	wget https://raw.githubusercontent.com/eulenfunk/scripts/master/supernode/supernode-rc.sh
+	wget https://raw.githubusercontent.com/ffrl/ff-tools/master/fastd/fastd-statistics.py
+	wget https://raw.githubusercontent.com/ffrl/ff-tools/master/fastd/fastdtop.py
 	chmod +x *.sh
+	chomd +x *.py
+	ln /opt/eulenfunk/supernode/fastd-statistics.py /usr/sbin/fastd-statistics
+	ln /opt/eulenfunk/supernode/fastdtop.py /usr/sbin/fastdtop
+	pip install npyscreen hurry.filesize
+
+	
 
 Dann muss die Konfigurationsdatei supernode.config angepasst werden.
 
 ::
 
 	nano /opt/eulenfunk/supernode/supernode.config
+
+Nun muss man dem jeweiligen Supernode aus dem vom FFRL zugeteilten IPv6-Adressbereich noch ein /56 herausschneiden:
 
 ::
 
