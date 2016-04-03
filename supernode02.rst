@@ -361,7 +361,7 @@ Pakete installieren
 
 ::
 
-	sudo apt-get install bird bird6 xinetd vnstat vnstati gdebi lighttpd git ferm gdebi xinetd
+	sudo apt-get install bird bird6 xinetd vnstat vnstati gdebi lighttpd git ferm gdebi xinetd conntrack
 
 * bird übernimmt das BGP routing
 * bird6 tut das selbe für IPv6
@@ -374,6 +374,7 @@ Pakete installieren
 * git wird für die Konfigurationsscripte benötigt
 * gdebi ermöglicht die Nutzung von debian-Paketen
 * xinetd ist der bei debian übliche service-super-daemon
+* conntrack überwacht den Auslastungszustand der NAT-Enginge
 
 **/ -> **Nein! Ferm soll beim Systemstart nicht geladen werden! Wird später nach der Konfiguration aktiviert.**
 
