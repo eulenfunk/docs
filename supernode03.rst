@@ -557,7 +557,7 @@ Nun muss man dem jeweiligen Supernode aus dem vom FFRL zugeteilten IPv6-Adressbe
 Die angepasste Konfiguration wird dann durch für das Setup verwendet:
 
 ::
-
+	cd /opt/eulenfunk/supernode
 	./supernode-setup.sh
 
 
