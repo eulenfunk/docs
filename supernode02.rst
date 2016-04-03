@@ -353,7 +353,7 @@ Als nächstes steht die Systemaktualisierung an, dafür einmal
 
 ::
 
-	sudo apt-get update
+	sudo update
 	sudo apt-get dist-upgrade
 
 Pakete installieren
@@ -361,7 +361,7 @@ Pakete installieren
 
 ::
 
-	sudo apt-get install bird bird6 xinetd vnstat vnstati gdebi lighttpd git ferm
+	sudo apt-get install bird bird6 xinetd vnstat vnstati gdebi lighttpd git ferm gdebi xinetd
 
 * bird übernimmt das BGP routing
 * bird6 tut das selbe für IPv6
@@ -371,9 +371,11 @@ Pakete installieren
 * lighttpd stellt diese zum Abruf bereit
 * gdebi ermöglicht uns die Installation des Check_mk Agents
 * xinetd übernimmt die Übertragung der Monitoring Daten
-* git wird für die Konfigurationsscripte benötigt.
+* git wird für die Konfigurationsscripte benötigt
+* gdebi ermöglicht die Nutzung von debian-Paketen
+* xinetd ist der bei debian übliche service-super-daemon
 
--> **Nein! Ferm soll beim Systemstart nicht geladen werden! Wird später nach der Konfiguration aktiviert.**
+**/ -> **Nein! Ferm soll beim Systemstart nicht geladen werden! Wird später nach der Konfiguration aktiviert.**
 
 Hinzufügen einer Schnittstelle eth1
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -400,7 +402,6 @@ Die nachfolgenden Schritte müssen als User root ausgeführt werden, daher wechs
 ::
 
 	sudo -i
-
 
 ::
 
@@ -559,6 +560,9 @@ Falls man zuvor den ssh Port geändert hat, muss hier "ssh" durch die Port numme
 			}
 		}
 	}
+	
+Abschließend ferm zum Autostart hinzufügen
+
 
 Nat IPv4 einrichten
 ^^^^^^^^^^^^^^^^^^^
@@ -680,7 +684,6 @@ Die Bird conf für IPv4
         #Dies ist die BaCkbone Adresse im GRE Tunnel und das AS des FFRL
         neighbor 100.64.X.xxx as 201701;
 	};
-
 
 
 
@@ -845,14 +848,14 @@ Im ssh-terminal nun eingeben: (die Download-URL ist individuell und der Name des
 
 ::
 
-        wget --no-check-certificate https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb
+        wget --no-check-certificate \
+        https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb
 
 Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
 Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 
 ::
 
-	apt-get install gdebi xinetd
 	gdebi check-mk-agent_1.2.6p15-1_all.deb
 
 Anschließend noch das Konzentrator-Modul hinzufügen: 
