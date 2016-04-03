@@ -612,6 +612,59 @@ Als letzter Schritt auf dem Supernode muss die /etc/rc.local folgendermassen ang
 
 Das sorgt dafür, dass beim Systemstart durch das Script supernode-rc.sh die nötigen Routen und Routing-Policies konfiguriert werden.
 
+
+Check_MK Agent imstallieren
+...........................
+
+Den Check_MK Agent steht in der Weboberfläche des Check_MK als .deb Paket bereit:
+
+In die CheckMK-Instanz per Webbrowser einloggen. Dann suchen:
+
+::
+
+        -> WATO Configuration (Menü/Box)
+        -> Monitoring Agents
+        -> Packet Agents
+        -> check-mk-agent_1.2.6p15-1_all.deb _(Beispiel)_
+
+Den Download-Link in die Zwischenablage kopieren.
+Im ssh-terminal nun eingeben: (die Download-URL ist individuell und der Name des .deb-Paketes ändert sich ggf.)
+
+::
+
+        wget --no-check-certificate https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb
+
+Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
+Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
+
+::
+
+	apt-get install gdebi xinetd
+	
+	dann 
+	
+:: 
+
+	gdebi check-mk-agent_1.2.6p15-1_all.deb
+
+Anschließend noch das Konzentrator-Modul hinzufügen: 
+
+::
+
+	cd /usr/lib/check_mk_agent/local
+	wget -O supernode https://raw.githubusercontent.com/eulenfunk/check_mk/master/supernode
+	chmod +x supernode
+
+
+Der Rechner hält ab nun Daten zum Abruf bereit.
+
+
+_ToDo: Neuen Rechner im CheckMK eintragen in richtige Gruppe & Monitoring scharf schalten.
+Alternativ JJX Bescheid sagen, der kümmert sich dann darum.
+
+
+
+
 Danach den Supernode rebooten.
 
 Hier eine grafische Übersicht über die beteiligten Konfigurationsdateien auf dem Supernode:
