@@ -435,31 +435,62 @@ Fastd einrichten
 			/usr/local/sbin/batctl -m bat0 it 5000
 			/usr/local/sbin/batctl -m bat0 bl 0
 			/usr/local/sbin/batctl -m bat0 gw server 48mbit/48mbit
+			/usr/local/sbin/batctl -m bat0 vm server
 	";
 
-	on verify "
-	";
+	on verify "/etc/fastd/client/blacklist.sh $PEER_KEY";
 
-Den Editor wieder verlassen und nun einen fastd Key erzeugen
+Nun das blacklist-script anlegen. 
+
+::
+	
+	sudo nano /etc/fastd/client/blacklist.sh
+	
+mit Inhalt
+
+::
+	
+	#!/bin/bash
+	PEER_KEY=$1
+	echo peer "$PEER_KEY" joining
+	if /bin/grep -Fq $PEER_KEY /etc/fastd/client/fastd-blacklist.json; then
+        exit 1
+	else
+        exit 0
+	fi
+
+dann die Datei ausführbar machen
 
 ::
 
-	fastd --generate-key
-
-Den soeben erzeugten Key kopieren und in die secret.conf eintragen
-
-::
-
-	sudo nano secret.conf
-
-Das Format der Secret Key Zeile anpassen ("-Zeichen und ;) und die Public Key Zeile auskommentieren.
+	sudo chmod +x  /etc/fastd/client/blacklist.sh
+	
+Und schließlich eine Dummy-Datei anlegen
 
 ::
 
-	secret "xxx";
-	#public "yyy";
+	sudo nano /etc/fastd/client/fastd-blacklist.json
+	
+dort hinein
 
-Und den Editor wieder verlassen.
+::
+
+	{
+	"peers":
+  	[
+        {
+        "pubkey":"0004df72c02827333bced7680acaf38f36b09597c55241571e90637465831000",
+        }
+	]
+	}	
+	
+
+Den Editor wieder verlassen und nun einen fastd Key erzeugen, der in passender Syntax in "secret.conf" abgelegt wird.
+
+::
+
+	fastd --generate-key |sed s/Secret\:\ /#fastd-key\ \"$HOSTNAME\\nsecret\ \"/|sed s/Public\:\ /#public\ \"/|sed s/\$/\"\;/>secret.conf
+
 
 Hinzufügen einer Schnittstelle eth1
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
