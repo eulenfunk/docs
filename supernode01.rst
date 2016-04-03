@@ -101,6 +101,28 @@ Dann muss der Login über einen zusätzlich anzulegenden Benutzer (sshkey siehe 
 Zudem hinreichend sicheres Passwort setzen und den User in die sudoers-Gruppe aufnehmen. 
 
 ::
+        
+        adduser charly
+
+.. image:: http://i.imgur.com/mWhOtNO.png      
+
+::
+        
+        apt-get install sudo
+       
+gefolgt von 
+
+::      
+        
+        sudo adduser charly sudo
+
+Nun den direkten Rootlogin sperren
+
+:: 
+
+        nano /etc/ssh/sshd_config
+
+::
 
 	PermitRootLogin yes
         
@@ -190,7 +212,7 @@ Im ssh-terminal nun eingeben: (die Download-URL ist individuell und der Name des
 
 ::
 
-        wget --no-check-certificate https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb
+        wget --no-check-certificate "https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb"
 
 Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal. 
 Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
@@ -198,8 +220,20 @@ Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 ::
 
 	apt-get install gdebi xinetd
+	
+gefolgt von 
+
+::
+	
 	gdebi check-mk-agent_1.2.6p15-1_all.deb
 
+Nun ggf. noch die Smart-Überwachung der Festplatten hinzufügen
+
+:: 
+        
+        cd /usr/lib/check_mk_agent/plugins
+        wget --no-check-certificate "https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/plugins/smart"
+        chmod +x smart
 
 Der Rechner hält ab nun Daten zum Abruf bereit. 
 
