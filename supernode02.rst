@@ -855,8 +855,17 @@ Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 	apt-get install gdebi xinetd
 	gdebi check-mk-agent_1.2.6p15-1_all.deb
 
+Anschließend noch das Konzentrator-Modul hinzufügen: 
+
+::
+
+	cd /usr/lib/check_mk_agent/local
+	wget -O konzentrator https://raw.githubusercontent.com/eulenfunk/check_mk/master/konzentrator
+	chmod +x konzentrator
+
 
 Der Rechner hält ab nun Daten zum Abruf bereit.
+
 
 _ToDo: Neuen Rechner im CheckMK eintragen in richtige Gruppe & Monitoring scharf schalten.
 Alternativ JJX Bescheid sagen, der kümmert sich dann darum.
