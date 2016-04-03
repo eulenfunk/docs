@@ -323,7 +323,7 @@ Editor schließen
 
 	sudo apt-get update
 	sudo apt-get install xinetd vnstat vnstati gdebi lighttpd fastd build-essential \
-	bridge-utils isc-dhcp-server radvd python-pip
+	bridge-utils isc-dhcp-server radvd python-pip gdebi xinetd
 
 Rückfrage mit "J" bestätigen
 
@@ -634,18 +634,6 @@ Im ssh-terminal nun eingeben: (die Download-URL ist individuell und der Name des
 
         wget --no-check-certificate \
         https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb
-
-Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
-Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
-
-::
-
-	apt-get install gdebi xinetd
-	
-	dann 
-	
-:: 
-
 	gdebi check-mk-agent_1.2.6p15-1_all.deb
 
 Anschließend noch das Konzentrator-Modul hinzufügen: 
