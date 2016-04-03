@@ -257,7 +257,7 @@ Das ist jedoch mindestens unschön, sondern ein Nutzungshindernis in bestimmten 
 
 Wenn ihr einen Domain-Hostnamen  (DNS A-record) setzen könnt, dann solltet ihr es tun und ein LE-Zertificat installieren
 
-**Schritt 1: DNS A-record setzen***
+**Schritt 1: DNS A-record setzen**
 
 Vergebt einen Hostnamen in dem von Euch genutzten DNS-Server (z.B. Provider-Webinterface) für die IP-Adresse. 
 Dafür fügt ihr in der Domain (z.B. ffdus.de) einen neuen A-Record hinzu
@@ -329,7 +329,8 @@ Bitte im Script den **gewählten hostnamen austauschen**
 
 Das script ausführbar machen 
 
-:: 
+::
+
         chmod +x ./le-renew.sh
         
 Und einmal starten:
@@ -339,6 +340,7 @@ Und einmal starten:
        ./le-renew.sh
        
 Dabei gibt es ggf. einige Rückfragen, z.B. nach einer E-Mail-Adresse. 
+
 Diese sollte eine sein, die auch gelesen wird. Denn dort gibt LetsEncrypt "Bescheid", wenn das Certifikat abläuft und man sich um eine Erneuerung kümmern sollte. 
 
 .. image :: http://i.imgur.com/MQyGAn8.png
