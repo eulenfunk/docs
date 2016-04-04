@@ -532,7 +532,7 @@ Zunächst müssen die nötigen Scripte auf den Supernode heruntergeladen und aus
 	wget https://raw.githubusercontent.com/ffrl/ff-tools/master/fastd/fastd-statistics.py
 	wget https://raw.githubusercontent.com/ffrl/ff-tools/master/fastd/fastdtop.py
 	chmod +x *.sh
-	chomd +x *.py
+	chmod +x *.py
 	ln /opt/eulenfunk/supernode/fastd-statistics.py /usr/sbin/fastd-statistics
 	ln /opt/eulenfunk/supernode/fastdtop.py /usr/sbin/fastdtop
 	pip install npyscreen hurry.filesize
