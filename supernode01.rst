@@ -191,7 +191,7 @@ Nun Betriebsystemupdates einspielen und ggf. erfolgende Rückfragen mit einem "J
 
 :: 
 
-        sudo apt-get updates
+        sudo apt-get update
         sudo apt-get dist-upgrade
         sudo apt-get autoremove
         
