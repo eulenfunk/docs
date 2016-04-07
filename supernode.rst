@@ -13,7 +13,7 @@ Die Serverzone teilt sich wiederum in 3 Segmente auf:
 
 * Der Hypervisor Proxmox, dieser stellt alle Funktionen für den Betrieb von virtuellen Maschinen bereit
 * Der Konzentrator, dieser virtuelle Server stellt die Verbindung zu FFRL Backbone her, und übernimmt NAT und BGP
-* Der Supernode stellt die Fastd VPN Verbindungen für die Router bereit, kümmert sich um Batman und DHCP
+* Der Supernode stellt die Fastd VPN Verbindungen für die Router bereit, kümmert sich um Batman, DHCP und radvd
 
 .. image:: http://freifunk-mk.de/gfx/Eulenschema.png
 ----
