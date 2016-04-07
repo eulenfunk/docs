@@ -8,10 +8,14 @@ Vorraussetzungen
 
 Folgendes sollte euer Wunschserver leisten, damit er für FF tauglich ist:
 
-+ 100 Mbit garantierte Bandbreite
-+ Vollen Zugriff aufs Blech / den Hypervisor
-+ Leistungsstarke CPU
-+ Zusätzliche IPv4 Adressen (Failover IPs) "zu Einmal-Kosten"
+* 100 Mbit garantierte Bandbreite
+  * Nicht 100 Mbit Anbindung oder Peak Bandbreite! Der Server muss 24/7 100 Mbit abkönnen.
+* Vollen Zugriff aufs Blech / den Hypervisor
+  * Server neu installieren
+  * Hardware reboot
+  * IPs hinzufügen
+* Leistungsstarke CPU
+* Zusätzliche IPv4 Adressen (Failover IPs) "zu Einmal-Kosten"
 
 
 Folgendes sind absolute Ausschlusskriterien für einen Server:
