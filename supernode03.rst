@@ -351,7 +351,7 @@ Zur Vorbereitung libnl-3-dev installieren (Rückfrage mit "J" bestätigen)
 ::
 
 	sudo apt install libnl-3-dev
-	
+
 ::
 
 	cd ~
@@ -370,7 +370,7 @@ Zur Vorbereitung pkg-config installieren (Rückfrage mit "J" bestätigen)
 ::
 
 	sudo apt-get install pkg-config
-	
+
 ::
 
 	cd ~
@@ -442,16 +442,16 @@ Fastd einrichten
 
 	on verify "/etc/fastd/client/blacklist.sh $PEER_KEY";
 
-Nun das blacklist-script anlegen. 
+Nun das blacklist-script anlegen.
 
 ::
-	
+
 	sudo nano /etc/fastd/client/blacklist.sh
-	
+
 mit Inhalt
 
 ::
-	
+
 	#!/bin/bash
 	PEER_KEY=$1
 	echo peer "$PEER_KEY" joining
@@ -466,13 +466,13 @@ dann die Datei ausführbar machen
 ::
 
 	sudo chmod +x  /etc/fastd/client/blacklist.sh
-	
+
 Und schließlich eine Dummy-Datei anlegen
 
 ::
 
 	sudo nano /etc/fastd/client/fastd-blacklist.json
-	
+
 dort hinein
 
 ::
@@ -484,8 +484,8 @@ dort hinein
         "pubkey":"0004df72c02827333bced7680acaf38f36b09597c55241571e90637465831000",
         }
 	]
-	}	
-	
+	}
+
 
 Den Editor wieder verlassen und nun einen fastd Key erzeugen, der in passender Syntax in "secret.conf" abgelegt wird.
 
@@ -525,27 +525,23 @@ Zunächst müssen die nötigen Scripte auf den Supernode heruntergeladen und aus
 
 ::
 
-	mkdir -p /opt/eulenfunk/supernode
-	cd /opt/eulenfunk/supernode
-	wget https://raw.githubusercontent.com/eulenfunk/scripts/master/supernode/supernode-setup.sh
-	wget https://raw.githubusercontent.com/eulenfunk/scripts/master/supernode/supernode-rc.sh
-	wget https://raw.githubusercontent.com/ffrl/ff-tools/master/fastd/fastd-statistics.py
-	wget https://raw.githubusercontent.com/ffrl/ff-tools/master/fastd/fastdtop.py
+	mkdir -p /opt/eulenfunk
+	cd /opt/eulenfunk
+	git clone https://github.com/eulenfunk/supernode.git
+	cd supernode
 	chmod +x *.sh
 	chmod +x *.py
-	ln /opt/eulenfunk/supernode/fastd-statistics.py /usr/sbin/fastd-statistics
-	ln /opt/eulenfunk/supernode/fastdtop.py /usr/sbin/fastdtop
-	pip install npyscreen hurry.filesize
 
-	
 
-Dann muss die Konfigurationsdatei supernode.config angepasst werden.
+Nun muss man dem jeweiligen Supernode aus dem vom FFRL zugeteilten IPv6-Adressbereich noch ein /56 herausschneiden, ein passendes
+IPv4 Netz für seine Endgeräte festlegen und die Werte in die Konfigurationsdatei supernode.config schreiben:
 
 ::
 
 	nano /opt/eulenfunk/supernode/supernode.config
 
-Nun muss man dem jeweiligen Supernode aus dem vom FFRL zugeteilten IPv6-Adressbereich noch ein /56 herausschneiden:
+
+Hier ein Beispiel:
 
 ::
 
@@ -557,6 +553,7 @@ Nun muss man dem jeweiligen Supernode aus dem vom FFRL zugeteilten IPv6-Adressbe
 Die angepasste Konfiguration wird dann durch für das Setup verwendet:
 
 ::
+
 	cd /opt/eulenfunk/supernode
 	./supernode-setup.sh
 
@@ -612,8 +609,29 @@ Als letzter Schritt auf dem Supernode muss die /etc/rc.local folgendermassen ang
 
 Das sorgt dafür, dass beim Systemstart durch das Script supernode-rc.sh die nötigen Routen und Routing-Policies konfiguriert werden.
 
+Helper-Scripts einrichten
+..........................
 
-Check_MK Agent imstallieren
+::
+
+	cd /opt/eulenfunk/supernode/
+	wget https://raw.githubusercontent.com/ffrl/ff-tools/master/fastd/fastd-statistics.py
+	wget https://raw.githubusercontent.com/ffrl/ff-tools/master/fastd/fastdtop.py
+	wget -O fastdstatus.pl https://raw.githubusercontent.com/FreiFunkMuenster/ansible-ffms/master/roles/fastd/files/status.pl
+	chmod +x *.py *.pl
+	ln -s /opt/eulenfunk/supernode/fastd-statistics.py /usr/sbin/fastd-statistics
+	ln -s /opt/eulenfunk/supernode/fastdtop.py /usr/sbin/fastdtop
+	ln -s /opt/eulenfunk/fastdstatus.pl /usr/sbin/fastdstatus.pl
+	pip install npyscreen hurry.filesize
+
+Den Output von fastdstatus.pl kann man sich mit jq anzeigen lassen:
+
+::
+
+	fastdstatus.pl /run/fastd.client.sock | jq ''
+
+
+Check_MK Agent installieren
 ...........................
 
 Den Check_MK Agent steht in der Weboberfläche des Check_MK als .deb Paket bereit:
@@ -636,7 +654,7 @@ Im ssh-terminal nun eingeben: (die Download-URL ist individuell und der Name des
         https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb
 	gdebi check-mk-agent_1.2.6p15-1_all.deb
 
-Anschließend noch das Konzentrator-Modul hinzufügen: 
+Anschließend noch das Konzentrator-Modul hinzufügen:
 
 ::
 
