@@ -645,7 +645,7 @@ Die Bird conf für IPv4
 
 	protocol direct announce {
         table master; # implizit
-        #Hier muss die Nat IPv4 angegeben werden
+        #Hier muss die Nat IPv4 angegeben werden, inkl Netzmaske, "/32" ist also zwingend!
         import where net ~ [185.66.195.xx/32];
         interface "tun-ffrl-uplink";
 	};
@@ -852,20 +852,27 @@ Im ssh-terminal nun eingeben: (die Download-URL ist individuell und der Name des
         wget --no-check-certificate \
         https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb
 
-Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
+Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. 
+Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
+	
 Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 
 ::
 
 	gdebi check-mk-agent_1.2.6p15-1_all.deb
 
-Anschließend noch das Konzentrator-Modul hinzufügen: 
+Anschließend noch das Konzentrator-Modul und das bird-Modul hinzufügen: 
 
 ::
 
 	cd /usr/lib/check_mk_agent/local
 	wget -O konzentrator https://raw.githubusercontent.com/eulenfunk/check_mk/master/konzentrator
+	chmod 755 konzentrator
 	chmod +x konzentrator
+	cd /usr/lib/check_mk_agent/plugins
+	wget -O /usr/lib/check_mk_agent/plugins/bird "https://raw.githubusercontent.com/freddy36/check_mk_extensions/master/bird/agents/plugins/bird"
+	chmod 755 bird
+	chmod +x bird
 
 
 Der Rechner hält ab nun Daten zum Abruf bereit.
