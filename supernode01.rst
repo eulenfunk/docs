@@ -22,7 +22,7 @@ Proxmox kommt entweder per Klick als Template vom Provider auf den Server oder m
 
 Bei manueller Installation Hilft die Proxmox Doku: https://pve.proxmox.com/wiki/Installation
 
-Achtung: Hostname nachträglich ändern nur streng nach Promox-Howto sonst funktioniert die Weboberfläche nicht mehr. Hostname mit nicht nur im Proxmox-Webinterface geändert werden, sondern auch in /etc/hostname und vor allem /etc/hosts ("reverse-lookup" für 127.0.0.1 und die public-IPv4)
+Achtung: Hostname nachträglich ändern: Nur streng nach Promox-Howto vorgehen, denn andernfalls funktioniert die Weboberfläche nicht mehr (-> Reparatur per SSH notwendig). Der Hostname muss nicht nur im Proxmox-Webinterface geändert werden, sondern auch in /etc/hostname und vor allem /etc/hosts ("reverse-lookup" für 127.0.0.1 und die public-IPv4).
 
 .. image:: http://freifunk-mk.de/gfx/sys01.png   
 
