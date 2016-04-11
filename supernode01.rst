@@ -265,7 +265,10 @@ Wenn ihr einen Domain-Hostnamen  (DNS A-record) setzen könnt, dann solltet ihr 
 **Schritt 1: DNS A-record setzen**
 
 Vergebt einen Hostnamen in dem von Euch genutzten DNS-Server (z.B. Provider-Webinterface) für die IP-Adresse. 
-Dafür fügt ihr in der Domain (z.B. ffdus.de) einen neuen A-Record hinzu
+Dafür fügt ihr in der Domain (z.B. ffdus.de) einen neuen A-Record hinzu. 
+
+Folgende Bilder dienen lediglich der Installation, wie es bei einem Domain-Reseller in dessen Web-DNS ausschaut. 
+Bei anderen sieht es definitiv anders aus.
 
 
 .. image :: http://i.imgur.com/dLe1tqm.png
@@ -282,7 +285,7 @@ und speichern
 ----
 
 Abschliessend testen, ob der Host auch erreichbar ist. 
-Von einem anderen host (z.B. dem heimischen Rechner) 
+Von einem anderen Host (z.B. dem heimischen Rechner) 
 
 ::
 	
@@ -355,7 +358,7 @@ Login auf dem Proxmox sollte nun (und später) ohne SSL-Rückfragen auf (hier) h
 
 Images hochladen
 ^^^^^^^^^^^^^^^^
-Iso Files zur installation können zwar über das Webinterface hochgeladen werden, aber je nach Internetanbindung dauert das lange. Per wget wird das Image direkt auf den Server geladen. 
+ISO Files zur installation können zwar über das Webinterface hochgeladen werden, aber je nach Internetanbindung dauert das lange. Per wget wird das Image direkt auf den Server geladen. 
 
 (Achtung: Der Image-Name des Ubuntu-ISOs kann und wird sich gelegentlich ändern. Bitte gegebenenfalls mit dem Browser und Googles' Hilfe selbst auf Suche gehen)
 
