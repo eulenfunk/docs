@@ -21,13 +21,9 @@ Organigramm
     * Bergneustadt
     * Gummersbach
     * Marienheide
-* GL
+* GL.Eulenfunk
     * Leichlingen (lln)
-    * Burscheid (bcd)
-    * Odenthal (ode)
     * Bergisch-Gladbach (bgl)
-    * Overrath (ovr)
-    * Rösrath (rrh)
 * Neanderfunk
     * Erkrath (erk)
     * Haan (han)
@@ -414,29 +410,23 @@ Team
 |Adorfer     |Andreas           |adorfer@forum adorferen@gmail.com |Firmware, Ourdoorinstallationen                 |
 +------------+------------------+----------------------------------+------------------------------------------------+
 
-gl.Eulenfunk
+GL.Eulenfunk
 ------------
 
 Übersicht
 ^^^^^^^^^
 
-gl.Eulenfunk ist Freifunk im Rheinisch-Bergischen Kreis. Dieses ist der Bereich um Wermelskirchen, Leichlingen, Burscheid, Odenthal, Kürten, Bergisch-Gladbach, Overath und Rösrath.
+GL.Eulenfunk ist eine Untergruppe von Freifunk GL (Freifunk im Rheinisch-Bergischen Kreis). Dort sind die Städte Leichlingen und Bergisch Gladbach mit eigenen Supernodes vertreten, während die anderen Städte in der Domäne GL.Wupper Resourcen beziehen. 
 
 Websites
 ^^^^^^^^
 
 +--------+-----------------------------------+
-|Karte   | https://map.gl.wupper.ffrl.de/    |
+|Karte   | https://map.ffgl.eu/              |
 +--------+-----------------------------------+
-|Firmware| https://freifunk-gl.net/          |
+|Firmware| http://firmware.ffgl.eu/          |
 +--------+-----------------------------------+
-|Blog    | http://freifunk-rbk.de/           |
-+        +-----------------------------------+
-|        | http://freifunk-burscheid.de/     |
-+        +-----------------------------------+
-|        | https://freifunk-leichlingen.net/ |
-+        +-----------------------------------+
-|        | http://freifunk-gl.net/           |
+|Webseite| https://freifunk-leichlingen.net/ |
 +--------+-----------------------------------+
 
 
