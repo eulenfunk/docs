@@ -571,7 +571,7 @@ Die so erzeugten Konfigurationsdateien müssen **nach Prüfung** an die passende
 ::
 
 	cp dhcpd.conf.eulenfunk /etc/dhcp/dhcpd.conf
-	cp radvd.conf.eulenfunk /etc/radvd.config
+	cp radvd.conf.eulenfunk /etc/radvd.conf
 	cp 20-ff-config.conf.eulenfunk /etc/sysctl.d/20-ff-config.conf
 
 und die Netzwerkkonfiguration an die vorhandene angehängt werden:
