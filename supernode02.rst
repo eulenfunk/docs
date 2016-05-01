@@ -349,12 +349,15 @@ Für den neuen Benutzer muss ebenfalls der ssh Schlüssel des jeweiligen Nutzers
 Systemaktualisierung
 ^^^^^^^^^^^^^^^^^^^^
 
-Als nächstes steht die Systemaktualisierung an, dafür einmal
+Als Nächstes steht die Systemaktualisierung an; auch hier beim erstmaligen Aufruf die Nutzung von IPv4 erzwingen für's APT-Get
 
 ::
 
+	echo 'Acquire::ForceIPv4 "true";' | tee /etc/apt/apt.conf.d/99force-ipv4
 	sudo update
 	sudo apt-get dist-upgrade
+
+
 
 Pakete installieren
 ^^^^^^^^^^^^^^^^^^^
