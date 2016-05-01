@@ -294,10 +294,11 @@ Den Editor wieder verlassen und den SSH Server neu starten um die Einstellungen 
 Systemaktualisierung
 ^^^^^^^^^^^^^^^^^^^^
 
-Als nächstes steht die Systemaktualisierung an, dafür einmal
+Als Nächstes steht die Systemaktualisierung an; auch hier beim erstmaligen Aufruf die Nutzung von IPv4 erzwingen für's APT-Get
 
 ::
 
+	echo 'Acquire::ForceIPv4 "true";' | tee /etc/apt/apt.conf.d/99force-ipv4
 	sudo apt-get update
 	sudo apt-get dist-upgrade
 	sudo apt-get autoremove
