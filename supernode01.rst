@@ -206,6 +206,16 @@ Eine Fehlermeldung im Bereich "Proxmox-Enterprise" kann man entweder ignorieren.
 https://www.proxmox.com/de/proxmox-ve/preise
 
 
+Optional: 
+
+Da einzelne Repositories wiederholt nicht oder sehr schlecht per IPv6 erreichbar sind und wir unsere Maschinen grundsätzlich zur IPv6-Nutzung befähigen, empfielt es sich, IPv6 zumindest für "apt-get" zu unterbinden. 
+
+Dazu wird einmalig ausgerufen:
+
+::
+
+	echo 'Acquire::ForceIPv4 "true";' | tee /etc/apt/apt.conf.d/99force-ipv4
+
 Monitoring
 ^^^^^^^^^^
 
