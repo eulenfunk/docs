@@ -352,6 +352,23 @@ Zur Vorbereitung libnl-3-dev installieren (Rückfrage mit "J" bestätigen)
 ::
 
 	sudo apt install libnl-3-dev
+	
+	
+Da der aktuelle Batman leider mit einem GCC4.8 nicht mehr übersetzbar ist ohne Anpassung der Make-Files, muss das System auf GCC4.9 angehoben werden: 
+
+::
+
+	sudo apt-get update
+	sudo apt-get install gcc-4.9 g++-4.9
+	sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 60 --slave /usr/bin/g++ g++ \
+	/usr/bin/g++-4.9sudo apt-get update
+	sudo apt-get install gcc-4.9 g++-4.9
+	sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.9
+	sudo apt-get install gcc-4.8 g++-4.8
+	sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8
+	sudo update-alternatives --set gcc /usr/bin/gcc-4.9
+
+Nun den eigentliche Batman-Build:
 
 ::
 
@@ -366,6 +383,7 @@ Zur Vorbereitung libnl-3-dev installieren (Rückfrage mit "J" bestätigen)
 	make
 	sudo make install
 
+(Die Fehlermeldung "SSL error:02001002..." ist leider unvermeidbar, da das Build-Script das Package unterschreiben möchte, mit einem Maintainer-Key, der nicht lokal vorhanden ist (sollte zumindest.))
 
 Batctl kompilieren
 ^^^^^^^^^^^^^^^^^^
