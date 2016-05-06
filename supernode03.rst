@@ -359,6 +359,10 @@ Zur Vorbereitung libnl-3-dev installieren (Rückfrage mit "J" bestätigen)
 	wget http://downloads.open-mesh.org/batman/stable/sources/batman-adv/batman-adv-2016.0.tar.gz
 	tar -xf batman-adv-2016.0.tar.gz
 	cd batman-adv-2016.0
+	mkdir patch
+	cd patch
+	wget https://raw.githubusercontent.com/freifunk-gluon/gluon/master/patches/packages/routing/0003-batman-adv-decrease-maximum-fragment-size.patch
+	cd ..
 	make
 	sudo make install
 
