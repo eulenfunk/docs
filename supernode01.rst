@@ -318,7 +318,7 @@ nun wird das aktuele Letsencrypt aus dem git-repository geholt
 
 ::
 
-	git clone https://github.com/letsencrypt/letsencrypt
+	git clone https://github.com/certbot/certbot
 
 Nun brauchen wir noch ein Script, welches die notwendigen Folgeschritte übernimmt. 
 
@@ -332,19 +332,18 @@ Bitte im Script den **gewählten hostnamen austauschen** in der FQDN-Zeile (hier
 
 	#!/bin/bash
 	FQDN=ffdus-pm-twin2.ffdus.de
-	cd /root/letsencrypt
-	./letsencrypt-auto certonly --standalone --standalone-supported-challenges http-01 -d $FQDN
-	rm /etc/pve/pve-root-ca.pem
-	rm /etc/pve/local/pve-ssl.key
-	rm /etc/pve/local/pve-ssl.pem
+	cd /opt/certbot
+	./certbot-auto certonly --standalone --standalone-supported-challenges http-01 -d $FQDN
 	cd /etc/letsencrypt/live/$FQDN
 	cp chain.pem /etc/pve/pve-root-ca.pem
 	cp fullchain.pem /etc/pve/local/pveproxy-ssl.pem
 	cp privkey.pem /etc/pve/local/pveproxy-ssl.key
+	cp fullchain.pem /etc/pve/local/pve-ssl.pem
+	cp privkey.pem /etc/pve/local/pve-ssl.key
 	service pveproxy restart
 	service pveproxy status
 	service pvedaemon restart
-
+	
 Das script ausführbar machen 
 
 ::
