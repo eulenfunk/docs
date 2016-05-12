@@ -478,7 +478,8 @@ Da nun ein eventueller alternativer SSH-Port in die ferm.conf eingetragen wurde,
 
 ::
 
-	update-rc.d ferm defaults
+	update-rc.d ferm enable
+	sed -i 's/ENABLED=.*/ENABLED="yes"/'
 
 
 Danach kann das System rebootet werden. Die Konfigurationen für die Supernodes werden später wie unten beschrieben angelegt.
@@ -564,7 +565,7 @@ Falls man zuvor den ssh Port geändert hat, muss hier "ssh" durch die Port numme
 			}
 		}
 	}
-	
+
 Abschließend ferm zum Autostart hinzufügen
 
 
@@ -855,16 +856,16 @@ Im ssh-terminal nun eingeben: (die Download-URL ist individuell und der Name des
         wget --no-check-certificate \
         https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb
 
-Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. 
+Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten.
 Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
-	
+
 Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 
 ::
 
 	gdebi check-mk-agent_1.2.6p15-1_all.deb
 
-Anschließend noch das Konzentrator-Modul und das bird-Modul hinzufügen: 
+Anschließend noch das Konzentrator-Modul und das bird-Modul hinzufügen:
 
 ::
 
