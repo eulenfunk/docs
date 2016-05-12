@@ -478,8 +478,9 @@ Da nun ein eventueller alternativer SSH-Port in die ferm.conf eingetragen wurde,
 
 ::
 
-	update-rc.d ferm enable
-	sed -i 's/ENABLED=.*/ENABLED="yes"/'
+	sed -i 's/ENABLED=.*/ENABLED="yes"/' /etc/default/ferm
+	update-rc.d -f ferm remove
+	update-rc.d ferm defaults
 
 
 Danach kann das System rebootet werden. Die Konfigurationen für die Supernodes werden später wie unten beschrieben angelegt.
