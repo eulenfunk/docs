@@ -168,7 +168,7 @@ Subdomänen
 +--------------+----------------+--------------+-------------------+-------------+-----------------------+-----------------+-----------------+
 |Iserlohn-1    |5.196.239.99    |172.31.254.10 |2001:41d0:2:b546::2|172.16.0.1/16|2a03:2260:120::/56     |02:ff:13:37:fe:03|02:ff:13:37:fe:04|
 +--------------+----------------+--------------+-------------------+-------------+-----------------------+-----------------+-----------------+
-|Meinerzhagen-1|164.132.13.111  |              |                   |172.18.0.1/16|2a03:2260:120:200::/56 |02:ff:13:37:fe:05|02:ff:13:37:fe:06|
+|Meinerzhagen-1|164.132.13.111  |172.31.254.18 |                   |172.18.0.1/16|2a03:2260:120:200::/56 |02:ff:13:37:fe:05|02:ff:13:37:fe:06|
 +--------------+----------------+--------------+-------------------+-------------+-----------------------+-----------------+-----------------+
 |Hemer-1       |164.132.13.114  |172.31.254.1  |                   |172.19.0.1/16|2a03:2260:120:300::/56 |02:ff:13:37:fe:05|02:ff:13:37:fe:07|
 +--------------+----------------+--------------+-------------------+-------------+-----------------------+-----------------+-----------------+
@@ -416,7 +416,7 @@ GL.Eulenfunk
 Übersicht
 ^^^^^^^^^
 
-GL.Eulenfunk ist eine Untergruppe von Freifunk GL (Freifunk im Rheinisch-Bergischen Kreis). Dort sind die Städte Leichlingen und Bergisch Gladbach mit eigenen Supernodes vertreten, während die anderen Städte in der Domäne GL.Wupper Resourcen beziehen. 
+GL.Eulenfunk ist eine Untergruppe von Freifunk GL (Freifunk im Rheinisch-Bergischen Kreis). Dort sind die Städte Leichlingen und Bergisch Gladbach mit eigenen Supernodes vertreten, während die anderen Städte in der Domäne GL.Wupper Resourcen beziehen.
 
 Websites
 ^^^^^^^^
