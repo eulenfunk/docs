@@ -67,7 +67,7 @@ Und unter Verwendung des SSH Keys erneut verbinden:
 
 	ssh root@111.222.333.444
 
-Wenn der Key nicht als default im System hinterlegt ist, muss zusätzlich der Pfad zum Key angeben werden.
+Wenn der Key nicht als default im System hinterlegt ist, muss zusätzlich der Pfad zum Privatekey angeben werden.
 Liegt der Key "meinsshkey" im Benutzerordner:
 
 ::
@@ -245,7 +245,7 @@ Im ssh-terminal nun eingeben: (die Download-URL ist individuell und der Name des
 
 ::
 
-        wget --no-check-certificate "https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb"
+        wget --no-check-certificate "https://monitoring.eulenfunk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb"
 
 Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
 Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
@@ -255,7 +255,7 @@ Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 	apt-get install gdebi xinetd
 
 Rückfragen ggf. mit "J" beantworten.
-Mit dem nun installierten gdebi das checkmk-Paket installieren:
+Mit dem nun installierten gdebi das check_mk-Paket installieren:
 
 ::
 
@@ -426,3 +426,28 @@ Die vmbr steht erst nach dem Neustart des Blechs zu Verfügung, daher in der Eck
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-5.png
 ----
+Backup anlegen
+^^^^^^^^^^^^^^
+
+Proxmox ermöglicht es ganz einfach und auf wunsch automatisiert Backups von den Virtuellen Maschinen anzulegen.
+Im Idealfall sollten die Backups auf einen externen Server/Storage erfolgen, aus Gründen der Einfachheit beginnen wir mit einem Backup auf den localen Storage, von dort kann man die Dateien bei bedarf per scp oder Rsync auf einen anderen Server oder den heimischen Computer sichern für den Fall eines Totalausfalls des Blechs.
+
+Das Backup auf dem lokalen Storage erzeugt massiv IO, denn neben den Normalen Zugriffen, die die Maschinen im Betrieb erzeugen kommen noch Lesezugriffe auf die zu sichernde VM und schreibzugriffe auf die Backupdatei dazu.
+
+Sobald der IO die Kapazität des Storages übersteigt, gerade bei den einfachen Raids aus klassischen HDDs in den OVH/SYS Servern ist dies schnell der Fall, wird die Performance des gesamten Blechs und aller VMs darunter leiden.
+
+Das Backup sollte daher zur zeit der geringsten Auslastung erfolgen, z.B. jeden montag am 1 Uhr in der Nacht.
+
+Zuerst muss ein Backupstorage definiert werden, dazu muss links das Datacenter ausgewählt werden, rechts der Tab Storage und dort der lokale Storage konfiguriert werden.
+
+.. image:: http://freifunk-mk.de/gfx/px_backup01.png
+
+Dort muss dann VZDump backup file zusätzlich ausgewählt werden (strg+klick)
+
+.. image:: http://freifunk-mk.de/gfx/px_backup02.png
+
+Als nächstes im Reiter Backup einen Backupjob hinzufügen:
+
+.. image:: http://freifunk-mk.de/gfx/px_backup03.png
+
+.. image:: http://freifunk-mk.de/gfx/px_backup04.png
