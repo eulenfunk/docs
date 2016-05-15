@@ -458,7 +458,8 @@ Fastd einrichten
 			ip link set up dev bat0
 			brctl addif br0 bat0
 			/usr/local/sbin/batctl -m bat0 it 5000
-			/usr/local/sbin/batctl -m bat0 bl 0
+			/usr/local/sbin/batctl -m bat0 bl 1
+			/usr/local/sbin/batctl -m bat0 mm 0
 			/usr/local/sbin/batctl -m bat0 gw server 48mbit/48mbit
 			/usr/local/sbin/batctl -m bat0 vm server
 	";
