@@ -3,9 +3,24 @@ BGP Konzentrator einrichten
 
 Der BGP Konzentrator ist der Backboneseitige unserer zwei Freifunk Server, er übernimmt Routing, NAT, Connection tracking, GRE Tunnel und BGP Sessions.
 
-Für den Vserver benötigen wir eine zusätzliche öffentliche IPv4 Adresse, diese könnt ihr beim Rechenzentrum kaufen, nennt sich z.B. Failover IP. Für diese IP Adresse muss im Kundeninterface eine MAC Adresse erstellt werden, die dann im Proxmox auf der Netzwerkkarte des Vservers konfiguriert wird.
+Für die virtuelle Maschine benötigen wir eine öffentliche IPv4 Adresse. Diese könnt ihr beim Rechenzentrum kaufen, nennt sich z.B. Failover IP. Für diese IP Adresse muss im Kundeninterface eine MAC Adresse erstellt werden, die dann im Proxmox auf der Netzwerkkarte der virtuellen Maschine konfiguriert wird.
 
-Nachdem der Server neu gestartet ist und das Webinterface wieder erreichbar ist auf der linken Seite den Server auswählen und dann oben rechts 'Create VM'
+Im Kundeninterface wird "IP" ausgewählt
+
+.. image:: http://freifunk-mk.de/gfx/sys-1.png
+
+In dem erscheinenden Formular klickt man das Zahnrad an der betreffenden IP-Adresse an und wählt "Eine virtuelle MAC-Adresse hinzufügen"
+
+.. image:: http://freifunk-mk.de/gfx/sys-2.png
+
+Im folgenden muss "Eine neue virtuelle MAC-Adresse erstellen" angeklickt werden und der Name der VM eingetragen werden.
+
+.. image:: http://freifunk-mk.de/gfx/sys-3.png
+
+.. image:: http://freifunk-mk.de/gfx/sys-4.png
+
+
+Auf dem Webinterface des Proxmox Servers ist auf der linken Seite das Blech auszuwählen und dann oben rechts 'Create VM' anklicken
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-6.png
 ----
@@ -25,45 +40,44 @@ Im Reiter 'CD/DVD' das ISO Image auswählen.
 .. image:: http://freifunk-mk.de/gfx/proxmox-9.png
 ----
 
-Im Reiter 'Hard Disk' als 'Bus' 'VirtIO' einstellen, die Festplattengröße auf 8GB begrenzen und als Format 'qcow2' wählen. Größere Festplatten machen Backups, Rollbacks und co nur aufwändiger. Kleiner als 8GB geht auch, z.b. 6GB wesentlich weniger dann aber nicht mehr.
+Im Reiter 'Hard Disk' als 'Bus' 'VirtIO' einstellen, die Festplattengröße auf 6GB begrenzen und als Format 'qcow2' wählen. Größere Festplatten machen Backups, Rollbacks und co nur aufwändiger.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-10.png
 ----
 
-Im Reiter 'CPU' zwei Prozessorkerne zuweisen. Einer tut es in der Regel auch, wichtig ist, dass wir nur eine CPU / Socket zuweisen, sonst verschluckt sich das System. Als CPU kann man host wählen, das tut der Performance gut und HA nutzen wir ohnehin nicht.
+Im Reiter 'CPU' ein Prozessorkern zuweisen. Als CPU kann man "host" wählen, das tut der Performance gut und HA nutzen wir ohnehin nicht.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-11.png
 ----
 
-Im Reiter 'Memory' unter 'Automatically allocate memory within this range' 256 -1024MB festlegen. Weniger als 256 hindert einige Maschinen beim booten, mehr als 1024 werden nicht benötigt.
+Im Reiter 'Memory' unter 'Automatically allocate memory within this range' 256 - 1024MB festlegen. Weniger als 256 hindert einige Maschinen beim booten, mehr als 1024 werden nicht benötigt.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-12.png
 ----
 
-Im Reiter 'Network' als Netzwerkkarte 'VirtIO' auswählen und die MAC Adresse der für diesen Vserver zu verwendenden öffentlichen IPv4 Adresse eintragen. Bridged Mode übernehmen wir so und solange vmbr0 unsere wan bridge ist auch.
+Im Reiter 'Network' als Netzwerkkarte 'VirtIO' auswählen und die MAC Adresse der für diese VM zu verwendenden öffentlichen IPv4 Adresse eintragen. Bridged Mode übernehmen wir so und vmbr0 auch diese.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-13.png
 ----
 
-Bestätigen und Anlegen, auswählen und anschließend starten.
+Bestätigen und Anlegen auswählen.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-14.png
 
-.. image:: http://freifunk-mk.de/gfx/proxmox-15.png
 ----
 
-Fehlermeldungen während der Startphase werden unten im Log-Fenster angezeigt, erscheinen immer "oben", jedoch mit einigen Sekunden verzögerung. Details lassen sich ausklappen. Auf einigen Systemen ist es notwendig, die Harddisk auf "Writeback(insecure)" zu schalten, um das System zu starten zu können.
+Fehlermeldungen während der Startphase werden unten im Log-Fenster angezeigt, erscheinen immer "oben", jedoch mit einigen Sekunden Verzögerung. Details lassen sich ausklappen.
 
-Hinweis: Wenn das System später läuft, nicht vergessen, den Starttyp "at boot time" zu stellen.
+Hinweis: Wenn das System später läuft, nicht vergessen, die Option "Start at boot" auf "Yes" zu stellen.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-16.png
 ----
-Und nach installation das Iso aus dem lauffwerk nehmen, denn wenn die Datei irgendwann mal vom Storage gelöscht werden booten die Maschinen mangels iso nicht mehr.
+Und nach Installation das Iso aus dem lauffwerk nehmen, denn wenn die Datei irgendwann mal vom Storage gelöscht werden booten die Maschinen mangels ISO nicht mehr.
 
 Ubuntu Server Installieren
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Die VM Links auswählen und oben rechts starten und die Konsole öffnen
+Die VM links auswählen und oben rechts starten und die Konsole öffnen
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-17.png
 ----
@@ -75,22 +89,32 @@ Deutsch als Sprache auswählen und nun Ubuntu Server Installieren
 .. image:: http://freifunk-mk.de/gfx/proxmox-19.png
 ----
 
-Als Installationssprache jetzt nochmal Deutsch auswählen, die Auswahl trotz unvollständiger Unterstützung bestätigen und als nächstes das Tastaturlayout auswählen.
+Als Installationssprache jetzt nochmal Deutsch auswählen,
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-20.png
 
+die Auswahl trotz unvollständiger Unterstützung bestätigen,
+
 .. image:: http://freifunk-mk.de/gfx/proxmox-21.png
+
+den Standort auswählen (Deutschland),
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-22.png
 
+das Tastaturmodell nicht automatisch erkennen lassen
+
 .. image:: http://freifunk-mk.de/gfx/proxmox-23.png
 
+Herkunftsland der Tastatur "Deutsch"
+
 .. image:: http://freifunk-mk.de/gfx/proxmox-24.png
+
+Tastaturbelegung "Deutsch"
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-25.png
 ----
 
-Sobald der Server versucht das Netzwerk automatisch zu konfigurieren, dies abbrechen und die Manuelle Netzwerkkonfiguration auswählen.
+Sobald der Server versucht das Netzwerk automatisch zu konfigurieren, dies abbrechen und die manuelle Netzwerkkonfiguration auswählen.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-26.png
 
@@ -99,24 +123,24 @@ Sobald der Server versucht das Netzwerk automatisch zu konfigurieren, dies abbre
 .. image:: http://freifunk-mk.de/gfx/proxmox-28.png
 ----
 
-Die IP zur mac ist beispielsweise die 555.666.777.888
+Die Failover-IP, für die wir vorhin die MAC-Adresse erstellt haben ist beispielsweise die 555.666.777.888
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-29.png
 ----
 
-Die subnetzmaske von 255.255.255.0 bleibt in der Regel so
+Die Subnetzmaske von 255.255.255.0 bleibt in der Regel so
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-30.png
 ----
 
-Die Gateway Adresse sollte man beim Rechenzentrum bekannt sein.
+Die Gateway Adresse sollte man beim Rechenzentrum erfragen.
 
-Bei einem großen Französichen RZ (OVH/Soyoustart) ist das IPv4 Gateway immer auf der 254, also 555.666.777.254
+Bei OVH/Soyoustart ist das IPv4 Gateway immer auf der 254, also 555.666.777.254
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-31.png
 ----
 
-Als DNS geht z.B. der 8.8.8.8 von google.
+Als DNS geht z.B. der 8.8.8.8 von Google (Böse!).
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-32.png
 ----
@@ -131,9 +155,11 @@ Der Domainname ist hier einzutragen
 .. image:: http://freifunk-mk.de/gfx/proxmox-34.png
 ----
 
-Und der Benutzername.
+Und der Benutzer angelegt werden. Zunächst der volle Benutzername
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-35.png
+
+und dann das gewünschte Login
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-36.png
 ----
@@ -143,7 +169,7 @@ Das Kennwort sollte sicher sein und nicht bereits für einen anderen Zweck in Ve
 .. image:: http://freifunk-mk.de/gfx/proxmox-37.png
 ----
 
-Da auf dem Server keine Persönlichen Dateien gespeichert werden sollen ist es nicht notwendig den Persönlichen Ordner zu verschlüsseln.
+Da auf dem Server keine persönlichen Dateien gespeichert werden sollen ist es nicht notwendig den persönlichen Ordner zu verschlüsseln.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-38.png
 ----
@@ -155,7 +181,7 @@ Festplatte manuell formatieren
 .. image:: http://freifunk-mk.de/gfx/proxmox-39.png
 ----
 
-Freien speicherplatz auswählen und enter
+Freien Speicherplatz auswählen und enter
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-40.png
 ----
@@ -165,13 +191,13 @@ Partitionstabelle erstellen
 .. image:: http://freifunk-mk.de/gfx/proxmox-41.png
 ----
 
-Freien speicherplatz auswählen und enter
+Freien Speicherplatz auswählen und enter
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-42.png
 .. image:: http://freifunk-mk.de/gfx/proxmox-43.png
 ----
 
-Partitionsgröße 7 GB Primär am Anfang
+Partitionsgröße 5 GB Primär am Anfang
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-44.png
 .. image:: http://freifunk-mk.de/gfx/proxmox-45.png
@@ -188,7 +214,7 @@ Freien Speicherplatz auswählen und enter
 .. image:: http://freifunk-mk.de/gfx/proxmox-48.png
 ----
 
-Einen neue Partition erstellen
+Eine neue Partition erstellen
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-49.png
 ----
@@ -234,7 +260,7 @@ Automatische Sicherheitsaktualisierungen auswählen
 .. image:: http://freifunk-mk.de/gfx/proxmox-55.png
 ----
 
-Openssh server auswählen (Leertaste benutzen) und weiter
+OpenSSH server auswählen (Leertaste benutzen) und weiter
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-56.png
 ----
