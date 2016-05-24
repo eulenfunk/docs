@@ -71,7 +71,7 @@ Liegt der Key meinsshkey im Benutzerordner
 
 	ssh -i ~/meinsshkey root@111.222.333.444
 
-Nun den Password login auf dem Server deaktivieren, dazu die sshd_config editieren
+Nun den Passwort-Login auf dem Server deaktivieren, dazu die sshd_config editieren
 
 ::
 
@@ -89,7 +89,7 @@ Die Zeile
 
 	PasswordAuthentication no
 
-Achtung, auch wenn yes auskommentiert ist, besteht die Möglichkeit sich per Password zu verbinden, erst wenn 'no' gesetzt ist und nicht (mehr) auskommentiert ist, ist der Zugriff nur noch per Key möglich.
+Achtung, auch wenn yes auskommentiert ist, besteht die Möglichkeit sich per Passwort zu verbinden, erst wenn 'no' gesetzt ist und nicht (mehr) auskommentiert ist, ist der Zugriff nur noch per Key möglich.
 
 Den Editor wieder verlassen und den SSH Server neu starten um die Einstellungen zu übernehmen
 
@@ -127,7 +127,13 @@ gefolgt von
         
 Im Editor dann den public-ssh-Key ("ssh-rsa AAA.....") einfügen. Wichtig: Alles von diesem Key muss auf eine Zeile. 
 Wenn es mehrere Leute gibt, die Zugriff haben sollen, dann pro Login-Key natürlich eine neue Zeile.
-        
+
+Überprüfen, ob der Login funktioniert:
+
+::
+
+	ssh charly@111.222.333.444
+
 
 Nun den direkten Rootlogin sperren
 
