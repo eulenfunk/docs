@@ -323,7 +323,7 @@ Wir benötigen das Paket "git" (Rückfragen mit "J" beantworten)
 nun wird das aktuele Letsencrypt aus dem git-repository geholt
 
 ::
-
+	cd /opt
 	git clone https://github.com/certbot/certbot
 
 Nun brauchen wir noch ein Script, welches die notwendigen Folgeschritte übernimmt. 
@@ -338,8 +338,11 @@ Bitte im Script den **gewählten hostnamen austauschen** in der FQDN-Zeile (hier
 
 	#!/bin/bash
 	FQDN=ffdus-pm-twin2.ffdus.de
+	FQDNextra="" # Beispiel: "-d domain2.de -d site3.org"
 	cd /opt/certbot
-	./certbot-auto certonly --standalone --standalone-supported-challenges http-01 -d $FQDN
+	echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
+	./certbot-auto certonly --standalone --standalone-supported-challenges http-01 -d $FQDN $FQDNextra
+	echo 0 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 	cd /etc/letsencrypt/live/$FQDN
 	cp chain.pem /etc/pve/pve-root-ca.pem
 	cp fullchain.pem /etc/pve/local/pveproxy-ssl.pem
