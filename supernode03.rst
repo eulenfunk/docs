@@ -7,7 +7,7 @@ Der Supernode wird im Proxmox Webinterface angelegt indem man auf der linken Sei
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-6.png
 
-Im Reiter 'General' eine Freie ID und einen Namen festlegen.
+Im Reiter 'General' eine Freie ID und einen Namen (meinestadt-1) festlegen.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-7.png
 
@@ -19,19 +19,19 @@ Im Reiter 'CD/DVD' das ISO Image auswählen.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-9.png
 
-Im Reiter 'Hard Disk' als 'Bus' 'VirtIO' einstellen, die Festplattengröße auf 8GB begrenzen und als Format 'qcow2' wählen.
+Im Reiter 'Hard Disk' als 'Bus' 'VirtIO' einstellen, die Festplattengröße auf 6GB begrenzen und als Format 'qcow2' wählen.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-10.png
 
-Im Reiter 'CPU' zwei Prozessorkerne zuweisen.
+Im Reiter 'CPU' einen Prozessorkern zuweisen. Type "host" (mehr Performance, weniger Portabilität).
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-11.png
 
-Im Reiter 'Memory' unter 'Automatically allocate memory within this range' 256 -1024MB festlegen.
+Im Reiter 'Memory' unter 'Automatically allocate memory within this range' 256-2048MB festlegen.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-12.png
 
-Im Reiter 'Network' als Netzwerkkarte 'VirtIO' auswählen und die MAC Adresse der für diesen Vserver zu verwendenden öffentlichen IPv4 Adresse eintragen.
+Im Reiter 'Network' als Netzwerkkarte 'VirtIO' auswählen und die MAC Adresse der für diese VM zu verwendenden öffentlichen IPv4 Adresse eintragen. Bridged Mode übernehmen wir so und vmbr0 auch diese.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-13.png
 
@@ -41,20 +41,20 @@ Bestätigen und Anlegen, auswählen und anschließend starten.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-15.png
 
-Fehlermeldungen während der Startphase werden unten im Log-Fenster angezeigt, erscheinen immer "oben", jedoch mit einigen Sekunden verzögerung. Details lassen sich ausklappen. Auf einigen Systemen ist es notwendig, die Harddisk auf "Writeback(insecure)" zu schalten, um das System zu starten zu können.
+Fehlermeldungen während der Startphase werden unten im Log-Fenster angezeigt, erscheinen immer "oben", jedoch mit einigen Sekunden Verzögerung. Details lassen sich ausklappen.
 
-Hinweis: Wenn das System später läuft, nicht vergessen, den Starttyp "at boot time" zu stellen.
+Hinweis: Wenn das System später läuft, nicht vergessen, den Starttyp "at boot time" zu stellen und das CD-ROM-Laufwerk entfernen.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-16.png
 
 Ubuntu Server Installieren
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Die VM Links auswählen und oben rechts starten und die Konsole öffnen
+Die VM links auswählen und oben rechts starten und die Konsole öffnen
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-17.png
 
-Deutsch als Sprache auswählen und nun Ubuntu Server Installieren
+Deutsch als Sprache auswählen und nun Ubuntu Server installieren
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-18.png
 
@@ -74,7 +74,7 @@ Als Installationssprache jetzt nochmal Deutsch auswählen, die auswahl trotz unv
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-25.png
 
-Sobald der Server versucht das Netzwerk automatisch zu konfigurieren, dies abbrechen und die Manuelle Netzwerkkonfiguration auswählen.
+Sobald der Server versucht das Netzwerk automatisch zu konfigurieren, dies abbrechen und die manuelle Netzwerkkonfiguration auswählen.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-26.png
 
@@ -118,17 +118,17 @@ Das Kennwort sollte sicher sein und nicht bereits für einen anderen Zweck in Ve
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-37.png
 
-Da auf dem Server keine Persönlichen Dateien gespeichert werden sollen ist es nicht notwendig den Persönlichen Ordner zu verschlüsseln.
+Da auf dem Server keine Persönlichen Dateien gespeichert werden sollen ist es nicht notwendig den persönlichen Ordner zu verschlüsseln.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-38.png
 
-Zeitzone Prüfen und bestätigen.
+Zeitzone prüfen und bestätigen.
 
-Festpaltte manuell formatieren
+Festplatte manuell formatieren
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-39.png
 
-Freien speicherplatz auswählen und enter
+Freien Speicherplatz auswählen und Enter
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-40.png
 
@@ -136,12 +136,12 @@ Partitionstabelle erstellen
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-41.png
 
-Freien speicherplatz auswählen und enter
+Freien Speicherplatz auswählen und Enter
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-42.png
 .. image:: http://freifunk-mk.de/gfx/proxmox-43.png
 
-Partitionsgröße 7 GB Primär am Anfang
+Partitionsgröße 5 GB primär am Anfang
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-44.png
 .. image:: http://freifunk-mk.de/gfx/proxmox-45.png
@@ -151,7 +151,7 @@ Bootflag auf 'ein' setzen und 'Anlegen beenden'
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-47.png
 
-Freien Speicherplatz auswählen und enter
+Freien Speicherplatz auswählen und Enter
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-48.png
 
@@ -193,7 +193,7 @@ Automatische Sicherheitsaktualisierungen auswählen
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-55.png
 
-Openssh server auswählen (Leertaste benutzen) und weiter
+OpenSSH Server auswählen (Leertaste benutzen) und weiter
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-56.png
 
@@ -210,45 +210,24 @@ Weiter
 SSH
 ^^^
 
-Die weitere Konfiguration soll per SSH Zugriff erfolgen, daher richten wir diesen zuerst ein und sichern den SSH Server ab.
-
-vom PC aus per SSH mit dem Server verbinden
+Per SSH mit dem Server verbinden
 
 ::
 
-	ssh root@555.666.777.888
+	ssh meinbenutzername@111.222.333.444
 
-Nun den SSH Public Key auf dem Server hinterlegen
-
-::
-
-	mkdir .ssh
-	cd .ssh
-	nano authorized_keys
-
-In die noch leere Datei den Key eintragen und den Editor wieder verlassen.
-
-Als nächstes die SSH Verbindung beenden
+Den Public-Key für den User hinterlegen:
 
 ::
 
-	exit
+	        cd /home/meinbenutzername/
+	        mkdir .ssh
+	        nano .ssh/authorized_keys
 
-Und unter Verwendung des SSH Keys erneut verbinden
+Im Editor dann den Public Key ("ssh-rsa AAA.....") einfügen. Wichtig: Alles von diesem Key muss in eine Zeile.
+Weitere Adminuser können später angelegt werden.
 
-::
-
-	ssh root@555.666.777.888
-
-Wenn der Key nicht als default im System hinterlegt ist muss zusätzlich der Pfad zum Key angeben werden.
-
-Liegt der Key meinsshkey im Benutzerordner
-
-::
-
-	ssh -i ~/meinsshkey root@555.666.777.888
-
-Nun den Password login auf dem Server deaktivieren, dazu die sshd_config editieren
+Nun das Password-Login auf dem Server deaktivieren. Dazu die sshd_config editieren:
 
 ::
 
@@ -265,9 +244,8 @@ Die Zeile
 ::
 
 	PasswordAuthentication no
-	UsePAM no
 
-Achtung, auch wenn "yes" auskommentiert ist besteht die Möglichkeit sich per Password zu verbinden. Erst wenn "no" gesetzt ist und nicht auskommentiert ist, ist der Zugriff nur noch per Key möglich.
+Achtung, auch wenn 'yes' auskommentiert ist, besteht die Möglichkeit sich per Password zu verbinden, erst wenn 'no' gesetzt ist und nicht (mehr) auskommentiert ist, ist der Zugriff nur noch per Key möglich.
 
 Um es den Script-Kiddies und Bots etwas schwerer zu machen, sollte der Port 22 auf einen hohen Port (mindestens über 1024) verändert werden. Dazu die Zeile
 
@@ -275,21 +253,39 @@ Um es den Script-Kiddies und Bots etwas schwerer zu machen, sollte der Port 22 a
 
 	Port 22
 
-ändern z.B. in
+ändern in
 
 ::
 
 	Port 62954
 
-WICHTIG: Diesen Port muss man sich dann merken, da man ihn später beim Aufruf von ssh angeben muss. Ändernt man diesen Port, muss dieser auch in der Ferm config (weiter unten beschrieben) geändert werden, da ferm sonst nur ssh auf Port 22 zu lässt.
+WICHTIG: Diesen Port muss man sich dann merken, da man ihn später beim Aufruf von ssh angeben muss.
 
-
-Den Editor wieder verlassen und den SSH Server neu starten um die Einstellungen zu übernehmen
+Nun den direkten Rootlogin sperren.
 
 ::
 
-	sudo /etc/init.d/ssh restart
+	PermitRootLogin yes
 
+ändern in
+
+::
+
+	PermitRootLogin no
+	UsePAM no
+
+Danach den Editor wieder verlassen und den SSH Server neu starten um die Einstellungen zu übernehmen.
+
+::
+
+	sudo service ssh restart
+
+Den nachfolgenden ssh Kommandos muss man die Option "-p 62954" (kleines "p"!) und den scp Kommandos
+die Option "-P 62954" (großes "P"!).
+
+::
+
+			ssh -p 62954 meinbenutzername@111.222.333.444
 
 Systemaktualisierung
 ^^^^^^^^^^^^^^^^^^^^
@@ -298,7 +294,6 @@ Als Nächstes steht die Systemaktualisierung an; auch hier beim erstmaligen Aufr
 
 ::
 
-	echo 'Acquire::ForceIPv4 "true";' | tee /etc/apt/apt.conf.d/99force-ipv4
 	sudo apt-get update
 	sudo apt-get dist-upgrade
 	sudo apt-get autoremove
@@ -323,8 +318,8 @@ Editor schließen
 ::
 
 	sudo apt-get update
-	sudo apt-get install xinetd vnstat vnstati gdebi lighttpd fastd build-essential \
-	bridge-utils isc-dhcp-server radvd python-pip gdebi xinetd
+	sudo apt-get install xinetd git vnstat vnstati gdebi-core lighttpd fastd build-essential \
+	bridge-utils isc-dhcp-server radvd libnl-3-dev pkg-config
 
 Rückfrage mit "J" bestätigen
 
@@ -333,25 +328,22 @@ Um welche Paket handelt es sich?
 * vnstat monitort den Netzwerktraffic
 * vnstati erzeugt daraus Grafiken
 * lighttpd stellt diese zum Abruf bereit
-* gdebi ermöglicht uns die Installation des Check_mk Agents
-* xinetd übernimmt die Übertragung der Monitoring Daten
+* gdebi-core ermöglicht uns die Installation des Check_mk Agents
+* xinetd ist der bei Debian übliche Super-Daemon, über ihn wird der Check_mk Agent angesprochen
 * Fastd baut Tunnelverbindungen zu den Routern auf
 * build-essential wird zum kompilieren von Batman benötigt
 * bridge-utils (brctl) steuert Netzwerkbrücken
 * isc-dhcp-server (dhcpd3) verteilt IPv4 Adressen
 * radvd verteilt die IPv6 Range
-* python-pip um python-module nachinstallieren zu können
+* git wird für die Konfigurationsscripte benötigt
+* libnl-3-dev wird für batman benötigt
+* pkg-config wird für batctl benötigt
+
 
 Batman kompilieren
 ^^^^^^^^^^^^^^^^^^
 
 Batman kann man bei http://www.open-mesh.org/projects/open-mesh/wiki/Download herunterladen
-
-Zur Vorbereitung libnl-3-dev installieren (Rückfrage mit "J" bestätigen)
-
-::
-
-	sudo apt install libnl-3-dev
 
 ::
 
@@ -365,12 +357,6 @@ Zur Vorbereitung libnl-3-dev installieren (Rückfrage mit "J" bestätigen)
 
 Batctl kompilieren
 ^^^^^^^^^^^^^^^^^^
-
-Zur Vorbereitung pkg-config installieren (Rückfrage mit "J" bestätigen)
-
-::
-
-	sudo apt-get install pkg-config
 
 ::
 
@@ -401,16 +387,14 @@ Mehr infos gibt es im ubuntuusers wiki https://wiki.ubuntuusers.de/Kernelmodule#
 
 Fastd einrichten
 ^^^^^^^^^^^^^^^^
-* Verzeichnis für die Fastd Instand anlegen
+* Verzeichnis für die Fastd Instanz anlegen
 * Dummyverzeichnis für Clients anlegen
 * fastd.conf erstellen
 
 ::
 
-	cd /etc/fastd
-	sudo mkdir client
-	cd client
-	sudo mkdir dummy
+	sudo mkdir -p /etc/fastd/client/dummy
+	cd /etc/fastd/client
 	sudo nano fastd.conf
 
 ::
@@ -443,13 +427,13 @@ Fastd einrichten
 
 	on verify "/etc/fastd/client/blacklist.sh $PEER_KEY";
 
-Nun das blacklist-script anlegen.
+Nun das Blacklist-Script anlegen.
 
 ::
 
 	sudo nano /etc/fastd/client/blacklist.sh
 
-mit Inhalt
+Mit Inhalt:
 
 ::
 
@@ -492,46 +476,50 @@ Den Editor wieder verlassen und nun einen fastd Key erzeugen, der in passender S
 
 ::
 
-	fastd --generate-key |sed s/Secret\:\ /#fastd-key\ \"$HOSTNAME\\nsecret\ \"/| \
-	sed s/Public\:\ /#public\ \"/|sed s/\$/\"\;/>secret.conf
+	sudo fastd --generate-key > secret.conf
+
+In der Datei secret.conf müssen dann manuell Änderungen vorgenommen werden:
+Die Zeile mit 'Public' muss mit '#' auskommentiert werden, die Zeile 'Secret' muss angepasst werden.
+
+::
+
+	sudo nano secret.conf
+
+::
+
+	secret "xxx...";
+	#Public: ...
+
 
 
 Hinzufügen einer Schnittstelle eth1
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Nun muss im Proxmox für die vm eine eth1 hinzugefügt werden, die auf der vmbr1 hängt und virtio verwendet.
+Nun muss im Proxmox für die VM eine eth1 hinzugefügt werden, die auf der vmbr1 hängt und Virtio verwendet.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-59.png
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-60.png
 
-Danach die vm einmal durchbooten.
+Danach die VM einmal durchbooten.
 
 
 Verbindung zwischen Supernode und Konzentrator konfigurieren
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Voraussetzung für diese Vorgehensweise ist die vorhergehende Konfiguration des BGP-Konzentrators mittels "ff-bgp-konzentrator-konfigurator".
-
 Auf dem Supernode
 .................
-
-Die Konfiguration erfolgt mit Root-Rechten. Also wechseln wir für die nächsten Schritte zum User root:
-
-::
-
-	sudo -i
 
 Zunächst müssen die nötigen Scripte auf den Supernode heruntergeladen und ausführbar gemacht werden:
 
 ::
 
-	mkdir -p /opt/eulenfunk
+	sudo mkdir -p /opt/eulenfunk
 	cd /opt/eulenfunk
-	git clone https://github.com/eulenfunk/supernode.git
+	sudo git clone https://github.com/eulenfunk/supernode.git
 	cd supernode
-	chmod +x *.sh
-	chmod +x *.py
+	sudo chmod +x *.sh
+	sudo chmod +x *.py
 
 
 Nun muss man dem jeweiligen Supernode aus dem vom FFRL zugeteilten IPv6-Adressbereich noch ein /56 herausschneiden, ein passendes
@@ -539,24 +527,24 @@ IPv4 Netz für seine Endgeräte festlegen und die Werte in die Konfigurationsdat
 
 ::
 
-	nano /opt/eulenfunk/supernode/supernode.config
+	sudo nano /opt/eulenfunk/supernode/supernode.config
 
 
 Hier ein Beispiel:
 
 ::
 
-	SUPERNODE_IPV6_PREFIX=2a03:2260:120:300::/56
+	SUPERNODE_IPV6_PREFIX=2a03:2260:X:Y::/56
 	SUPERNODE_IPV4_CLIENT_NET=172.19.0.0/16
 	SUPERNODE_IPV4_TRANS_ADDR=172.31.254.1
 
 
-Die angepasste Konfiguration wird dann durch für das Setup verwendet:
+Die angepasste Konfiguration wird dann durch das Setup verwendet:
 
 ::
 
 	cd /opt/eulenfunk/supernode
-	./supernode-setup.sh
+	sudo ./supernode-setup.sh
 
 
 ::
@@ -571,21 +559,21 @@ Die so erzeugten Konfigurationsdateien müssen **nach Prüfung** an die passende
 
 ::
 
-	cp dhcpd.conf.eulenfunk /etc/dhcp/dhcpd.conf
-	cp radvd.conf.eulenfunk /etc/radvd.conf
-	cp 20-ff-config.conf.eulenfunk /etc/sysctl.d/20-ff-config.conf
+	sudo cp dhcpd.conf.eulenfunk /etc/dhcp/dhcpd.conf
+	sudo cp radvd.conf.eulenfunk /etc/radvd.conf
+	sudo cp 20-ff-config.conf.eulenfunk /etc/sysctl.d/20-ff-config.conf
 
 und die Netzwerkkonfiguration an die vorhandene angehängt werden:
 
 ::
 
-	cat interfaces.eulenfunk >> /etc/network/interfaces
+	sudo cat interfaces.eulenfunk >> /etc/network/interfaces
 
 Als letzter Schritt auf dem Supernode muss die /etc/rc.local folgendermassen angepasst werden:
 
 ::
 
-	nano /etc/rc.local
+	sudo nano /etc/rc.local
 
 
 ::
@@ -610,28 +598,6 @@ Als letzter Schritt auf dem Supernode muss die /etc/rc.local folgendermassen ang
 
 Das sorgt dafür, dass beim Systemstart durch das Script supernode-rc.sh die nötigen Routen und Routing-Policies konfiguriert werden.
 
-Helper-Scripts einrichten
-..........................
-
-::
-
-	cd /opt/eulenfunk/supernode/
-	wget https://raw.githubusercontent.com/ffrl/ff-tools/master/fastd/fastd-statistics.py
-	wget https://raw.githubusercontent.com/ffrl/ff-tools/master/fastd/fastdtop.py
-	wget -O fastdstatus.pl https://raw.githubusercontent.com/FreiFunkMuenster/ansible-ffms/master/roles/fastd/files/status.pl
-	chmod +x *.py *.pl
-	ln -s /opt/eulenfunk/supernode/fastd-statistics.py /usr/sbin/fastd-statistics
-	ln -s /opt/eulenfunk/supernode/fastdtop.py /usr/sbin/fastdtop
-	ln -s /opt/eulenfunk/fastdstatus.pl /usr/sbin/fastdstatus.pl
-	pip install npyscreen hurry.filesize
-
-Den Output von fastdstatus.pl kann man sich mit jq anzeigen lassen:
-
-::
-
-	fastdstatus.pl /run/fastd.client.sock | jq ''
-
-
 Check_MK Agent installieren
 ...........................
 
@@ -644,32 +610,37 @@ In die CheckMK-Instanz per Webbrowser einloggen. Dann suchen:
         -> WATO Configuration (Menü/Box)
         -> Monitoring Agents
         -> Packet Agents
-        -> check-mk-agent_1.2.6p15-1_all.deb _(Beispiel)_
+        -> check-mk-agent_1.2.8p1-1_all.deb _(Beispiel)_
 
 Den Download-Link in die Zwischenablage kopieren.
-Im ssh-terminal nun eingeben: (die Download-URL ist individuell und der Name des .deb-Paketes ändert sich ggf.)
+Im SSH-Terminal nun eingeben: (die Download-URL ist individuell und der Name des .deb-Paketes ändert sich ggf.)
 
 ::
 
         wget --no-check-certificate \
-        https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb
-	gdebi check-mk-agent_1.2.6p15-1_all.deb
+        https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.8p1-1_all.deb
 
-Anschließend noch das Konzentrator-Modul hinzufügen:
+Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum Ausliefern der Monitoring Daten.
+
+Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
+
+::
+
+	sudo gdebi check-mk-agent_1.2.8p1-1_all.deb
+
+Anschließend noch das Supernode-Plugin hinzufügen:
 
 ::
 
 	cd /usr/lib/check_mk_agent/local
-	wget -O supernode https://raw.githubusercontent.com/eulenfunk/check_mk/master/supernode
-	chmod +x supernode
+	sudo wget -O supernode https://raw.githubusercontent.com/eulenfunk/check_mk/master/supernode
+	sudo chmod 755 supernode
+	sudo chmod +x supernode
 
 
 Der Rechner hält ab nun Daten zum Abruf bereit.
 
-
-_ToDo: Neuen Rechner im CheckMK eintragen in richtige Gruppe & Monitoring scharf schalten.
-Alternativ JJX Bescheid sagen, der kümmert sich dann darum.
-
+JJX Bescheid sagen, der kümmert sich dann darum.
 
 
 
@@ -677,7 +648,7 @@ Danach den Supernode rebooten.
 
 Hier eine grafische Übersicht über die beteiligten Konfigurationsdateien auf dem Supernode:
 
-.. image:: https://raw.githubusercontent.com/eulenfunk/scripts/master/supernode/Supernode-Routing.png
+.. image:: https://raw.githubusercontent.com/eulenfunk/supernode/master/Supernode-Routing.png
 
 Auf dem Konzentrator
 ....................
@@ -705,7 +676,7 @@ Dort müssen folgende Werte eingetragen werden:
 	# IPv4 Konfiguration
 	SUPERNODE_CLIENT_IPV4_NET=<IPv4 Netz fuer die Clients, 172.XX.0.0/16>
 	SUPERNODE_TRANS_IPV4_NET=<IPv4 Transit-Netz, 172.31.YYY.0/24>
-	SUPERNODE_TRANS_IPV4_REMOTE=<Remote IPv4 Adresse Transit-Netz, 172.31.YYY.1>
+	SUPERNODE_TRANS_IPV4_REMOTE=<Supernode IPv4 eth1 Adresse Transit-Netz, 172.31.YYY.1>
 
 	# IPv6 Konfiguration
 	SUPERNODE_CLIENT_IPV6_NET=<IPv6 Netz fuer die Clients, 2a03:2260:AAAA:BBBB::/64>
@@ -732,9 +703,4 @@ Die Konfiguration kann im laufenden Betrieb auch wieder entfernt werden (damit w
 
 Durch den Parameter AUTOSTART=1 wird beim Reboot des Konzentrators die Konfiguration für diese Stadt automatisch wieder gesetzt.
 
-Wenn möglich (wenn noch keine anderen Städte über den Konzentrator gehen), den Konzentrator rebooten.
-
-Testen
-......
-
-... TBD ...
+Den Konzentrator und den Supernode rebooten, um die Reboot-Festigkeit zu testen.

@@ -280,45 +280,24 @@ Weiter
 SSH
 ^^^
 
-Die weitere Konfiguration soll per SSH Zugriff erfolgen, daher richten wir diesen zuerst ein und sichern den SSH Server ab.
-
-vom PC aus per SSH mit dem Server verbinden
+Per SSH mit dem Server verbinden
 
 ::
 
-	ssh root@555.666.777.888
+	ssh meinbenutzername@111.222.333.444
 
-Nun den SSH Public Key auf dem Server hinterlegen
-
-::
-
-	mkdir .ssh
-	cd .ssh
-	nano authorized_keys
-
-In die noch leere Datei den Key eintragen und den Editor wieder verlassen.
-
-Als nächstes die SSH Verbindung beenden
+Den Public-Key für den User hinterlegen:
 
 ::
 
-	exit
+	        cd /home/meinbenutzername/
+	        mkdir .ssh
+	        nano .ssh/authorized_keys
 
-Und unter Verwendung des SSH Keys erneut verbinden
+Im Editor dann den Public Key ("ssh-rsa AAA.....") einfügen. Wichtig: Alles von diesem Key muss in eine Zeile.
+Weitere Adminuser können später angelegt werden.
 
-::
-
-	ssh root@555.666.777.888
-
-Wenn der Key nicht als default im System hinterlegt ist muss zusätzlich der Pfad zum Key angeben werden.
-
-Liegt der Key meinsshkey im Benutzerordner
-
-::
-
-	ssh -i ~/meinsshkey root@555.666.777.888
-
-Nun den Password login auf dem Server deaktivieren, dazu die sshd_config editieren
+Nun das Password-Login auf dem Server deaktivieren. Dazu die sshd_config editieren:
 
 ::
 
@@ -335,9 +314,8 @@ Die Zeile
 ::
 
 	PasswordAuthentication no
-	UsePAM no
 
-Achtung, auch wenn yes auskommentiert ist besteht die Möglichkeit sich per Password zu verbinden, erst wenn no gesetzt ist und nicht auskommentiert ist, ist der Zugriff nur noch per Key möglich.
+Achtung, auch wenn 'yes' auskommentiert ist, besteht die Möglichkeit sich per Password zu verbinden, erst wenn 'no' gesetzt ist und nicht (mehr) auskommentiert ist, ist der Zugriff nur noch per Key möglich.
 
 Um es den Script-Kiddies und Bots etwas schwerer zu machen, sollte der Port 22 auf einen hohen Port (mindestens über 1024) verändert werden. Dazu die Zeile
 
@@ -345,32 +323,40 @@ Um es den Script-Kiddies und Bots etwas schwerer zu machen, sollte der Port 22 a
 
 	Port 22
 
-ändern z.B. in
+ändern in
 
 ::
 
 	Port 62954
 
-WICHTIG: Diesen Port muss man sich dann merken, da man ihn später beim Aufruf von ssh angeben muss. Ändernt man diesen Port, muss dieser auch in der Ferm config (weiter unten beschrieben) geändert werden, da ferm sonst nur ssh auf Port 22 zu lässt.
+WICHTIG: Diesen Port muss man sich dann merken, da man ihn später beim Aufruf von ssh angeben muss.
 
-Den Editor wieder verlassen und den SSH Server neu starten um die Einstellungen zu übernehmen
-
-::
-
-	sudo /etc/init.d/ssh restart
-
-Benutzer hinzufügen
-^^^^^^^^^^^^^^^^^^^
-
-Um weiteren Admins Zugriff auf den Server zu ermöglichen sollten dringend weitere Benutzer angelegt werden
+Nun den direkten Rootlogin sperren.
 
 ::
 
-	sudo adduser BENUTZERNAME --ingroup sudo
+	PermitRootLogin yes
 
-Es muss ein Kennwort angegeben werden, dieses kann der Benutzer später per passwd nach belieben ändern, die weiteren abfragen nach Name, Mail usw. müssen nicht ausgefüllt werden und könnnen einfach mit Enter bestätigt werden.
+ändern in
 
-Für den neuen Benutzer muss ebenfalls der ssh Schlüssel des jeweiligen Nutzers im Nutzerordner hinterlegt werden.
+::
+
+	PermitRootLogin no
+	UsePAM no
+
+Danach den Editor wieder verlassen und den SSH Server neu starten um die Einstellungen zu übernehmen.
+
+::
+
+	sudo service ssh restart
+
+Den nachfolgenden ssh Kommandos muss man die Option "-p 62954" (kleines "p"!) und den scp Kommandos
+die Option "-P 62954" (großes "P"!).
+
+::
+
+			ssh -p 62954 meinbenutzername@111.222.333.444
+
 
 Systemaktualisierung
 ^^^^^^^^^^^^^^^^^^^^
@@ -379,9 +365,9 @@ Als Nächstes steht die Systemaktualisierung an; auch hier beim erstmaligen Aufr
 
 ::
 
-	echo 'Acquire::ForceIPv4 "true";' | tee /etc/apt/apt.conf.d/99force-ipv4
-	sudo update
+	sudo apt-get update
 	sudo apt-get dist-upgrade
+	sudo apt-get autoremove
 
 
 
@@ -390,33 +376,28 @@ Pakete installieren
 
 ::
 
-	sudo apt-get install bird bird6 xinetd vnstat vnstati gdebi lighttpd git ferm gdebi xinetd conntrack
+	sudo apt-get install bird bird6 xinetd vnstat vnstati gdebi-core lighttpd git conntrack
 
 * bird übernimmt das BGP routing
 * bird6 tut das selbe für IPv6
-* ferm hilf beim erstellen von IPtables Regeln
 * vnstat monitort den Netzwerktraffic
 * vnstati erzeugt daraus Grafiken
 * lighttpd stellt diese zum Abruf bereit
-* gdebi ermöglicht uns die Installation des Check_mk Agents
-* xinetd übernimmt die Übertragung der Monitoring Daten
+* gdebi-core ermöglicht uns die Installation des Check_mk Agents
 * git wird für die Konfigurationsscripte benötigt
-* gdebi ermöglicht die Nutzung von debian-Paketen
-* xinetd ist der bei debian übliche service-super-daemon
-* conntrack überwacht den Auslastungszustand der NAT-Enginge
-
-**/ -> **Nein! Ferm soll beim Systemstart nicht geladen werden! Wird später nach der Konfiguration aktiviert.**
+* xinetd ist der bei Debian übliche Super-Daemon, über ihn wird der Check_mk Agent angesprochen
+* conntrack überwacht den Auslastungszustand der NAT-Engine
 
 Hinzufügen einer Schnittstelle eth1
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Nun muss im Proxmox für die vm eine eth1 hinzugefügt werden, die auf der vmbr1 hängt und virtio verwendet.
+Für die Verbindung zwischen den Supernodes und dem Konzentrator legen wir eine zweite Netzwerkschnittstelle an.
+Dazu muss im Proxmox für die VM eine eth1 hinzugefügt werden, die auf der vmbr1 hängt und virtio verwendet.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-59.png
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-60.png
 
-Danach die vm einmal durchbooten.
+Danach die VM einmal durchbooten.
 
 
 Eulenfunk BGP-Konzentrator-Konfigurator
@@ -427,19 +408,13 @@ Eulenfunk BGP-Konzentrator-Konfigurator
 
 Um die Konfiguration zu vereinfachen, wurde ein Script geschrieben, welches die nötigen Parameter abfragt und daraus die Konfigurationsdateien, bzw. Auszüge daraus erzeugt. Diese müssen dann nur noch an die richtige Stelle kopiert werden.
 
-Die nachfolgenden Schritte müssen als User root ausgeführt werden, daher wechseln wir zunächst dahin:
-
 ::
 
-	sudo -i
-
-::
-
-	mkdir -p /opt/eulenfunk/konzentrator
+	sudo mkdir -p /opt/eulenfunk/konzentrator
 	cd /opt/eulenfunk/konzentrator
-	git clone https://github.com/eulenfunk/ff-bgp-konzentrator-konfigurator.git
+	sudo git clone https://github.com/eulenfunk/ff-bgp-konzentrator-konfigurator.git
 	cd ff-bgp-konzentrator-konfigurator
-	./bgp-konzentrator-setup.sh
+	sudo ./bgp-konzentrator-setup.sh
 
 ::
 
@@ -455,26 +430,26 @@ AS Nummer vom FF-RL
 Eigene AS Nummer
 	Ihr benötigt ein eigenes autonomes System. Die Nummer davon gebt ihr hier an. TODO: Link auf Beschreibung zur Beschaffung eines eigenen AS...
 Zugewiesene FFRL-IPV4-Exit-Adresse
-	Vom Freifunk Rheinland bekommt ihr eine Exit-Adresse. Darauf wird der gesamte IPv4 Verkehr aller an diesem Konzentrator angeschlossenen Supernodes bzw. der darüber verbundenen Clients ge-NAT-ed.
+	Vom Freifunk Rheinland bekommt ihr eine Exit-Adresse. Darauf wird der gesamte IPv4 Verkehr aller an diesem Konzentrator angeschlossenen Supernodes bzw. der darüber verbundenen Clients ge-NAT-ed. Diese Adresse sieht in etwa so aus: 185.66.19X.YY
 Zugewiesenes FFRL-IPV6-Netz
-	Der IPv6 Prefix, der euch vom Freifunk Rheinland zugewiesen wurde.
+	Der IPv6 Prefix, der euch vom Freifunk Rheinland zugewiesen wurde. (2a03:2260:XXX::/48)
 Eigene öffentliche IPV4 Adresse
-	Bei der Einrichtung der VM für diesen Konzentrator habt ihr eine IPv4-Adresse konfiguriert, über die ihr euch auch auf dem Konzentrator eingeloggt habt. Also die IPv4-Adresse von *eth1*.
+	Bei der Einrichtung der VM für diesen Konzentrator habt ihr eine IPv4-Adresse konfiguriert (Failover-IP der VM), über die ihr euch auch auf dem Konzentrator eingeloggt habt. Also die IPv4-Adresse von *eth1*.
 Eigener SSH-Port
-	Wenn ihr bei der Konfiguration vom *sshd* einen anderen Port als 22 eingetragen habt, gebt ihr diese hier ein. Damit wird sichergestellt, dass die Firewall (ferm ...) Verbindungen zu dem alternativen Port überhaupt zulässt. Wenn ihr euch hier vertut, kommt ihr nach dem Neustart nicht mehr per SSH auf euren Server!
+	Ihr habt bei der Konfiguration vom *sshd* den Port angepasst (62954), also gebt ihr diesen hier ein. Damit wird sichergestellt, dass die Firewall (ferm ...) Verbindungen zu dem alternativen Port überhaupt zulässt. Wenn ihr euch hier vertut, kommt ihr nach dem Neustart nicht mehr per SSH auf euren Server!
 
 Konfiguration für GRE-Tunnel nach XXX_Y
 +++++++++++++++++++++++++++++++++++++++
 Ihr solltet vom Freifunk Rheinland Adressen für 4 Tunnel zum Backbone bekommen haben, jeweils zwei in Berlin und zwei in Düsseldorf. In diesem Abschnitt werden diese konfiguriert. Die folgenden Werte müsst ihr jeweils einmal pro Tunnel passend -- also 4 Mal -- eingeben:
 
 IPV4 Adresse für Tunnelendpunkt auf Backbone-Server
-	Die IPv4 Adresse für den Tunnelendpunkt auf dem **Backbone-Server**.
+	Die Tunnel-interne IPv4 Adresse auf dem **Backbone-Server** (100.64.X.YYY gerade).
 IPV4 Adresse für Tunnelendpunk auf Konzentrator
-	Die zugehörige IPv4 Adresse für den Tunnelendpunkt auf **eurem Konzentrator**.
+	Die Tunnel-interne IPv4 Adresse für den Tunnelendpunkt auf **eurem Konzentrator** (10.64.X.ZZZ nächste ungerade).
+IPV6 Adresse auf Backbone-Server
+	Zusätzlich zu den IPv4-Adressen habt ihr eine IPv6 Adresse für den Tunnel bekommen. Die Adresse mit der ()...)::**1**/64  hinten ist die Adresse auf dem Backbone-Server (in etwa diese 2a03:2260:Y:XXX::1 ohne die /64!). Diese gebt ihr hier an.
 IPV6 Adresse auf Konzentrator
-	Zusätzlich zu den IPv4-Adressen habt ihr eine IPv6 Adresse für den Tunnel bekommen. Die Adresse mit der ()...)::**1**/64  hinten ist die Adresse auf eurem Konzentrator. Diese gebt ihr hier an. (Die passende Adresse auf dem Backbone-Ende wird durch das Script daraus abgeleitet).
-
-**TODO: Die bird6.conf Einträge für **filter hostroute** passen noch nicht! Hier stehen statisch die Werte vom Fichtenfunk drin...**
+		Die auf die im vorherigen Schritt folgende Addresse, also mit ()...)::**2**/64 hinten, ist die Adresse auf eurem Konzentrator (in etwa diese 2a03:2260:Y:XXX::2 ohne die /64!). Diese gebt ihr hier an.
 
 Ausgaben
 ++++++++
@@ -486,351 +461,46 @@ Das Script erzeugt folgende Dateien:
 * ferm.conf.bgp
 * 20-ff-config.conf.bgp
 
-::
-
 Die erzeugten Dateien sollten nun **überprüft** werden (Beschreibung hierzu siehe unten) und dann an die passenden Stellen kopiert werden:
 
 ::
 
-	cp bird.conf.bgp /etc/bird/bird.conf
-	cp bird6.conf.bgp /etc/bird/bird6.conf
-	cp ferm.conf.bgp /etc/ferm/ferm.conf
-	cp 20-ff-config.conf.bgp /etc/sysctl.d/20-ff-config.conf
-	cat interfaces.bgp >> /etc/network/interfaces
+	sudo cp bird.conf.bgp /etc/bird/bird.conf
+	sudo cp bird6.conf.bgp /etc/bird/bird6.conf
+	sudo mkdir /etc/ferm
+	sudo cp ferm.conf.bgp /etc/ferm/ferm.conf
+	sudo cp 20-ff-config.conf.bgp /etc/sysctl.d/20-ff-config.conf
+	sudo cat interfaces.bgp >> /etc/network/interfaces
 
 ::
 
-Da nun ein eventueller alternativer SSH-Port in die ferm.conf eingetragen wurde, kann das Firewalling aktiviert werden:
+Da nun ein eventueller alternativer SSH-Port in die ferm.conf eingetragen wurde, kann das Firewalling aktiviert werden.
+
+Als erstes ferm installieren.
 
 ::
 
-	sed -i 's/ENABLED=.*/ENABLED="yes"/' /etc/default/ferm
-	update-rc.d -f ferm remove
-	update-rc.d ferm defaults
+	sudo apt-get install ferm
 
+Bei der Frage, ob ferm beim Systemstart gestartet werden soll, mit ja antworten.
 
 Danach kann das System rebootet werden. Die Konfigurationen für die Supernodes werden später wie unten beschrieben angelegt.
-
-.. _ferm_einrichten:
-
-Ferm einrichten
-^^^^^^^^^^^^^^^^
-
-Ferm lädt beim Systemstart ein Script und erzeugt Iptables Regeln. In folgender Konfigurationsdatei muss die IP Adresse fürs source NAT angepasst werden, dies ist die Adresse über die die Daten ins Internet gehen sollen, (nicht die IPv4 Adresse des Vservers).
-Falls man zuvor den ssh Port geändert hat, muss hier "ssh" durch die Port nummer ersetzt werden
-
-::
-
-	sudo nano /etc/ferm/ferm.conf
-
-::
-
-	# -*- shell-script -*-
-	#
-	#  Configuration file for ferm(1).
-	#
-
-	domain (ip ip6) {
-		table filter {
-			chain INPUT {
-				policy ACCEPT;
-
-				proto gre ACCEPT;
-
-				# connection tracking
-				mod state state INVALID DROP;
-				mod state state (ESTABLISHED RELATED) ACCEPT;
-
-				# allow local packet
-				interface lo ACCEPT;
-
-				# respond to ping
-				proto icmp ACCEPT;
-
-				# allow IPsec
-				proto udp dport 500 ACCEPT;
-				proto (esp) ACCEPT;
-
-				# allow SSH connections
-				# proto tcp dport 62954 ACCEPT;
-				proto tcp dport ssh ACCEPT;
-			}
-			chain OUTPUT {
-				policy ACCEPT;
-
-				# connection tracking
-				#mod state state INVALID DROP;
-				mod state state (ESTABLISHED RELATED) ACCEPT;
-			}
-			chain FORWARD {
-				policy ACCEPT;
-
-				# connection tracking
-				mod state state INVALID DROP;
-				mod state state (ESTABLISHED RELATED) ACCEPT;
-			}
-		}
-
-		table mangle {
-			chain PREROUTING {
-				interface tun-ffrl-+ {
-					MARK set-mark 1;
-				}
-			}
-
-			chain POSTROUTING {
-				# mss clamping
-				outerface tun-ffrl-+ proto tcp tcp-flags (SYN RST) SYN TCPMSS clamp-mss-to-pmtu;
-			}
-		}
-
-		table nat {
-			chain POSTROUTING {
-				# nat translation
-				outerface tun-ffrl-+ saddr 172.16.0.0/12 SNAT to 185.66.19x.xx;
-				policy ACCEPT;
-			}
-		}
-	}
-
-Abschließend ferm zum Autostart hinzufügen
-
-
-Nat IPv4 einrichten
-^^^^^^^^^^^^^^^^^^^
-
-* Mit dieser öffentlichen IPv4 werden alle Anfragen ins Internet erledigt.
-
-Um die IP Adresse über die die Daten zum Freifunk Rheinland gehen sollen einzurichten muss folgender Abschitt in die 'interfaces' eingetragen werden.
-
-::
-
-	sudo nano /etc/network/interfaces
-
-::
-
-	auto tun-ffrl-uplink
-	iface tun-ffrl-uplink inet static
-        address 185.66.19x.xx
-        netmask 255.255.255.255
-        pre-up ip link add $IFACE type dummy
-        post-down ip link del $IFACE
-
-Um die 'Kabelverbindung' zum Rheinland herzustellen werden GRE Tunnel für jeden Backbone Standort angelegt
-
-::
-
-	auto  tun-ffrl-ber-a
-	iface tun-ffrl-ber-a inet tunnel
-        mode            gre
-        netmask         255.255.255.254
-        address         100.64.2.xxx
-        dstaddr         100.64.2.xxx
-        endpoint        185.66.195.0
-        local          	xx.xxx.xx.xx
-        ttl             255
-        mtu             1400
-        post-up ip -6 addr add 2a03:2260:0:xxx::2/64 dev $IFACE
-
-
-* Startet das Interface automatisch (Namen anpassen)
-* Legt das Interface an (Namen anpassen)
-* modus GRE Tunnel
-* Die netzmaske bleibt immer gleich
-* Die Interne IP vom eigenen Tunnelende
-* Die interne IP vom Backbone Tunnelende
-* Die öffentliche IPv4 vom Backbone Standort
-* Die eigene öffentliche IPv4
-* Die TTL bleibt immer gleich
-* Die Mtu bleibt auch gleich
-* Die interne IPv6 vom eigenen Tunnelende
-
-
-Aktuell gibt es zwei Standorte die je redundant ausgebaut sind:
-
-+------------+--------------+------------+
-|Standort    |Devicename    |Endpoint    |
-+------------+--------------+------------+
-|Berlin a    |tun-ffrl-ber-a|185.66.195.0|
-+------------+--------------+------------+
-|Berlin b    |tun-ffrl-ber-b|185.66.195.1|
-+------------+--------------+------------+
-|Düsseldorf a|tun-ffrl-dus-a|185.66.193.0|
-+------------+--------------+------------+
-|Düsseldorf b|tun-ffrl-dus-b|185.66.193.1|
-+------------+--------------+------------+
-
-Bird einrichten
-^^^^^^^^^^^^^^^
-
-::
-
-	sudo nano /etc/bird/bird.conf
-
-Die Bird conf für IPv4
-
-::
-
-	#Hier muss die Nat IPv4 angegeben werden
-	router id 185.66.19x.xx;
-
-	protocol direct announce {
-        table master; # implizit
-        #Hier muss die Nat IPv4 angegeben werden, inkl Netzmaske, "/32" ist also zwingend!
-        import where net ~ [185.66.195.xx/32];
-        interface "tun-ffrl-uplink";
-	};
-
-	protocol kernel {
-        table master;
-        device routes;
-        import none;
-        export filter {
-			#Hier muss die Nat IPv4 angegeben werden
-			krt_prefsrc = 185.66.195.xx;
-            accept;
-        };
-        kernel table 42;
-	};
-
-	protocol device {
-        scan time 15;
-	};
-
-	function is_default() {
-        return (net ~ [0.0.0.0/0]);
-	};
-
-	#Das Temlate wendet wiederkehrende Werte auf die einzelnen BGP Sessions an
-	template bgp uplink {
-		#Hier muss die eigene AS Nummer eingetragen werden
-        local as 65xxx;
-        import where is_default();
-        export where proto = "announce";
-	};
-
-	#Dieser Block muss für alle Backbone Standorte wiederholt werden
-	protocol bgp ffrl_ber_a from uplink {
-		#Dies ist die eigene Adresse im GRE Tunnel
-        source address 100.64.X.xxx;
-        #Dies ist die BaCkbone Adresse im GRE Tunnel und das AS des FFRL
-        neighbor 100.64.X.xxx as 201701;
-	};
-
-
-
-Die Bird conf für IPv6
-
-::
-
-	#Auch bei IPv6 muss als Router ID die IPv4 Nat angegeben werden
-	router id 185.66.195.xx;
-
-	protocol direct announce {
-        table master; # implizit
-        #Das eigene (vom FFRL zugeteilte) IPv6 Netz
-		import where net ~ [2a03:2260:120:xxx::/56];
-		interface "tun-ffrl-uplink";
-	};
-
-	protocol kernel {
-		table master;
-		device routes;
-		import none;
-		export filter {
-			#  setze src addr beim route-export in kernel tabelle
-			#Das eigene (vom FFRL zugeteilte) IPv6 Netz als Quelladresse
-			krt_prefsrc = 2a03:2260:120:xxx::1;
-			accept;
-		};
-		kernel table 42;
-	};
-
-	protocol device {
-		scan time 15;
-	};
-
-	function is_default() {
-		return (net ~ [::/0]);
-	};
-
-	template bgp uplink {
-		#Die eigene AS Numemer
-		local as 65xxx;
-		import where is_default();
-		export where proto = "announce";
-	};
-
-	#Dieser Block wird je standort wiederholt
-	protocol bgp ffrl_ber_a from uplink {
-		#Eigene IPv6 im GRE Tunnel
-		source address 2a03:2260:0:xxx::2;
-		#Backbone IPv6 im GRE Tunnel und AS des FFRL
-		neighbor 2a03:2260:0:xxx::1 as 201701;
-	};
-
-Routing
-^^^^^^^
-
-* Forwarding im Netfilter aktivieren damit die Pakete von einem Interface zum nächsten kommen
-* Zweite Netzwerkkarte einrichten zur Verbindung mit den Supernodes
-* Einrichtung von Iptables Regeln inclusive NAT mit Ferm
-* Routingregeln einrichten mithilfe von ip route und ip rule
-
-Forwarding und Performance-Tuning
-.................................
-Über sysctl müssen einige Kernel-Parameter gesetzt werden, um das Forwarding zu aktivieren und die Netzwerkperformance zu erhöhen.
-
-::
-
-	sudo nano /etc/sysctl.d/20-ff-config.conf
-
-folgende Zeilen dort eintragen
-
-::
-
-	net.ipv4.ip_forward=1
-	net.ipv6.conf.all.forwarding=1
-	net.ipv4.tcp_window_scaling = 1
-	net.core.rmem_max = 16777216
-	net.ipv4.tcp_rmem = 4096 87380 16777216
-	net.ipv4.tcp_wmem = 4096 16384 16777216
-	net.ipv4.conf.default.rp_filter=2
-	net.ipv4.conf.all.rp_filter=2
-
-Einrichtung der eth1
-....................
-
-In der /etc/network/interfaces legen wir eine eth1 an um den Traffic vom Supernode über eine vmbr des Blechs entgegen zu nehmen
-
-::
-
-	sudo nano /etc/network/interfaces
-
-::
-
-	auto eth1
-	iface eth1 inet static
-        address 172.31.254.254
-        netmask 255.255.255.0
 
 Routing
 .......
 Zum Routing werden Regeln benötigt, die die Pakete aus dem Freifunk Netz und die Pakete vom FFRL Backbone in eine gesonderte Tabelle (Tabelle 42) leiten. In dieser Tabelle wird vom bird per BGP eine Defaultroute ins Backbone gesetzt und manuell Routen zum eigenen Freifunk Netz (zu den Supernodes).
 
-Um eine Menge Handarbeit zu sparen wird das anlegen der Rules für die einzelnen Communities/Supernodes per Script erledigt.
+Um eine Menge Handarbeit zu sparen wird das Anlegen der Rules für die einzelnen Communities/Supernodes per Script erledigt.
 
 Das Script gibt es hier: https://github.com/eulenfunk/scripts/tree/master/konzentrator
 
-Zuerst müssen die Verzeichnisse für die scripte angelegt werden, dann die scripte heruntergeladen und ausführbar gemacht werden.
-
 ::
 
-	sudo mkdir -p /opt/eulenfunk/konzentrator/config
 	cd /opt/eulenfunk/konzentrator
-	sudo wget https://raw.githubusercontent.com/eulenfunk/scripts/master/konzentrator/bgp-konzentrator-rc.sh
-	sudo wget https://raw.githubusercontent.com/eulenfunk/scripts/master/konzentrator/supernode.sh
+	sudo git clone https://github.com/eulenfunk/konzentrator.git
+	cd konzentrator
 	sudo chmod +x *.sh
+	sudo mkdir config
 
 
 Damit das Script auch beim boot seine Arbeit verrichten kann muss es in die rc.local eingetragen werden.
@@ -840,13 +510,13 @@ Damit das Script auch beim boot seine Arbeit verrichten kann muss es in die rc.l
 
 	sudo nano /etc/rc.local
 
+
 ::
 
 	#!/bin/sh -e
 	# rc.local
-	/opt/eulenfunk/konzentrator/bgp-konzentrator-rc.sh
+	/opt/eulenfunk/konzentrator/konzentrator/bgp-konzentrator-rc.sh
 	exit 0
-
 
 Im Ordner **config** wird je Supernode ein config file angelegt. Die Beschreibung zum Hinzufügen von Supernodes erfolgt im Dokument "Supernode einrichten".
 
@@ -861,7 +531,7 @@ Das Monitoring beinhaltet folgende Komponenten:
 * vnstati generiert daraus Grafiken
 * lighttpd stellt diese zum Abruf aus dem Internet bereit
 
-Check_MK Agent imstallieren
+Check_MK Agent installieren
 ...........................
 
 Den Check_MK Agent steht in der Weboberfläche des Check_MK als .deb Paket bereit:
@@ -873,78 +543,53 @@ In die CheckMK-Instanz per Webbrowser einloggen. Dann suchen:
         -> WATO Configuration (Menü/Box)
         -> Monitoring Agents
         -> Packet Agents
-        -> check-mk-agent_1.2.6p15-1_all.deb _(Beispiel)_
+        -> check-mk-agent_1.2.8p1-1_all.deb _(Beispiel)_
 
 Den Download-Link in die Zwischenablage kopieren.
-Im ssh-terminal nun eingeben: (die Download-URL ist individuell und der Name des .deb-Paketes ändert sich ggf.)
+Im SSH-Terminal nun eingeben: (die Download-URL ist individuell und der Name des .deb-Paketes ändert sich ggf.)
 
 ::
 
         wget --no-check-certificate \
-        https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.6p15-1_all.deb
+        https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.8p1-1_all.deb
 
-Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten.
-Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
+Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum Ausliefern der Monitoring Daten.
 
 Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 
 ::
 
-	gdebi check-mk-agent_1.2.6p15-1_all.deb
+	sudo gdebi check-mk-agent_1.2.8p1-1_all.deb
 
-Anschließend noch das Konzentrator-Modul und das bird-Modul hinzufügen:
+Anschließend noch das Konzentrator-Plugin hinzufügen:
 
 ::
 
 	cd /usr/lib/check_mk_agent/local
-	wget -O konzentrator https://raw.githubusercontent.com/eulenfunk/check_mk/master/konzentrator
-	chmod 755 konzentrator
-	chmod +x konzentrator
-	cd /usr/lib/check_mk_agent/plugins
-	wget -O /usr/lib/check_mk_agent/plugins/bird "https://raw.githubusercontent.com/freddy36/check_mk_extensions/master/bird/agents/plugins/bird"
-	chmod 755 bird
-	chmod +x bird
+	sudo wget -O konzentrator https://raw.githubusercontent.com/eulenfunk/check_mk/master/konzentrator
+	sudo chmod 755 konzentrator
+	sudo chmod +x konzentrator
 
 
 Der Rechner hält ab nun Daten zum Abruf bereit.
 
-
-_ToDo: Neuen Rechner im CheckMK eintragen in richtige Gruppe & Monitoring scharf schalten.
-Alternativ JJX Bescheid sagen, der kümmert sich dann darum.
+JJX Bescheid sagen, der kümmert sich dann darum.
 
 vnstat einrichten
 .................
-
-folgender Befehl
-
-::
-
-	vnstat
-
-sollte so ein Ergebnis ausgeben
+Alle 5 Minuten werden die Grafiken der Durchsatzdaten aktualisiert:
 
 ::
+	sudo mkdir -p /var/www/vnstats/eth0
+	sudo mkdir -p /var/www/vnstats/eth1
+	sudo nano /etc/cron.d/vnstat
 
-	Database updated: Thu Feb 25 02:58:22 2016
-
-	   eth0 since 02/02/16
-
-			  rx:  20.50 GiB      tx:  13.98 GiB      total:  34.48 GiB
-
-	   monthly
-				rx      |     tx      |    total    |   avg. rate
-		 ------------------------+-------------+-------------+---------------
-		   Feb '16     20.50 GiB |   13.98 GiB |   34.48 GiB |  138.78 kbit/s
-		 ------------------------+-------------+-------------+---------------
-		 estimated     24.65 GiB |   16.81 GiB |   41.45 GiB |
-
-	   daily
-				rx      |     tx      |    total    |   avg. rate
-		 ------------------------+-------------+-------------+---------------
-		 yesterday      7.46 GiB |    1.64 GiB |    9.10 GiB |  883.93 kbit/s
-		 today      8.19 MiB |   11.23 MiB |   19.43 MiB |   14.87 kbit/s
-		 ------------------------+-------------+-------------+---------------
-		 estimated        64 MiB |      88 MiB |     152 MiB |
-
-
-==Hier sollte jetzt stehen aus welchem git man sich das script für den cronjob zum erzeugen der Bilder zieht und wo man die index.html für den lighttpd bekommt==
+::
+	*/5 * * * * root vnstati -i eth0 -o /var/www/vnstats/eth0/hours.png -h
+	*/5 * * * * root vnstati -i eth0 -o /var/www/vnstats/eth0/days.png -d
+	*/5 * * * * root vnstati -i eth0 -o /var/www/vnstats/eth0/months.png -m
+	*/5 * * * * root vnstati -i eth0 -o /var/www/vnstats/eth0/summary.png -s
+	*/5 * * * * root vnstati -i eth1 -o /var/www/vnstats/eth1/hours.png -h
+	*/5 * * * * root vnstati -i eth1 -o /var/www/vnstats/eth1/days.png -d
+	*/5 * * * * root vnstati -i eth1 -o /var/www/vnstats/eth1/months.png -m
+	*/5 * * * * root vnstati -i eth1 -o /var/www/vnstats/eth1/summary.png -s
