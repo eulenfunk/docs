@@ -162,7 +162,6 @@ Nun Betriebsystemupdates einspielen und ggf. erfolgende Rückfragen mit einem "J
         sudo apt-get dist-upgrade
         sudo apt-get autoremove
 
-
 Eine Fehlermeldung im Bereich "Proxmox-Enterprise" kann man entweder ignorieren. Das gibt es nur wenn man ein Support-Abo abgeschlossen hat. Wenn Ihr die Arbeit des Proxmox-Teams unterstützen möchtet:
 
 https://www.proxmox.com/de/proxmox-ve/preise
@@ -170,13 +169,14 @@ https://www.proxmox.com/de/proxmox-ve/preise
 
 Optional:
 
-Da einzelne Repositories wiederholt nicht oder sehr schlecht per IPv6 erreichbar sind und wir unsere Maschinen grundsätzlich zur IPv6-Nutzung befähigen, empfiehlt es sich, IPv6 zumindest für "apt-get" zu unterbinden.
 
-Dazu wird einmalig aufgerufen:
+Für den Fall, dass das Update (genauer: das Abholen der Listen) wiederholt stecken bleiben sollte beim Versuch, eine IPv6-Adresse zu kontaktieren: Dann ist IPv6 irgendwie broken, wahlweise lokal oder remote. Optional zur IPv6-Connectivitätsreparatur und/oder suche nach einem funktionsfähigen IPv6-fähigen Repository-Mirros:
 
-::
+Da Updates aber auch per IPv4 kommen und erstmal Priorität haben: IPv6 für apt deaktivieren:
 
-	sudo ...!! SDFSDF echo 'Acquire::ForceIPv4 "true";' > /etc/apt/apt.conf.d/99force-ipv4
+:: 
+
+        echo 'Acquire::ForceIPv4 "true";' | tee /etc/apt/apt.conf.d/99force-ipv4
 
 
 Monitoring
