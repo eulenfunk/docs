@@ -205,7 +205,7 @@ Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 
 ::
 
-	sudo apt-get install gdebi-core xinetd lmsensors smartmontools 
+	sudo apt-get install gdebi-core xinetd lmsensors smartmontools fancontrol sensord read-edid i2c-tools libsensors4
 
 Rückfragen ggf. mit "J" beantworten.
 Mit dem nun installierten gdebi das check_mk-Paket installieren:
