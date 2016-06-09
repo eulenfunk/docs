@@ -205,7 +205,7 @@ Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 
 ::
 
-	sudo apt-get install gdebi-core xinetd
+	sudo apt-get install gdebi-core xinetd lmsensors smartmontools 
 
 Rückfragen ggf. mit "J" beantworten.
 Mit dem nun installierten gdebi das check_mk-Paket installieren:
@@ -213,6 +213,20 @@ Mit dem nun installierten gdebi das check_mk-Paket installieren:
 ::
 
 	sudo gdebi check-mk-agent_1.2.8p1-1_all.deb
+
+Dann die Sensor-datenbank aktualisieren (Alle Rückfragen durch Eintippen von "yes" bestätigen)
+
+::
+
+	sudo sensors-detect
+
+Abschließend dann den Service neu starten (Aufruf ist redundant) und die Ausgabe grob auf Plausiblität/Freiheit von internen Fehlermeldungen prüfen. 
+ 
+ ::
+ 
+        sudo service kmod start 
+	sudo /etc/init.d/kmod start
+	sensors
 
 Nun noch zusätzliche Check_MK Plugins hinzufügen
 
