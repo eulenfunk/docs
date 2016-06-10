@@ -200,7 +200,7 @@ Im SSH-Terminal nun eingeben: (die Download-URL ist individuell und der Name des
 
         wget --no-check-certificate "https://monitoring.eulenfunk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.8p1-1_all.deb"
 
-Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
+Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der Monitoring-Daten. Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
 Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 
 ::
@@ -236,12 +236,13 @@ Nun noch zusätzliche Check_MK Plugins hinzufügen
         sudo wget --no-check-certificate "https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/plugins/smart"
         sudo chmod +x smart
 
-				cd /usr/lib/check_mk_agent/local
+	cd /usr/lib/check_mk_agent/local
         sudo wget --no-check-certificate https://raw.githubusercontent.com/eulenfunk/check_mk/master/proxmox
         sudo chmod +x proxmox
 
 ::
-		sudo nano /etc/xinetd.d/check_mk
+
+	sudo nano /etc/xinetd.d/check_mk
 
 Dort die Zeile
 
