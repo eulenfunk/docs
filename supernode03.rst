@@ -663,19 +663,6 @@ Anschließend noch das Supernode-Plugin hinzufügen:
 	sudo chmod 755 supernode
 	sudo chmod +x supernode
 
-Optional: Update-Check forcieren und Anzahl der Logins monitoren 
-
-::
-
-	cd /usr/lib/check_mk_agent/plugins
-	wget -O mk_logins  "http://git.mathias-kettner.de/git/?p=check_mk.git;a=blob_plain;f=agents/plugins/mk_logins"
-	sudo chmod +x mk_logins
-	wget -O mk_apt  "http://git.mathias-kettner.de/git/?p=check_mk.git;a=blob_plain;f=agents/plugins/mk_apt"
-	sudo chmod +x mk_apt
-	wget -O ubuntu-patch "https://raw.githubusercontent.com/eulenfunk/check_mk/master/ubuntu-patch"
-	sudo chmod +x ubuntu-patch
-
-
 Der Rechner hält ab nun Daten zum Abruf bereit.
 
 JJX Bescheid sagen, der kümmert sich dann darum.
