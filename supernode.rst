@@ -1,6 +1,8 @@
 Server Kochbuch
 ===============
 
+Hier passiert nur mist, ständig werden absolut ungetestete Dinge eingepflegt, sodass sich der Stand der Doku mehrmals täglich ändert und selten ein komplett funktionsfähiger Stand vorliegt. Das Ziel der Doku Jedem ein funktionierendes schlankes auf das notwendige reduziertes Kochbuch an die Hand zu geben ist damit gescheitert. Das Kochbuch wird bis auch weiteres an dieser Stelle nicht mehr gepflegt.
+
 Anleitung zur Einrichtung eines Freifunk Supernodes auf Basis von Proxmox 3.6 und Ubuntu Server 14.04.4 LTS
 
 Das Setup besteht im wesentlichen aus 3 Zonen:
