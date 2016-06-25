@@ -36,14 +36,17 @@ Organigramm
     * Velbert (vel)
     * Wülfrath (wlf)
 * Siegerland
-    * Bad Berleburg
-    * Burbach
-    * Erntebrück
+    * Bad Berleburg (bb)
+    * Bad Laasphe (la)
+    * Burbach (bu)
+    * Erntebrück (eb)
+    * Freudenberg (fb)
     * Hilchenbach (hb)
-    * Kreuztal
-    * Netphen
+    * Kreuztal (kt)
+    * Netphen (np)
+    * Neunkirchen (nk)
     * Siegen (si)
-    * Wilnsdorf
+    * Wilnsdorf (wd)
 
 Fichtenfunk
 -----------
