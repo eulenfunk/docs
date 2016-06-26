@@ -612,8 +612,8 @@ Nachteil: Wärend dieser 1-5 Sekunden werden Clients keine DHCP-Requests beantwo
 	echo "29 4 * * * root service isc-dhcp-server restart">>/etc/cron.d/dhcprestart
 	
 
-Optional: dhcpleaes-script installieren
-.......................................
+Optional: dhcpleases-script installieren
+........................................
 
 ::
 
