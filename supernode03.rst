@@ -607,6 +607,7 @@ Die /etc/dhcp/dhcpd.leases kann jedoch viele (viele!) MB groß werden und wenn m
 Nachteil: Wärend dieser 1-5 Sekunden werden Clients keine DHCP-Requests beantwortet bekommen. ("Eingeschränkte Connektivität")
 
 ::
+
 	sudo su
 	echo "#ISC-DHCP neu starten, einmal täglich um 4h29" >/etc/cron.d/dhcprestart
 	echo "29 4 * * * root service isc-dhcp-server restart">>/etc/cron.d/dhcprestart
