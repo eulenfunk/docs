@@ -609,7 +609,7 @@ Nachteil: Wärend dieser 1-5 Sekunden werden Clients keine DHCP-Requests beantwo
 ::
 	sudo su
 	echo "#ISC-DHCP neu starten, einmal täglich um 4h29" >/etc/cron.d/dhcprestart
-	echo "29 4 * * * root /etc/init.d/isc-dhcp-server restart">>/etc/cron.d/dhcprestart
+	echo "29 4 * * * root service isc-dhcp-server restart">>/etc/cron.d/dhcprestart
 	
 
 Optional: dhcpleaes-script installieren
