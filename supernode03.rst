@@ -619,7 +619,7 @@ Optional: dhcpleaes-script installieren
 
 	sudo mkdir /opt/eulenfunk
 	cd /opt/eulenfunk
-	wget https://raw.githubusercontent.com/eulenfunk/scripts/master/dhcpleases
+	sudo wget https://raw.githubusercontent.com/eulenfunk/scripts/master/dhcpleases
 	sudo chmod +x dhcpleases
 
 
