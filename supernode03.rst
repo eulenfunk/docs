@@ -598,6 +598,9 @@ Als letzter Schritt auf dem Supernode muss die /etc/rc.local folgendermassen ang
 
 Das sorgt dafür, dass beim Systemstart durch das Script supernode-rc.sh die nötigen Routen und Routing-Policies konfiguriert werden.
 
+Optional: Check_mk Agent-Scripte installieren
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Optional: dhcp-server einmal täglich neu starten
 ................................................
 
