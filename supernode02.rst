@@ -361,7 +361,7 @@ die Option "-P 62954" (großes "P"!).
 Systemaktualisierung
 ^^^^^^^^^^^^^^^^^^^^
 
-Als Nächstes steht die Systemaktualisierung an.
+Als Nächstes steht die Systemaktualisierung an; auch hier beim erstmaligen Aufruf die Nutzung von IPv4 erzwingen für's APT-Get
 
 ::
 
@@ -402,6 +402,10 @@ Danach die VM einmal durchbooten.
 
 Eulenfunk BGP-Konzentrator-Konfigurator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Ist leider noch Baustelle hier...** Bis auf weiteres geht es mit unten bei ferm_einrichten_ weiter.
+
+**Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben!**
+
 Um die Konfiguration zu vereinfachen, wurde ein Script geschrieben, welches die nötigen Parameter abfragt und daraus die Konfigurationsdateien, bzw. Auszüge daraus erzeugt. Diese müssen dann nur noch an die richtige Stelle kopiert werden.
 
 ::
@@ -563,6 +567,7 @@ Anschließend noch das Konzentrator-Plugin hinzufügen:
 
 	cd /usr/lib/check_mk_agent/local
 	sudo wget -O konzentrator https://raw.githubusercontent.com/eulenfunk/check_mk/master/konzentrator
+	sudo chmod 755 konzentrator
 	sudo chmod +x konzentrator
 
 
@@ -575,14 +580,11 @@ vnstat einrichten
 Alle 5 Minuten werden die Grafiken der Durchsatzdaten aktualisiert:
 
 ::
-
 	sudo mkdir -p /var/www/vnstats/eth0
 	sudo mkdir -p /var/www/vnstats/eth1
 	sudo nano /etc/cron.d/vnstat
 
-
 ::
-
 	*/5 * * * * root vnstati -i eth0 -o /var/www/vnstats/eth0/hours.png -h
 	*/5 * * * * root vnstati -i eth0 -o /var/www/vnstats/eth0/days.png -d
 	*/5 * * * * root vnstati -i eth0 -o /var/www/vnstats/eth0/months.png -m
@@ -591,5 +593,3 @@ Alle 5 Minuten werden die Grafiken der Durchsatzdaten aktualisiert:
 	*/5 * * * * root vnstati -i eth1 -o /var/www/vnstats/eth1/days.png -d
 	*/5 * * * * root vnstati -i eth1 -o /var/www/vnstats/eth1/months.png -m
 	*/5 * * * * root vnstati -i eth1 -o /var/www/vnstats/eth1/summary.png -s
-
-

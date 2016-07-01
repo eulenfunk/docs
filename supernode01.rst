@@ -162,6 +162,7 @@ Nun Betriebsystemupdates einspielen und ggf. erfolgende Rückfragen mit einem "J
         sudo apt-get dist-upgrade
         sudo apt-get autoremove
 
+
 Eine Fehlermeldung im Bereich "Proxmox-Enterprise" kann man entweder ignorieren. Das gibt es nur wenn man ein Support-Abo abgeschlossen hat. Wenn Ihr die Arbeit des Proxmox-Teams unterstützen möchtet:
 
 https://www.proxmox.com/de/proxmox-ve/preise
@@ -169,14 +170,13 @@ https://www.proxmox.com/de/proxmox-ve/preise
 
 Optional:
 
+Da einzelne Repositories wiederholt nicht oder sehr schlecht per IPv6 erreichbar sind und wir unsere Maschinen grundsätzlich zur IPv6-Nutzung befähigen, empfiehlt es sich, IPv6 zumindest für "apt-get" zu unterbinden.
 
-Für den Fall, dass das Update (genauer: das Abholen der Listen) wiederholt stecken bleiben sollte beim Versuch, eine IPv6-Adresse zu kontaktieren: Dann ist IPv6 irgendwie broken, wahlweise lokal oder remote. Optional zur IPv6-Connectivitätsreparatur und/oder suche nach einem funktionsfähigen IPv6-fähigen Repository-Mirros:
+Dazu wird einmalig aufgerufen:
 
-Da Updates aber auch per IPv4 kommen und erstmal Priorität haben: IPv6 für apt deaktivieren:
+::
 
-:: 
-
-        echo 'Acquire::ForceIPv4 "true";' | tee /etc/apt/apt.conf.d/99force-ipv4
+	sudo ...!! SDFSDF echo 'Acquire::ForceIPv4 "true";' > /etc/apt/apt.conf.d/99force-ipv4
 
 
 Monitoring
@@ -200,12 +200,12 @@ Im SSH-Terminal nun eingeben: (die Download-URL ist individuell und der Name des
 
         wget --no-check-certificate "https://monitoring.eulenfunk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.8p1-1_all.deb"
 
-Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der Monitoring-Daten. Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
+Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
 Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 
 ::
 
-	sudo apt-get install gdebi-core xinetd lmsensors smartmontools fancontrol sensord read-edid i2c-tools libsensors4
+	sudo apt-get install gdebi-core xinetd
 
 Rückfragen ggf. mit "J" beantworten.
 Mit dem nun installierten gdebi das check_mk-Paket installieren:
@@ -213,20 +213,6 @@ Mit dem nun installierten gdebi das check_mk-Paket installieren:
 ::
 
 	sudo gdebi check-mk-agent_1.2.8p1-1_all.deb
-
-Dann die Sensor-datenbank aktualisieren (Alle Rückfragen durch Eintippen von "yes" bestätigen)
-
-::
-
-	sudo sensors-detect
-
-Abschließend dann den Service neu starten (Aufruf ist redundant) und die Ausgabe grob auf Plausiblität/Freiheit von internen Fehlermeldungen prüfen. 
- 
- ::
- 
-        sudo service kmod start 
-	sudo /etc/init.d/kmod start
-	sensors
 
 Nun noch zusätzliche Check_MK Plugins hinzufügen
 
@@ -236,13 +222,12 @@ Nun noch zusätzliche Check_MK Plugins hinzufügen
         sudo wget --no-check-certificate "https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/plugins/smart"
         sudo chmod +x smart
 
-	cd /usr/lib/check_mk_agent/local
+				cd /usr/lib/check_mk_agent/local
         sudo wget --no-check-certificate https://raw.githubusercontent.com/eulenfunk/check_mk/master/proxmox
         sudo chmod +x proxmox
 
 ::
-
-	sudo nano /etc/xinetd.d/check_mk
+		sudo nano /etc/xinetd.d/check_mk
 
 Dort die Zeile
 
