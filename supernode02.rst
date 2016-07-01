@@ -402,10 +402,6 @@ Danach die VM einmal durchbooten.
 
 Eulenfunk BGP-Konzentrator-Konfigurator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-**Ist leider noch Baustelle hier...** Bis auf weiteres geht es mit unten bei ferm_einrichten_ weiter.
-
-**Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben!**
-
 Um die Konfiguration zu vereinfachen, wurde ein Script geschrieben, welches die nötigen Parameter abfragt und daraus die Konfigurationsdateien, bzw. Auszüge daraus erzeugt. Diese müssen dann nur noch an die richtige Stelle kopiert werden.
 
 ::
