@@ -17,8 +17,6 @@ Im folgenden muss "Eine neue virtuelle MAC-Adresse erstellen" angeklickt werden 
 
 .. image:: http://freifunk-mk.de/gfx/sys-3.png
 
-.. image:: http://freifunk-mk.de/gfx/sys-4.png
-
 
 Auf dem Webinterface des Proxmox Servers ist auf der linken Seite das Blech auszuwählen und dann oben rechts 'Create VM' anklicken
 
@@ -402,6 +400,10 @@ Danach die VM einmal durchbooten.
 
 Eulenfunk BGP-Konzentrator-Konfigurator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Ist leider noch Baustelle hier...** Bis auf weiteres geht es mit unten bei ferm_einrichten_ weiter.
+
+**Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben!**
+
 Um die Konfiguration zu vereinfachen, wurde ein Script geschrieben, welches die nötigen Parameter abfragt und daraus die Konfigurationsdateien, bzw. Auszüge daraus erzeugt. Diese müssen dann nur noch an die richtige Stelle kopiert werden.
 
 ::
@@ -576,11 +578,13 @@ vnstat einrichten
 Alle 5 Minuten werden die Grafiken der Durchsatzdaten aktualisiert:
 
 ::
+
 	sudo mkdir -p /var/www/vnstats/eth0
 	sudo mkdir -p /var/www/vnstats/eth1
 	sudo nano /etc/cron.d/vnstat
 
 ::
+
 	*/5 * * * * root vnstati -i eth0 -o /var/www/vnstats/eth0/hours.png -h
 	*/5 * * * * root vnstati -i eth0 -o /var/www/vnstats/eth0/days.png -d
 	*/5 * * * * root vnstati -i eth0 -o /var/www/vnstats/eth0/months.png -m
