@@ -598,32 +598,6 @@ Als letzter Schritt auf dem Supernode muss die /etc/rc.local folgendermassen ang
 
 Das sorgt dafür, dass beim Systemstart durch das Script supernode-rc.sh die nötigen Routen und Routing-Policies konfiguriert werden.
 
-Optional: dhcp-server einmal täglich neu starten
-................................................
-
-Der ISC-DHCP hat die unangenehme Eigenschaft (zumindest in der mit Ubuntu derzeit ausgelieferten Version), Die Datei mit den aktiven dhcp-Adressen nicht automatisch zu reorganisieren. Das stört zwei eigentlich nicht in Bezug auf die Performance des Dienstes.
-Die /etc/dhcp/dhcpd.leases kann jedoch viele (viele!) MB groß werden und wenn man dann mit Tools darauf schauen möchte, um nach den noch aktiven Leases zu suchen, dann kostet das CPU und IO, diese Datei jeweils komplett einzulesen und durchzusortieren. Daher ist es ratsam, den DHCP-Server zumindest einmal täglich neu durchzustarten, da er dabei automatich sein Lease-file reorganisiert. 
-
-Nachteil: Wärend dieser 1-5 Sekunden werden Clients keine DHCP-Requests beantwortet bekommen. ("Eingeschränkte Connektivität")
-
-::
-
-	sudo echo "#ISC-DHCP neu starten, einmal täglich um 4h29" >/etc/cron.d/dhcprestart
-	sudo echo "29 4 * * * 	root /etc/init.d/isc-dhcp-server restart">>/etc/cron.d/dhcprestart
-	
-
-Optional: dhcpleaes-script installieren
----------------------------------------
-
-::
-
-	sudo mkdir /opt/eulenfunk
-	cd /opt/eulenfunk
-	wget https://raw.githubusercontent.com/eulenfunk/scripts/master/dhcpleases
-	sudo chmod +x dhcpleases
-
-
-
 Check_MK Agent installieren
 ...........................
 
@@ -662,6 +636,7 @@ Anschließend noch das Supernode-Plugin hinzufügen:
 	sudo wget -O supernode https://raw.githubusercontent.com/eulenfunk/check_mk/master/supernode
 	sudo chmod 755 supernode
 	sudo chmod +x supernode
+
 
 Der Rechner hält ab nun Daten zum Abruf bereit.
 
