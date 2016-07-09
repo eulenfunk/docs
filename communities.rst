@@ -36,14 +36,17 @@ Organigramm
     * Velbert (vel)
     * Wülfrath (wlf)
 * Siegerland
-    * Bad Berleburg
-    * Burbach
-    * Erntebrück
+    * Bad Berleburg (bb)
+    * Bad Laasphe (la)
+    * Burbach (bu)
+    * Erntebrück (eb)
+    * Freudenberg (fb)
     * Hilchenbach (hb)
-    * Kreuztal
-    * Netphen
+    * Kreuztal (kt)
+    * Netphen (np)
+    * Neunkirchen (nk)
     * Siegen (si)
-    * Wilnsdorf
+    * Wilnsdorf (wd)
 
 Fichtenfunk
 -----------
@@ -195,15 +198,16 @@ Freifunk im Siegerland
 Websites
 ^^^^^^^^
 
-+---------+-------------------------------+
-|Karte    | http://map.ff-si.ovh          |
-+---------+-------------------------------+
-|Firmware |http://firmware.freifunk-mk.de |
-+---------+-------------------------------+
-|Webseiten|http://freifunk-siegen.de      |
-+         +-------------------------------+
-|         |http://freifunk-siegerland.de  |
-+---------+-------------------------------+
++---------+-----------------------------------+
+|Karte    |http://siegerland.map.eulenfunk.de |
++---------+-----------------------------------+
+|Firmware |http://firmware.freifunk-mk.de     |
+|         |http://images.ff-si.ovh            |
++---------+-----------------------------------+
+|Webseiten|http://freifunk-siegen.de          |
++         +-----------------------------------+
+|         |http://freifunk-siegerland.de      |
++---------+-----------------------------------+
 
 Team
 ^^^^
@@ -214,6 +218,8 @@ Team
 |OETiger     |Flo            |ffflo@posteo.de                   |Hilchenbach                                     |
 +------------+---------------+----------------------------------+------------------------------------------------+
 |TroTLF      |Klaus          |dev0@mailbox.org                  |Freudenberg                                     |
++------------+---------------+----------------------------------+------------------------------------------------+
+|pvitt       |Peter          |peter@humulon.de                  |Firmware                                        |
 +------------+---------------+----------------------------------+------------------------------------------------+
 
 Bleche
