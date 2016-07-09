@@ -198,16 +198,16 @@ Freifunk im Siegerland
 Websites
 ^^^^^^^^
 
-+---------+-------------------------------+
-|Karte    | http://map.ff-si.ovh          |
-+---------+-------------------------------+
-|Firmware |http://firmware.freifunk-mk.de |
-|         |http://images.ff-si.ovh        |
-+---------+-------------------------------+
-|Webseiten|http://freifunk-siegen.de      |
-+         +-------------------------------+
-|         |http://freifunk-siegerland.de  |
-+---------+-------------------------------+
++---------+-----------------------------------+
+|Karte    |http://siegerland.map.eulenfunk.de |
++---------+-----------------------------------+
+|Firmware |http://firmware.freifunk-mk.de     |
+|         |http://images.ff-si.ovh            |
++---------+-----------------------------------+
+|Webseiten|http://freifunk-siegen.de          |
++         +-----------------------------------+
+|         |http://freifunk-siegerland.de      |
++---------+-----------------------------------+
 
 Team
 ^^^^
