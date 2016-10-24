@@ -319,7 +319,7 @@ Den zugehörigen Schlüssel importieren
 
 ::
 
-	apt-key add - <<EOF
+	sudo apt-key add - <<EOF
 	-----BEGIN PGP PUBLIC KEY BLOCK-----
 	Version: GnuPG v1
 
