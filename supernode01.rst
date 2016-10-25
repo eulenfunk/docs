@@ -191,14 +191,14 @@ In die CheckMK-Instanz per Webbrowser einloggen. Dann suchen:
         -> WATO Configuration (Menü/Box)
         -> Monitoring Agents
         -> Packet Agents
-        -> check-mk-agent_1.2.8p1-1_all.deb _(Beispiel)_
+        -> check-mk-agent_1.2.8p11-1_all.deb _(Beispiel)_
 
 Den Download-Link in die Zwischenablage kopieren.
 Im SSH-Terminal nun eingeben: (die Download-URL ist individuell und der Name des .deb-Paketes ändert sich ggf.)
 
 ::
 
-        wget --no-check-certificate "https://monitoring.eulenfunk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.8p1-1_all.deb"
+        wget https://monitoring.eulenfunk.de/eulenfunk/check_mk/agents/check-mk-agent_1.2.8p11-1_all.deb
 
 Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
 Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
@@ -219,11 +219,11 @@ Nun noch zusätzliche Check_MK Plugins hinzufügen
 ::
 
         cd /usr/lib/check_mk_agent/plugins
-        sudo wget --no-check-certificate "https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/plugins/smart"
+        sudo wget https://monitoring.eulenfunk.de/eulenfunk/check_mk/agents/plugins/smart
         sudo chmod +x smart
 
-				cd /usr/lib/check_mk_agent/local
-        sudo wget --no-check-certificate https://raw.githubusercontent.com/eulenfunk/check_mk/master/proxmox
+        cd /usr/lib/check_mk_agent/local
+        sudo wget https://raw.githubusercontent.com/eulenfunk/check_mk/master/proxmox
         sudo chmod +x proxmox
 
 ::

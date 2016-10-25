@@ -695,15 +695,15 @@ In die CheckMK-Instanz per Webbrowser einloggen. Dann suchen:
         -> WATO Configuration (Menü/Box)
         -> Monitoring Agents
         -> Packet Agents
-        -> check-mk-agent_1.2.8p1-1_all.deb _(Beispiel)_
+        -> check-mk-agent_1.2.8p11-1_all.deb _(Beispiel)_
 
 Den Download-Link in die Zwischenablage kopieren.
 Im SSH-Terminal nun eingeben: (die Download-URL ist individuell und der Name des .deb-Paketes ändert sich ggf.)
 
 ::
 
-        wget --no-check-certificate \
-        https://monitoring.freifunk-mk.de/heimathoster/check_mk/agents/check-mk-agent_1.2.8p1-1_all.deb
+        wget https://monitoring.eulenfunk.de/eulenfunk/check_mk/agents/check-mk-agent_1.2.8p11-1_all.deb
+
 
 Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum Ausliefern der Monitoring Daten.
 
