@@ -36,7 +36,7 @@ Willst Du immernoch? ( `Ja`_ / `Nein`_ / `Vielleicht`_)
 
 .. _Ja: mumble://mumble.eulenfunk.de:64738
 .. _Nein: http://www.t-online.de
-.. _Vielleicht: http://www.freifunk-rheinland.de
+.. _Vielleicht: http://www.freifunk-rheinland.net
 
 Wenn Du also bereit bis, Dir mit uns gemeinsam in totaler Frustresistenz die Nächte um die Ohren zu schlagen.
 
