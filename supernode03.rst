@@ -722,6 +722,27 @@ Anschließend noch das Supernode-Plugin hinzufügen:
 	sudo chmod 755 supernode
 	sudo chmod +x supernode
 
+::
+		sudo nano /etc/xinetd.d/check_mk
+
+Dort die Zeile
+
+::
+
+	# only_from = 127.0.0.1 10.0.20.1 10.0.20.2
+
+ändern in
+
+::
+
+		only_from = 127.0.0.1 94.23.160.148
+
+Damit diese Änderungen aktiviert werden, muss der xinetd durchgestartet werden
+
+::
+
+	sudo /etc/init.d/xinetd restart
+
 
 Der Rechner hält ab nun Daten zum Abruf bereit.
 
