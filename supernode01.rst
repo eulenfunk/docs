@@ -24,7 +24,7 @@ Hier ein Beispiel für die Installation über das Soyoustart Web-Frontend. Zunä
 
 .. image:: http://freifunk-mk.de/gfx/sys01.png
 
-Im nächsten Schritt wählt man VPS Proxmox VE 3.4 (64Bit) als Template aus, der Haken bei "Personalisierte Installation" darf NICHT gesetzt sein. Mit Klick auf "Weiter" startet man jetzt die Installation.
+Im nächsten Schritt wählt man VPS Proxmox VE 4.4 (64Bit) als Template aus, der Haken bei "Personalisierte Installation" darf NICHT gesetzt sein. Mit Klick auf "Weiter" startet man jetzt die Installation.
 
 .. image:: http://freifunk-mk.de/gfx/sys02.png
 
@@ -35,7 +35,7 @@ Wenn die Installation seitens Soyoustart abgeschlossen ist, bekommt man eine Ben
 SSH
 ^^^
 
-Im laufenden Betrieb erfolgt die komplette Konfiguration über das Webinterface, trotzdem ist es wichtig, sich für Notfälle einen SSH Zugriff einzurichten und natürlich auch den SSH Server abzusichern.
+Im laufenden Betrieb erfolgt die komplette Konfiguration über das Webinterface. Trotzdem ist es wichtig, sich für Notfälle einen SSH Zugriff einzurichten und natürlich auch den SSH Server abzusichern.
 
 Per SSH mit dem Server verbinden
 
@@ -70,14 +70,7 @@ Neuen User anlegen:
 
 ::
 
-					useradd meinbenutzername
-
-
-Den neuen User der Gruppe "sudo" hinzufügen:
-
-	::
-
-	        gpasswd -a meinbenutzername sudo
+					adduser meinbenutzername --ingroup sudo
 
 
 ::
@@ -119,7 +112,7 @@ Um es den Script-Kiddies und Bots etwas schwerer zu machen, sollte der Port 22 a
 
 ::
 
-	Port 62954
+	Port 45926
 
 WICHTIG: Diesen Port muss man sich dann merken, da man ihn später beim Aufruf von ssh angeben muss.
 
@@ -135,18 +128,18 @@ Nun den direkten Rootlogin sperren.
 
 	PermitRootLogin no
 
-Danach den Editor wieder verlassen und den SSH Server neu starten um die Einstellungen zu übernehmen.
+Danach den Editor wieder verlassen und den SSH Server neu starten, um die Einstellungen zu übernehmen.
 
 ::
 
 	/etc/init.d/ssh restart
 
-Den nachfolgenden ssh Kommandos muss man die Option "-p 62954" (kleines "p"!) und den scp Kommandos
-die Option "-P 62954" (großes "P"!).
+Den nachfolgenden ssh Kommandos muss man die Option "-p 45926" (kleines "p"!) und den scp Kommandos
+die Option "-P 45926" (großes "P"!).
 
 ::
 
-			ssh -p 62954 meinbenutzername@111.222.333.444
+			ssh -p 45926 meinbenutzername@111.222.333.444
 
 
 
@@ -168,39 +161,31 @@ Eine Fehlermeldung im Bereich "Proxmox-Enterprise" kann man entweder ignorieren.
 https://www.proxmox.com/de/proxmox-ve/preise
 
 
-Optional:
-
-Da einzelne Repositories wiederholt nicht oder sehr schlecht per IPv6 erreichbar sind und wir unsere Maschinen grundsätzlich zur IPv6-Nutzung befähigen, empfiehlt es sich, IPv6 zumindest für "apt-get" zu unterbinden.
-
-Dazu wird einmalig aufgerufen:
-
-::
-
-	sudo ...!! SDFSDF echo 'Acquire::ForceIPv4 "true";' > /etc/apt/apt.conf.d/99force-ipv4
-
-
 Monitoring
 ^^^^^^^^^^
 
-Den Check_MK Agent steht in der Weboberfläche des Check_MK als .deb Paket bereit:
+Der Check_MK Agent steht in der Weboberfläche des Check_MK als .deb Paket bereit.
 
-In die CheckMK-Instanz per Webbrowser einloggen. Dann suchen:
+In die CheckMK-Instanz per Webbrowser einloggen. 
+Wer selbst kein Monitoring betreibt und auch keinen Zugang zum Eulenfunk Monitoring hat meldet sich beim Eulenfunk Admin Team.
+
+Dann suchen:
 
 ::
 
         -> WATO Configuration (Menü/Box)
         -> Monitoring Agents
         -> Packet Agents
-        -> check-mk-agent_1.2.8p11-1_all.deb _(Beispiel)_
+        -> check-mk-agent_1.2.8p18-1_all.deb (Die Versionsnummer kann abweichen)
 
 Den Download-Link in die Zwischenablage kopieren.
 Im SSH-Terminal nun eingeben: (die Download-URL ist individuell und der Name des .deb-Paketes ändert sich ggf.)
 
 ::
 
-        wget https://monitoring.eulenfunk.de/eulenfunk/check_mk/agents/check-mk-agent_1.2.8p11-1_all.deb
+        wget https://monitoring.eulenfunk.de/eulenfunk/check_mk/agents/check-mk-agent_1.2.8p18-1_all.deb
 
-Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. Die Installation von gdebi kann durchaus einige Dutzend Pakete holen. Das ist leider normal.
+Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. 
 Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 
 ::
@@ -212,7 +197,7 @@ Mit dem nun installierten gdebi das check_mk-Paket installieren:
 
 ::
 
-	sudo gdebi check-mk-agent_1.2.8p1-1_all.deb
+	sudo gdebi check-mk-agent_1.2.8p18-1_all.deb
 
 Nun noch zusätzliche Check_MK Plugins hinzufügen
 
@@ -226,8 +211,11 @@ Nun noch zusätzliche Check_MK Plugins hinzufügen
         sudo wget https://raw.githubusercontent.com/eulenfunk/check_mk/master/proxmox
         sudo chmod +x proxmox
 
+Damit nicht jeder die Monitoring Daten von unserem Server abrufen kann, beschränken wir den Zugriff auf die IPv4 Adresse unseres Check_MK Servers.
+
 ::
-		sudo nano /etc/xinetd.d/check_mk
+
+	sudo nano /etc/xinetd.d/check_mk
 
 Dort die Zeile
 
@@ -255,20 +243,70 @@ Eulenfunker müssen dann das Admin-Team kontaktieren, damit der Rechner im Check
 
 Images hochladen
 ^^^^^^^^^^^^^^^^
-ISO Files zur installation können zwar über das Webinterface hochgeladen werden, aber je nach Internetanbindung dauert das lange. Per wget wird das Image direkt auf den Server geladen.
+ISO Files zur installation können zwar über das Webinterface hochgeladen werden, aber je nach Internetanbindung dauert das lange. Per wget kann das Image direkt aus dem Internet auf den Server geladen werden.
 
 ::
 
 	cd /vz/template/iso
-	wget http://releases.ubuntu.com/14.04.4/ubuntu-14.04.4-server-amd64.iso
+	wget http://releases.ubuntu.com/16.04.2/ubuntu-16.04.2-server-amd64.iso
 
 
 OATH Two Factor
 ^^^^^^^^^^^^^^^
 
-Der Zugang zum Proxmox ist absolut sicherheitskritisch, wer Zugriff auf den Hypervisor hat hat Zugriff auf alle Maschinen auf dem Blech. Daher muss zusätzlich der Login des Webinterface per OATH Two Factor Authentifizierung abgesichert werden.
+Der Zugang zum Proxmox ist absolut sicherheitskritisch, wer Zugriff auf den Hypervisor hat, hat Zugriff auf alle Maschinen auf dem Blech. Daher muss zusätzlich der Login des Webinterface per OATH Two Factor Authentifizierung abgesichert werden.
+Auf der CLI (per SSH) oathkeygen ausführen.
 
--> https://pve.proxmox.com/wiki/Two-Factor_Authentication
+::
+	
+	$ oathkeygen
+	SCI5UUB5XI6PGKAS
+	
+Den generierten Schlüssel merken.
+
+Ab jetzt geht die Konfiguration über das Proxmox Webinterface im Browser:
+
+::
+
+	https://111.222.333.444:8006
+
+Beim ersten Aufruf sollte man das Zertifikat im Browser dauerhaft akzeptieren.
+
+Die Anmeldung erfolgt mit Benutzername (root) und dazugehörigem Kennwort.
+Als Realm muss "Linux PAM standard authentication" ausgewählt werden.
+
+.. image:: http://freifunk-mk.de/gfx/inlog.jpg
+
+Zuerst legen wir für eine Gruppe für die Administratoren an.
+
+"Datacenter" -> "Permissions" -> "Groups" -> "Create"
+
+.. image:: http://freifunk-mk.de/gfx/groups.jpg
+
+Der Gruppe müssen nun die notwendigen Berechtigungen hinzu gefügt werden.
+
+"Datacenter" -> "Permissions" -> "Add" -> "Group Permission"
+
+.. image:: http://freifunk-mk.de/gfx/permissions.jpg
+
+Der "Path" wird auf "/" (das Wurzelverzeichnis) gesetzt
+Als Gruppe wählt man die gerade erstellte "eulenadmins".
+Proxmox ermöglicht ein sehr feingranulares Rollen und Rechte Konzept, wir wählen hier aber einfach "Administrator", damit dürfen alle Benutzer der Gruppe alles.
+
+.. image:: http://freifunk-mk.de/gfx/permissions2.jpg
+
+Nun muss der eigene Benutzer für angelegt werden.
+
+"Datacenter" -> "Permissions" -> "Users" -> "Add"
+
+.. image:: http://freifunk-mk.de/gfx/users.jpg
+
+Der Benutzername muss exakt dem für den SSH Login verwendeten Benutzernamen entsprechen.
+Als "Realm" muss "Linux PAM standard authentication" und als Gruppe die erstellte "eulenadmins" ausgewählt werden.
+Der soeben generierte OATH Schlüssel wird nun im Feld "Key IDs" eingetragen.
+
+.. image:: http://freifunk-mk.de/gfx/users2.jpg
+
 
 Netzwerk einrichten
 ^^^^^^^^^^^^^^^^^^^
