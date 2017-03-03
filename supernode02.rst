@@ -18,7 +18,9 @@ Im folgenden muss "Eine neue virtuelle MAC-Adresse erstellen" angeklickt werden 
 .. image:: http://freifunk-mk.de/gfx/sys-3.png
 
 
-Auf dem Webinterface des Proxmox Servers ist auf der linken Seite das Blech auszuwählen und dann oben rechts 'Create VM' anklicken
+Auf dem Webinterface des Proxmox Servers eine VM anlegen.
+
+"Datacenter" -> "Servername" -> "Create VM"
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-6.png
 ----
@@ -41,51 +43,48 @@ Im Reiter 'CD/DVD' das ISO Image auswählen.
 Im Reiter 'Hard Disk' als 'Bus' 'VirtIO' einstellen, die Festplattengröße auf 6GB begrenzen und als Format 'qcow2' wählen. Größere Festplatten machen Backups, Rollbacks und co nur aufwändiger.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-10.png
-----
 
 Im Reiter 'CPU' ein Prozessorkern zuweisen. Als CPU kann man "host" wählen, das tut der Performance gut und HA nutzen wir ohnehin nicht.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-11.png
-----
+
 
 Im Reiter 'Memory' unter 'Automatically allocate memory within this range' 256 - 1024MB festlegen. Weniger als 256 hindert einige Maschinen beim booten, mehr als 1024 werden nicht benötigt.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-12.png
-----
+
 
 Im Reiter 'Network' als Netzwerkkarte 'VirtIO' auswählen und die MAC Adresse der für diese VM zu verwendenden öffentlichen IPv4 Adresse eintragen. Bridged Mode übernehmen wir so und vmbr0 auch diese.
 
-.. image:: http://freifunk-mk.de/gfx/proxmox-13.png
-----
+.. image:: http://freifunk-mk.de/gfx/vm_network.jpg
+
 
 Bestätigen und Anlegen auswählen.
 
-.. image:: http://freifunk-mk.de/gfx/proxmox-14.png
+.. image:: http://freifunk-mk.de/gfx/vm_summary.jpg
 
-----
+
 
 Fehlermeldungen während der Startphase werden unten im Log-Fenster angezeigt, erscheinen immer "oben", jedoch mit einigen Sekunden Verzögerung. Details lassen sich ausklappen.
 
 Hinweis: Wenn das System später läuft, nicht vergessen, die Option "Start at boot" auf "Yes" zu stellen.
 
-.. image:: http://freifunk-mk.de/gfx/proxmox-16.png
-----
+"Datacenter" -> "Servername" -> "Vmname" -> "Options" -> "Start at boot"
+
 Und nach Installation das Iso aus dem lauffwerk nehmen, denn wenn die Datei irgendwann mal vom Storage gelöscht werden booten die Maschinen mangels ISO nicht mehr.
+
+"Datacenter" -> "Servername" -> "Vmname" -> "Hardware" -> "CD/DVD Drive" -> "Do not use any media"
 
 Ubuntu Server Installieren
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Die VM links auswählen und oben rechts starten und die Konsole öffnen
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-17.png
-----
+"Datacenter" -> "Servername" -> "Vmname" -> "Console" -> "Start"
 
 Deutsch als Sprache auswählen und nun Ubuntu Server Installieren
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-18.png
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-19.png
-----
 
 Als Installationssprache jetzt nochmal Deutsch auswählen,
 
@@ -110,48 +109,13 @@ Herkunftsland der Tastatur "Deutsch"
 Tastaturbelegung "Deutsch"
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-25.png
-----
 
-Sobald der Server versucht das Netzwerk automatisch zu konfigurieren, dies abbrechen und die manuelle Netzwerkkonfiguration auswählen.
 
-.. image:: http://freifunk-mk.de/gfx/proxmox-26.png
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-27.png
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-28.png
-----
-
-Die Failover-IP, für die wir vorhin die MAC-Adresse erstellt haben ist beispielsweise die 555.666.777.888
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-29.png
-----
-
-Die Subnetzmaske von 255.255.255.0 bleibt in der Regel so
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-30.png
-----
-
-Die Gateway Adresse sollte man beim Rechenzentrum erfragen.
-
-Bei OVH/Soyoustart ist das IPv4 Gateway immer auf der 254, also 555.666.777.254
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-31.png
-----
-
-Als DNS geht z.B. der 8.8.8.8 von Google (Böse!).
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-32.png
-----
+Sobald der Server versucht das Netzwerk automatisch zu konfigurieren, dies abbrechen und "Das Netzwerk unkonfiguriert belassen".
 
 Der Rechnername ist frei wählbar
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-33.png
-----
-
-Der Domainname ist hier einzutragen
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-34.png
-----
 
 Und der Benutzer angelegt werden. Zunächst der volle Benutzername
 
@@ -160,121 +124,158 @@ Und der Benutzer angelegt werden. Zunächst der volle Benutzername
 und dann das gewünschte Login
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-36.png
-----
 
 Das Kennwort sollte sicher sein und nicht bereits für einen anderen Zweck in Verwendung.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-37.png
-----
 
 Da auf dem Server keine persönlichen Dateien gespeichert werden sollen ist es nicht notwendig den persönlichen Ordner zu verschlüsseln.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-38.png
-----
 
 Zeitzone Prüfen und bestätigen.
 
 Festplatte manuell formatieren
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-39.png
-----
 
 Freien Speicherplatz auswählen und enter
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-40.png
-----
 
 Partitionstabelle erstellen
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-41.png
-----
+
 
 Freien Speicherplatz auswählen und enter
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-42.png
 .. image:: http://freifunk-mk.de/gfx/proxmox-43.png
-----
+
 
 Partitionsgröße 5 GB Primär am Anfang
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-44.png
 .. image:: http://freifunk-mk.de/gfx/proxmox-45.png
 .. image:: http://freifunk-mk.de/gfx/proxmox-46.png
-----
+
 
 Bootflag auf 'ein' setzen und 'Anlegen beenden'
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-47.png
-----
+
 
 Freien Speicherplatz auswählen und enter
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-48.png
-----
+
 
 Eine neue Partition erstellen
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-49.png
-----
+
 
 Größe bestätigen
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-50.png
-----
+
 
 Primär
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-45.png
-----
+
 
 Benutzen als 'Auslagerungsspeicher (SWAP)'
 
 'Anlegen beenden'
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-51.png
-----
+
 
 'Partitionierung beenden'
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-52.png
-----
+
 
 Ja schreiben, noch sind ja keine Daten vorhanden, die überschrieben werden könnten.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-53.png
-----
+
 
 Warten...
 
 Proxy leer lassen
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-54.png
-----
+
 
 Warten...
 
 Automatische Sicherheitsaktualisierungen auswählen
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-55.png
-----
 
-OpenSSH server auswählen (Leertaste benutzen) und weiter
+
+"OpenSSH" server auswählen (Leertaste benutzen) und weiter
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-56.png
-----
+
 
 Warten...
 
 Die Installation des GRUB Bootloader bestätigen
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-57.png
-----
+
 
 Weiter
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-58.png
-----
 
+
+Nach dem Reboot auf der Proxmox Konsole am Server anmelden und die Netzwerkkonfiguration erstellen.
+
+Zuerst muss der Name der Netzwerkkarte ermittelt werden.
+
+::
+
+	ip l
+	
+Dort sind zwei Netzwerkkarten aufgelistet einmal "lo:" und einmal z.B. "ens18", letztere muss konfiguriert werden.
+
+In der /etc/network/interfaces müssen IP Adresse, Netzmaske, Gateway, DNS Server und Routen konfiguriert werden.
+
+Die Gatewayadresse ist bei OVH/SYS Servern die Adresse des Blechs, wobei der letzte Block durch 254 ersetzt wird.
+
+Hat das Blech also die IP 555.666.777.888 ist die Gatewayadresse 555.666.777.254
+	
+::
+
+	sudo nano /etc/network/interfaces
+
+
+::
+	
+	auto lo
+	iface lo inet loopback
+
+	auto ens18
+	iface ens18 inet static
+	address 111.222.333.444
+	netmask 255.255.255.255
+	dns-nameservers 8.8.8.8
+	post-up ip r add 555.666.777.254 dev ens18
+	post-up ip r add default via 555.666.777.254
+	post-down ip r del default via 555.666.777.254
+	post-down ip r del 555.666.777.254 dev ens18
+
+Nun erfolgt ein Neustart der Maschine mit
+
+::
+
+	sudo reboot
+	
 SSH
 ^^^
 
@@ -288,7 +289,6 @@ Den Public-Key für den User hinterlegen:
 
 ::
 
-	        cd /home/meinbenutzername/
 	        mkdir .ssh
 	        nano .ssh/authorized_keys
 
@@ -374,10 +374,9 @@ Pakete installieren
 
 ::
 
-	sudo apt-get install bird bird6 xinetd vnstat vnstati gdebi-core lighttpd git conntrack
+	sudo apt-get install bird xinetd vnstat vnstati gdebi-core lighttpd git conntrack
 
 * bird übernimmt das BGP routing
-* bird6 tut das selbe für IPv6
 * vnstat monitort den Netzwerktraffic
 * vnstati erzeugt daraus Grafiken
 * lighttpd stellt diese zum Abruf bereit
@@ -386,10 +385,10 @@ Pakete installieren
 * xinetd ist der bei Debian übliche Super-Daemon, über ihn wird der Check_mk Agent angesprochen
 * conntrack überwacht den Auslastungszustand der NAT-Engine
 
-Hinzufügen einer Schnittstelle eth1
+Hinzufügen einer weiteren Netzwerkschnittstelle ens19
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Für die Verbindung zwischen den Supernodes und dem Konzentrator legen wir eine zweite Netzwerkschnittstelle an.
-Dazu muss im Proxmox für die VM eine eth1 hinzugefügt werden, die auf der vmbr1 hängt und virtio verwendet.
+Dazu muss im Proxmox für die VM eine Netzwerkkarte hinzugefügt werden, die auf der vmbr1 hängt und virtio verwendet.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-59.png
 
@@ -398,9 +397,155 @@ Dazu muss im Proxmox für die VM eine eth1 hinzugefügt werden, die auf der vmbr
 Danach die VM einmal durchbooten.
 
 
-Eulenfunk BGP-Konzentrator-Konfigurator
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-**Ist leider noch Baustelle hier...** Bis auf weiteres geht es mit unten bei ferm_einrichten_ weiter.
+GRE Tunnel zum Freifunk Rheinland Backbone einrichten
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Da wir unsere Freifunk Domäne über das Freifunk Rheinland Backbone an das Internet anbinden wollen müssen wir zuerst eine virtuelle Kabelverbindung herstellen in Form von GRE Tunneln.
+
+Dazu legen wir pro Backbone Standort einen Tunnel an, der zur IP des Standortes verbunden wird und intern je Ende eine Tunnelip hat.
+
+Aktuell gibt es 6 Backbone Standorte:
+
+* Berlin A + B
+* Düsseldorf + B
+* Frankfurt A + B
+
+Die IPs für die Tunnel bekommt ihr vom Freifunk Rheinland Backbone Team.
+
+Die Tunnelkonfiguration wird in die /etc/network/interfaces eingetragen.
+* address -> lokale IP im Tunnel
+* dstaddr -> entfernte IP im Tunnel (Freifunk Rheinland Seite)
+* endpoint -> Der Backbone Standort zu dem der Tunnel aufgebaut wird
+* local -> die eigene IPv4 Adresse des Servers (FailoverIP)
+* per post-up wird dem Tunnel die lokale IPv6 Adresse im Tunnel zugewiesen
+
+::
+
+	auto  tun-ffrl-ber-a
+	iface tun-ffrl-ber-a inet tunnel
+        mode            gre
+        netmask         255.255.255.254
+        address         100.xx.x.xx
+        dstaddr         100.yy.y.yy
+        endpoint        185.66.195.0
+        local           111.222.333.444
+        ttl             255
+        mtu             1400
+        post-up ip -6 addr add 2a03:2260:z:zzz::2/64 dev $IFACE
+
+
+Dieser Block muss für alle 6 Standorte angelegt werden, wobei "tun-ffrl-ber-a" dann angepasst werden muss.
+
+Da wir die Daten nicht über unsere Failover IP ins Internet schicken haben wir vom Freifunk Rheinland eine FFRL-exit-IP zugewiesen bekommen, bzw. oft ein kleines Netz, wie z.B. 185.66.195.ww/31
+
+Diese muss auch als virtuelles Interface in der Netzwerkkonfiguration angelegt werden.
+
+::
+
+	auto tun-ffrl-uplink
+	iface tun-ffrl-uplink inet static
+        address 185.66.195.ww
+        netmask 255.255.255.255
+        pre-up ip link add $IFACE type dummy
+        post-down ip link del $IFACE
+
+Nun wird der Server einmal neu gestartet.
+
+Nach dem Neustart sollten die Tunnel alle bei einem "ip a" angezeigt werden.
+
+Zum Testen ob alle Tunnel funktionieren sollten wir jeweils einmal einen ping auf die IPv4 dstaddr machen
+
+::
+
+	ping 100.yy.y.yy
+	
+	
+Und für IPv6 einen Ping auf die IPv6 Adresse, wobei die "2" (lokal) am Ende durch eine "1" (FFRL Seite) ersetzt werden muss,
+
+::
+
+	ping6 2a03:2260:z:zzz::1
+	
+	
+BGP Einrichten
+^^^^^^^^^^^^^^
+
+Um dynamisch Routen vom FFRL zu bekommen und auch Routen in unsere Netze zu propagieren nutzen wir das BorderGatewayProtokol kurz BGP. Hierfür nutzen wir Bird.
+
+Die Bird Config liegt unter /etc/bird/bird.conf
+Hinweis: in diesen Ordner kommt man nicht ohne Root-rechte, muss man aber auch nicht.
+
+::
+	
+	sudo nano /etc/bird/bird.conf
+	
+
+::
+
+#Die FFRL exit IP als BGP Router ID
+router id 185.66.195.ww;
+
+	protocol direct announce {
+		table master;
+		import where net ~ [185.66.195.ww/32];
+		interface "tun-ffrl-uplink";
+	};
+
+	protocol kernel {
+		table master;
+		device routes;
+		import none;
+		export filter {
+			#FFRL exit IP
+			krt_prefsrc = 185.66.195.ww;
+			accept;
+		};
+		#Die Routingtabelle in die die gelernten Routen durch bird automatisch eingetragen werden
+		kernel table 42;
+	};
+
+	protocol device {
+		scan time 15;
+	};
+
+	function is_default() {
+		return (net ~ [0.0.0.0/0]);
+	};
+	
+	#Template wird bei jeder BGP Session eingebunden, sodass man die Werte nicht überall einzeln angeben muss
+	template bgp uplink {
+		#Eigene private AS Nummer (vom FFRL zugewiesen)
+		local as 65vvv;
+		import where is_default();
+		export where proto = "announce";
+	};
+
+	#BGP Session mit dem Backbone Standort Berlin A
+	protocol bgp ffrl_ber_a from uplink {
+		source address 100.xx.x.xx;
+		neighbor 100.yy.y.yy as 201701;
+	};
+	#BGP Session mit dem Backbone Standort Berlin B
+	protocol bgp ffrl_ber_b from uplink {
+		source address 100.xx.x.xx;
+		neighbor 100.yy.y.yy as 201701;
+	};
+	#BGP Session mit dem Backbone Standort Düsseldorf A
+	protocol bgp ffrl_dus_a from uplink {
+		source address 100.xx.x.xx;
+		neighbor 100.yy.y.yy as 201701;
+	};
+	#BGP Session mit dem Backbone Standort Düsseldorf B
+	protocol bgp ffrl_dus_b from uplink {
+		source address 100.xx.x.xx;
+		neighbor 100.yy.y.yy as 201701;
+	};
+
+	#AS201701 ist das AS des Freifunk Rheinland
+
+
+
+
 
 **Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben!**
 
