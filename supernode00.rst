@@ -19,6 +19,21 @@ Folgendes sollte euer Wunschserver leisten, damit er für FF tauglich ist:
   * IPs hinzufügen
 
 * Leistungsstarke CPU
+
+ * KVM Virtualisierung benötigt VT-x / VT-V Unterstützung der CPU
+ * Geeignete CPUs sind z.B.:
+  
+   * Intel Xeon W
+   * Intel Xeon E
+   * AMD Opteron
+   
+ * Ungeeignete CPUs
+ 
+   * Intel Pentium D
+   * Intel Atom
+   * AMD E350
+   * ARM CPUs
+ 
 * Zusätzliche IPv4 Adressen (Failover IPs) "zu Einmal-Kosten"
 
 
@@ -31,7 +46,7 @@ Folgendes sind absolute Ausschlusskriterien für einen Server:
 Hoster / Rechenzentrum
 ----------------------
 
-OVH bzw. deren preiswertere Marke "Soyoustart" (sys) sind gut geeignet.
+OVH bzw. deren preiswertere Marke "Soyoustart" (SYS) sind gut geeignet.
 
 Die auf "OVH" gebrandeten Server leisten kaum mehr als die SYS Maschinen, kosten aber unverhältnismäßig viel mehr.
 
