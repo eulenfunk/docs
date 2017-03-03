@@ -307,45 +307,35 @@ Der soeben generierte OATH Schlüssel wird nun im Feld "Key IDs" eingetragen.
 
 .. image:: http://freifunk-mk.de/gfx/users2.jpg
 
+Damit ie Zweifaktorauthentifizierung vollständig ist muss diese noch für die verwendete Login Methode aktiviert werden.
+
+"Datacenter" -> "Permissions" -> "Authentication" -> "pam"
+
+Als "TFA" muss "OATH" ausgewählt werden.
+
+.. image:: http://freifunk-mk.de/gfx/tfa.jpg
+
+Nun einmal abmelden "Logout" und als "meinbenutzername" unter Verwendung des von der OATH App generierten Schlüssels wieder anmelden.
 
 Netzwerk einrichten
 ^^^^^^^^^^^^^^^^^^^
 
-Ab jetzt geht die Konfiguration über das Proxmox Webinterface im Browser:
+Für das geplante Setup wird eine zweite Netzwerkbrücke (vmbr) benötigt, diese kann über das Webinterface angelegt werden.
 
-::
+"Datacenter" -> "Servername" -> "System" -> "Network" -> "Create" -> "Linux Bridge"
 
-	https://111.222.333.444:8006
+Bei OVH/Soyoustart kann es sein, dass eine zweite vmbr (vmbr1) schon vorhanden ist, dann müsst ihr nichts tun.
 
-Beim ersten Aufruf sollte man das Zertifikat im Browser dauerhaft akzeptieren.
-
-Die Anmeldung erfolgt mit Benutzername, Kennwort und OTP Pin.
-Als Realm muss Linux PAM standard authentication (+ oath) ausgewählt werden.
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-1.png
-
-----
-
-Nachdem links in der Seitenleiste das Blech ausgewählt wurde rechts im Reiter Network zusätzlich zur vorhandenen vmbr0 über die das Internet rein kommt noch mindestens eine vmbr1 anlegen, über die die Supernodes mit dem Konzentrator kommunizieren.
-
-Bei OVH/Soyoustart kann es sein, dass die vmbr schon vorhanden ist, dann müsst ihr nichts tun.
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-2.png
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-3.png
+.. image:: http://freifunk-mk.de/gfx/network.jpg
 
 Beim Anlegen muss als Name vmbr1 eingetragen werden und der Haken bei Autostart gesetzt werden.
 
-.. image:: http://freifunk-mk.de/gfx/proxmox-4.png
-----
+.. image:: http://freifunk-mk.de/gfx/network2.jpg
 
 Die vmbr steht erst nach dem Neustart des Blechs zu Verfügung, daher in der Ecke oben rechts "Restart" auswählen.
 
-.. image:: http://freifunk-mk.de/gfx/proxmox-5.png
-----
-
-Backup anlegen
-^^^^^^^^^^^^^^
+Automatisches VM Backup konfigurieren
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Proxmox ermöglicht es ganz einfach und auf Wunsch automatisiert Backups von den Virtuellen Maschinen anzulegen.
 Im Idealfall sollten die Backups auf einen externen Server/Storage erfolgen. Aus Gründen der Einfachheit beginnen wir mit einem Backup auf den lokalen Storage. Von dort kann man die Dateien für den Fall eines Totalausfalls des Blechs bei Bedarf per scp oder rsync auf einen anderen Server oder den heimischen Computer sichern.
@@ -356,16 +346,17 @@ Sobald der IO die Kapazität des Storages übersteigt, gerade bei den einfachen 
 
 Das Backup sollte daher zur Zeit der geringsten Auslastung erfolgen, z.B. jeden Montag um 1 Uhr in der Nacht.
 
-Zuerst muss ein Backupstorage definiert werden, dazu muss links das Datacenter ausgewählt werden, rechts der Tab Storage und dort der lokale Storage konfiguriert werden.
+Zuerst muss ein Backupstorage definiert werden.
 
-.. image:: http://freifunk-mk.de/gfx/px_backup01.png
+"Datacenter" -> "Storage" -> "local"
 
-Dort muss dann VZDump backup file zusätzlich ausgewählt werden (STRG+Klick)
+Unter "Content" muss alles ausgewählt werden.
 
-.. image:: http://freifunk-mk.de/gfx/px_backup02.png
+.. image:: http://freifunk-mk.de/gfx/backup.jpg
 
-Als nächstes im Reiter Backup einen Backupjob hinzufügen. Bei Node wird "-- All --" und bei Mode Snapshot ausgewählt. Storage setzt man auf local. Als Compression wählt man "LZO (fast)" um die Prozessorauslastung gering zu halten.
+Nun fügen wir einen regelmäßigen Backup Job hinzu.
 
-.. image:: http://freifunk-mk.de/gfx/px_backup03.png
+"Datacenter" -> "Backup" -> "Add"
 
-.. image:: http://freifunk-mk.de/gfx/px_backup04.png
+.. image:: http://freifunk-mk.de/gfx/backup2.jpg
+
