@@ -720,7 +720,7 @@ und die Netzwerkkonfiguration an die vorhandene angehängt werden:
 
 ::
 
-	sudo cat interfaces.eulenfunk >> /etc/network/interfaces
+	cat interfaces.eulenfunk | sudo tee -a /etc/network/interfaces
 
 Als letzter Schritt auf dem Supernode muss die /etc/rc.local folgendermassen angepasst werden:
 
