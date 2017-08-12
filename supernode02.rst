@@ -556,6 +556,81 @@ Hinweis: in diesen Ordner kommt man nicht ohne Root-rechte, muss man aber auch n
 		#AS201701 ist das AS des Freifunk Rheinland
 
 
+::
+	
+	sudo nano /etc/bird/bird6.conf
+	
+
+::
+
+	#Die FFRL exit IP als BGP Router ID
+	router id 185.66.195.ww;
+
+		protocol kernel {
+			device routes;
+			import none;
+			export all
+			#Die Routingtabelle in die die gelernten Routen durch bird automatisch eingetragen werden
+			kernel table 42;
+		};
+
+		protocol device {
+			scan time 10;
+		};
+
+		function is_default() {
+			return (net ~ [::/0]);
+		};
+		
+		#Nur /56er Netze aus dem zugewiesenen /48er Netz werden exportiert
+		filter hostroute {
+			if net ~ [2a03:2260:xxx::/48{56,56}] then accept;
+			reject;
+		}
+	
+		#Template wird bei jeder BGP Session eingebunden, sodass man die Werte nicht überall einzeln angeben muss
+		template bgp uplink {
+			#Eigene private AS Nummer (vom FFRL zugewiesen)
+			local as 65vvv;
+			import where is_default();
+			export filter hostroute;
+			gateway recursive;
+		};
+	
+		#BGP Session mit dem Backbone Standort Berlin A
+		protocol bgp ffrl_ber_a from uplink {
+			source address 2a03:2260:0:nnn::2;
+			neighbor 2a03:2260:0:nnn::2; as 201701;
+		};
+		#BGP Session mit dem Backbone Standort Berlin B
+		protocol bgp ffrl_ber_B from uplink {
+			source address 2a03:2260:0:nnn::2;
+			neighbor 2a03:2260:0:nnn::2; as 201701;
+		};
+		#BGP Session mit dem Backbone Standort Düsseldorf A
+		protocol bgp ffrl_dus_a from uplink {
+			source address 2a03:2260:0:nnn::2;
+			neighbor 2a03:2260:0:nnn::2; as 201701;
+		};
+		#BGP Session mit dem Backbone Standort Düsseldorf B
+		protocol bgp ffrl_dus_B from uplink {
+			source address 2a03:2260:0:nnn::2;
+			neighbor 2a03:2260:0:nnn::2; as 201701;
+		};
+		#BGP Session mit dem Backbone Standort Frankfurt A
+		protocol bgp ffrl_fra_a from uplink {
+			source address 2a03:2260:0:nnn::2;
+			neighbor 2a03:2260:0:nnn::2; as 201701;
+		};
+		#BGP Session mit dem Backbone Standort Frankfurt B
+		protocol bgp ffrl_fra_B from uplink {
+			source address 2a03:2260:0:nnn::2;
+			neighbor 2a03:2260:0:nnn::2; as 201701;
+		};
+		#AS201701 ist das AS des Freifunk Rheinland
+
+
+
 **Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben!**
 
 Um die Konfiguration zu vereinfachen, wurde ein Script geschrieben, welches die nötigen Parameter abfragt und daraus die Konfigurationsdateien, bzw. Auszüge daraus erzeugt. Diese müssen dann nur noch an die richtige Stelle kopiert werden.
