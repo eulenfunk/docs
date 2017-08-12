@@ -728,14 +728,112 @@ Es müssen einige Systemparameter die das Networking betreffen per sysctl gesetz
 	net.ipv4.conf.default.rp_filter=2
 	net.ipv4.conf.all.rp_filter=2
 
-
-
 Wieder einmal das Systen rebooten und danach noch einmal GRE, BGP, BGP6 und ens19 prüfen.
 
+Zur Erinnerung wir haben ja nur eine Öffentliche IPv4 Adresse vom FFRL bekommen und möchten viele hundert Endgeräte ins Netz bringen, die alle nur private IPv4 Adressen bekommen.
+Daher nutzen wir NetworkAddressTranslation -> NAT.
+Die Einrichtung passiert über ferm.
+Hinweis: die folgenden Schritte müssen alle abgeschlossen werden bevor ein reboot erfolgen kann, ansonsten ist ein Zugriff auf das System unter Umständen nur noch über den Hypervisor möglich.
+
+Ferm installieren
+
+::
+
+	sudo apt install ferm
+	
+::
+
+	sudo nano /etc/ferm/ferm.conf
+	
+::
+
+	domain (ip ip6) {
+	    table filter {
+		chain INPUT {
+		    policy ACCEPT;
+		    proto gre ACCEPT;
+		    mod state state INVALID DROP;
+		    mod state state (ESTABLISHED RELATED) ACCEPT;
+		    interface lo ACCEPT;
+		    proto icmp ACCEPT;
+		    proto udp dport 500 ACCEPT;
+		    proto (esp) ACCEPT;
+		    #SSH Zugriff mit dem richtigen Port hier erlauben!
+		    proto tcp dport 45926 ACCEPT;
+		}
+		chain OUTPUT {
+		    policy ACCEPT;
+		    mod state state (ESTABLISHED RELATED) ACCEPT;
+		}
+		chain FORWARD {
+		    policy ACCEPT;
+		    mod state state INVALID DROP;
+		    mod state state (ESTABLISHED RELATED) ACCEPT;
+		}
+	    }
+	    table mangle {
+		#Pakete die von einem der ffrl-tunnelinterfaces kommen mit einem fw-mark versehen. Dies wird später benötigt um die Pakete in die richtige Routingtabelle zu leiten.
+		chain PREROUTING {
+		    interface tun-ffrl-+ {
+			MARK set-mark 1;
+		    }
+		}
+		#Aus Gründen(TM) müssen wir die Paketgröße anfassen damit die Päckchen vor lauter Headerfoo überhaupt noch irgendwo durchkommen.
+		chain POSTROUTING {
+		    outerface tun-ffrl-+ proto tcp tcp-flags (SYN RST) SYN TCPMSS clamp-mss-to-pmtu;
+		}
+	    }
+	    table nat {
+	    	#Hier findet das Nat zwischen privatem Netzbereich und FFRL-Exit-IP statt
+		chain POSTROUTING {
+		    outerface tun-ffrl-+ saddr 172.16.0.0/12 SNAT to 185.66.195.52;
+		    policy ACCEPT;
+		}
+	    }
+	}
 
 
+Hier einen Reboot und danach prüfen ob man noch ins System kommt.
+Wenn ja -> weiter machen.
+Wenn nein -> per Proxmox drauf zugreifen und richtig konfigurieren.
 
+Die Pakete die von den verschiedenen Interfaces kommen müssen in die richtigen routingtabellen geschickt werden
 
+::
+	
+	sudo nano /etc/rc.local
+	
+::
+	#Alle Pakete mit FW Mark -> Tabelle 42
+	ip -4 rule add prio 1000 fwmark 0x1 table 42
+	ip -6 rule add prio 1000 fwmark 0x1 table 42
+	
+	#Alle Pakete von FFRL Tunneln -> Tabelle 42
+	ip -4 rule add prio 1001 iif ffrl-tun-ber-a table 42
+	ip -4 rule add prio 1001 iif ffrl-tun-ber-b table 42
+	ip -4 rule add prio 1001 iif ffrl-tun-dus-a table 42
+	ip -4 rule add prio 1001 iif ffrl-tun-dus-b table 42
+	ip -4 rule add prio 1001 iif ffrl-tun-fra-a table 42
+	ip -4 rule add prio 1001 iif ffrl-tun-fra-b table 42
+	ip -6 rule add prio 1001 iif ffrl-tun-ber-a table 42
+	ip -6 rule add prio 1001 iif ffrl-tun-ber-b table 42
+	ip -6 rule add prio 1001 iif ffrl-tun-dus-a table 42
+	ip -6 rule add prio 1001 iif ffrl-tun-dus-b table 42
+	ip -6 rule add prio 1001 iif ffrl-tun-fra-a table 42
+	ip -6 rule add prio 1001 iif ffrl-tun-fra-b table 42
+	
+	#Ab hier müssen die Einträge für jeden Supernode wiederholt werden!
+	#Alle Pakete vom ersten Supernode -> Tabelle42
+	ip -4 rule add prio 1000 from 172.16.0.0/24 table 42
+	ip -6 rule add prio 1000 from 2a03:2260:nnn:xxx::/56 table 42
+	
+	#Unreachable default route, damit Freifunk Pakete nie über die ens18 default route geschickt werden
+	ip -4 rule add prio 2000 from 172.16.0.0/24 type unreachable
+	ip -6 rule add prio 2000 from 2a03:2260:nnn:xxx::/56 type unreachable
+	
+	#Pakete, die vom FFRL Tunnel in die Tabelle 42 kommen müssen von dort über die ens19 Adresse des Supernodes zum Client Netz geroutedd werden.
+	ip -4 route add 172.16.0.0/16 via 172.31.254.16 dev ens19 table 42
+	ip -6 route add 2a03:2260:nnn:xxx::/64 via 2a03:2260:nnn:xxx::2 table 42
 	
 **Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben!**
 
@@ -769,8 +867,7 @@ Zugewiesenes FFRL-IPV6-Netz
 Eigene öffentliche IPV4 Adresse
 	Bei der Einrichtung der VM für diesen Konzentrator habt ihr eine IPv4-Adresse konfiguriert (Failover-IP der VM), über die ihr euch auch auf dem Konzentrator eingeloggt habt. Also die IPv4-Adresse von *eth1*.
 Eigener SSH-Port
-	Ihr habt bei der Konfiguration vom *sshd* den Port angepasst (62954), also gebt ihr diesen hier ein. Damit wird sichergestellt, dass die Firewall (ferm ...) Verbindungen zu dem alternativen Port überhaupt zulässt. Wenn ihr euch hier vertut, kommt ihr nach dem Neustart nicht mehr per SSH auf euren Server!
-
+	Ihr habt bei der Konfiguration vom *sshd* den Port angepasst (62954), also gebt ihr diesen hier ein. Damit wird sichergestellt, dass die Firewall (ferm ...) Verbindungen zu dem alternativen Port überhaupt zulässt. Wenn ihr euch hier vertut, kommt ihr nach dem Neustart nicht mehr per SSH auf euren Serverc!
 Konfiguration für GRE-Tunnel nach XXX_Y
 +++++++++++++++++++++++++++++++++++++++
 Ihr solltet vom Freifunk Rheinland Adressen für 4 Tunnel zum Backbone bekommen haben, jeweils zwei in Berlin und zwei in Düsseldorf. In diesem Abschnitt werden diese konfiguriert. Die folgenden Werte müsst ihr jeweils einmal pro Tunnel passend -- also 4 Mal -- eingeben:
