@@ -630,7 +630,113 @@ Hinweis: in diesen Ordner kommt man nicht ohne Root-rechte, muss man aber auch n
 		#AS201701 ist das AS des Freifunk Rheinland
 
 
+Die BGP4 Sessions auf Funktion überprüfen, der State sollte auf 'UP' und die info auf 'Established' sein.
+Es kann 3 Minuten dauern bis alle Sessions stehen.
 
+::
+
+	sudo birdc s p
+	
+::
+
+	BIRD 1.4.0 ready.
+	name     proto    table    state  since       info
+	announce Direct   master   up     2017-08-05  
+	kernel1  Kernel   master   up     2017-08-05  
+	device1  Device   master   up     2017-08-05  
+	ffrl_ber_a BGP      master   up     2017-08-06  Established   
+	ffrl_ber_b BGP      master   up     2017-08-05  Established   
+	ffrl_dus_a BGP      master   up     2017-08-05  Established   
+	ffrl_dus_b BGP      master   up     2017-08-05  Established   
+	ffrl_fra_a BGP      master   up     2017-08-05  Established   
+	ffrl_fra_b BGP      master   up     2017-08-05  Established   
+
+Das selbe für BGP6 prüfen
+
+::
+
+	sudo birdc6 s p
+	
+::
+
+	BIRD 1.4.0 ready.
+	name     proto    table    state  since       info
+	direct1  Direct   master   up     2017-08-05  
+	kernel1  Kernel   master   up     2017-08-05  
+	device1  Device   master   up     2017-08-05  
+	ffrl_ber_a BGP      master   up     2017-08-06  Established   
+	ffrl_ber_b BGP      master   up     2017-08-05  Established   
+	ffrl_dus_a BGP      master   up     2017-08-05  Established   
+	ffrl_dus_b BGP      master   up     2017-08-05  Established   
+	ffrl_fra_a BGP      master   up     2017-08-05  Established   
+	ffrl_fra_b BGP      master   up     2017-08-05  Established   
+	
+Die von Bird gesetzte Defaultroute muss nun in der Routingtabelle 42 erscheinen
+
+::
+
+	ip r s t 42
+	
+::
+
+	default via 100.64.y.yyy dev tun-ffrl-dus-a  proto bird  src 185.66.195.ww
+	
+::
+
+	ip -6 r s t 42
+	
+::
+
+	default via 2a03:2260:0:nnn::1 dev tun-ffrl-dus-a  proto bird  metric 1024 	
+	
+Die zweite Netzwerkschnittstelle konfigurieren
+Wir verwenden das Netz 172.31.0.0/24 für die Kommunikation zwischen Konzentrator und den Supernodes
+
+::
+
+	sudo nano /etc/network/interfaces
+	
+::
+
+	auto ens19
+	iface ens19 inet static
+		address 172.31.254.254
+		netmask 255.255.255.0
+
+
+Es müssen einige Systemparameter die das Networking betreffen per sysctl gesetzt werden
+
+::
+
+	sudo nano /etc/sysctl.d/20-ff-config.conf
+
+::
+
+	#Dem System erlauben Pakete zwischen einzelnen Netzwerkinterfaces hin und her zu routen
+	net.ipv4.ip_forward=1
+	net.ipv6.conf.all.forwarding=1
+	
+	#Mehr Netzwerkdurchsatz
+	net.ipv4.tcp_window_scaling = 1
+	net.core.rmem_max = 16777216
+	net.ipv4.tcp_rmem = 4096 87380 16777216
+	net.ipv4.tcp_wmem = 4096 16384 16777216
+	
+	#Das Contracking sorgt beim NAT dafür dass die Antwortpakete an den ursprünglichen Client zugestellt werden können. Jede Anfrage wird in einer Tabelle vorgehalten. Ist diese voll läuft nichts mehr. Daher setzen wir ein großes Tabellenmaximum
+	net.netfilter.nf_conntrack_max=1337000
+	#Normalerweise werden nur Pakete akzeptiert, für die auf dem selben Interface auch eine Anfrage gesendet wurde. Aufgrund des Asymmetrischen Routings kommen Antwortpakete nicht immer auf dem selben ffrl-tun Interface an, auf dem die Anfrage gesendet wurde. Folgende Parameter ermöglichen den Paketempfang trotz des Asymmetrischen routings.
+	net.ipv4.conf.default.rp_filter=2
+	net.ipv4.conf.all.rp_filter=2
+
+
+
+Wieder einmal das Systen rebooten und danach noch einmal GRE, BGP, BGP6 und ens19 prüfen.
+
+
+
+
+
+	
 **Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben!**
 
 Um die Konfiguration zu vereinfachen, wurde ein Script geschrieben, welches die nötigen Parameter abfragt und daraus die Konfigurationsdateien, bzw. Auszüge daraus erzeugt. Diese müssen dann nur noch an die richtige Stelle kopiert werden.
