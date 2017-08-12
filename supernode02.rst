@@ -413,6 +413,7 @@ Aktuell gibt es 6 Backbone Standorte:
 Die IPs für die Tunnel bekommt ihr vom Freifunk Rheinland Backbone Team.
 
 Die Tunnelkonfiguration wird in die /etc/network/interfaces eingetragen.
+
 * address -> lokale IP im Tunnel
 * dstaddr -> entfernte IP im Tunnel (Freifunk Rheinland Seite)
 * endpoint -> Der Backbone Standort zu dem der Tunnel aufgebaut wird
