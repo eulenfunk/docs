@@ -804,6 +804,7 @@ Die Pakete die von den verschiedenen Interfaces kommen müssen in die richtigen 
 	sudo nano /etc/rc.local
 	
 ::
+
 	#Alle Pakete mit FW Mark -> Tabelle 42
 	ip -4 rule add prio 1000 fwmark 0x1 table 42
 	ip -6 rule add prio 1000 fwmark 0x1 table 42
