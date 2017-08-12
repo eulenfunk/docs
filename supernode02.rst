@@ -325,7 +325,7 @@ Um es den Script-Kiddies und Bots etwas schwerer zu machen, sollte der Port 22 a
 
 ::
 
-	Port 62954
+	Port 45926
 
 WICHTIG: Diesen Port muss man sich dann merken, da man ihn später beim Aufruf von ssh angeben muss.
 
@@ -348,12 +348,12 @@ Danach den Editor wieder verlassen und den SSH Server neu starten um die Einstel
 
 	sudo service ssh restart
 
-Den nachfolgenden ssh Kommandos muss man die Option "-p 62954" (kleines "p"!) und den scp Kommandos
-die Option "-P 62954" (großes "P"!).
+Den nachfolgenden ssh Kommandos muss man die Option "-p 45926" (kleines "p"!) und den scp Kommandos
+die Option "-P 45926" (großes "P"!).
 
 ::
 
-			ssh -p 62954 meinbenutzername@111.222.333.444
+			ssh -p 45926 meinbenutzername@111.222.333.444
 
 
 Systemaktualisierung
@@ -363,9 +363,9 @@ Als Nächstes steht die Systemaktualisierung an; auch hier beim erstmaligen Aufr
 
 ::
 
-	sudo apt-get update
-	sudo apt-get dist-upgrade
-	sudo apt-get autoremove
+	sudo apt update
+	sudo apt dist-upgrade
+	sudo apt autoremove
 
 
 
@@ -374,7 +374,7 @@ Pakete installieren
 
 ::
 
-	sudo apt-get install bird xinetd vnstat vnstati gdebi-core lighttpd git conntrack
+	sudo apt install bird xinetd vnstat vnstati gdebi-core lighttpd git conntrack
 
 * bird übernimmt das BGP routing
 * vnstat monitort den Netzwerktraffic
