@@ -702,6 +702,8 @@ Wir verwenden das Netz 172.31.0.0/24 für die Kommunikation zwischen Konzentrato
 	iface ens19 inet static
 		address 172.31.254.254
 		netmask 255.255.255.0
+		#Für jeden Supernode eine Zeile
+		post-up ip -6 addr add 2a03:2260:nnn:xxx::1/56 dev ens19
 
 
 Es müssen einige Systemparameter die das Networking betreffen per sysctl gesetzt werden
@@ -836,119 +838,6 @@ Die Pakete die von den verschiedenen Interfaces kommen müssen in die richtigen 
 	ip -4 route add 172.16.0.0/16 via 172.31.254.16 dev ens19 table 42
 	ip -6 route add 2a03:2260:nnn:xxx::/64 via 2a03:2260:nnn:xxx::2 table 42
 	
-**Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben!**
-
-Um die Konfiguration zu vereinfachen, wurde ein Script geschrieben, welches die nötigen Parameter abfragt und daraus die Konfigurationsdateien, bzw. Auszüge daraus erzeugt. Diese müssen dann nur noch an die richtige Stelle kopiert werden.
-
-::
-
-	sudo mkdir -p /opt/eulenfunk/konzentrator
-	cd /opt/eulenfunk/konzentrator
-	sudo git clone https://github.com/eulenfunk/ff-bgp-konzentrator-konfigurator.git
-	cd ff-bgp-konzentrator-konfigurator
-	sudo ./bgp-konzentrator-setup.sh
-
-::
-
-Das Script fragt dann die nötigen Werte ab.
-
-Beschreibung der abgefragten Werte
-..................................
-
-Allgemeine Parameter
-++++++++++++++++++++
-AS Nummer vom FF-RL
-	Hier wird die Nummer des autonomen Systems vom Freifunk Rheinland eingetragen. Aktuell ist das 201701.
-Eigene AS Nummer
-	Ihr benötigt ein eigenes autonomes System. Die Nummer davon gebt ihr hier an. TODO: Link auf Beschreibung zur Beschaffung eines eigenen AS...
-Zugewiesene FFRL-IPV4-Exit-Adresse
-	Vom Freifunk Rheinland bekommt ihr eine Exit-Adresse. Darauf wird der gesamte IPv4 Verkehr aller an diesem Konzentrator angeschlossenen Supernodes bzw. der darüber verbundenen Clients ge-NAT-ed. Diese Adresse sieht in etwa so aus: 185.66.19X.YY
-Zugewiesenes FFRL-IPV6-Netz
-	Der IPv6 Prefix, der euch vom Freifunk Rheinland zugewiesen wurde. (2a03:2260:XXX::/48)
-Eigene öffentliche IPV4 Adresse
-	Bei der Einrichtung der VM für diesen Konzentrator habt ihr eine IPv4-Adresse konfiguriert (Failover-IP der VM), über die ihr euch auch auf dem Konzentrator eingeloggt habt. Also die IPv4-Adresse von *eth1*.
-Eigener SSH-Port
-	Ihr habt bei der Konfiguration vom *sshd* den Port angepasst (62954), also gebt ihr diesen hier ein. Damit wird sichergestellt, dass die Firewall (ferm ...) Verbindungen zu dem alternativen Port überhaupt zulässt. Wenn ihr euch hier vertut, kommt ihr nach dem Neustart nicht mehr per SSH auf euren Serverc!
-Konfiguration für GRE-Tunnel nach XXX_Y
-+++++++++++++++++++++++++++++++++++++++
-Ihr solltet vom Freifunk Rheinland Adressen für 4 Tunnel zum Backbone bekommen haben, jeweils zwei in Berlin und zwei in Düsseldorf. In diesem Abschnitt werden diese konfiguriert. Die folgenden Werte müsst ihr jeweils einmal pro Tunnel passend -- also 4 Mal -- eingeben:
-
-IPV4 Adresse für Tunnelendpunkt auf Backbone-Server
-	Die Tunnel-interne IPv4 Adresse auf dem **Backbone-Server** (100.64.X.YYY gerade).
-IPV4 Adresse für Tunnelendpunk auf Konzentrator
-	Die Tunnel-interne IPv4 Adresse für den Tunnelendpunkt auf **eurem Konzentrator** (10.64.X.ZZZ nächste ungerade).
-IPV6 Adresse auf Backbone-Server
-	Zusätzlich zu den IPv4-Adressen habt ihr eine IPv6 Adresse für den Tunnel bekommen. Die Adresse mit der ()...)::**1**/64  hinten ist die Adresse auf dem Backbone-Server (in etwa diese 2a03:2260:Y:XXX::1 ohne die /64!). Diese gebt ihr hier an.
-IPV6 Adresse auf Konzentrator
-		Die auf die im vorherigen Schritt folgende Addresse, also mit ()...)::**2**/64 hinten, ist die Adresse auf eurem Konzentrator (in etwa diese 2a03:2260:Y:XXX::2 ohne die /64!). Diese gebt ihr hier an.
-
-Ausgaben
-++++++++
-Das Script erzeugt folgende Dateien:
-
-* bird.conf.bgp
-* bird6.conf.bgp
-* interfaces.bgp
-* ferm.conf.bgp
-* 20-ff-config.conf.bgp
-
-Die erzeugten Dateien sollten nun **überprüft** werden (Beschreibung hierzu siehe unten) und dann an die passenden Stellen kopiert werden:
-
-::
-
-	sudo cp bird.conf.bgp /etc/bird/bird.conf
-	sudo cp bird6.conf.bgp /etc/bird/bird6.conf
-	sudo mkdir /etc/ferm
-	sudo cp ferm.conf.bgp /etc/ferm/ferm.conf
-	sudo cp 20-ff-config.conf.bgp /etc/sysctl.d/20-ff-config.conf
-	sudo cat interfaces.bgp >> /etc/network/interfaces
-
-::
-
-Da nun ein eventueller alternativer SSH-Port in die ferm.conf eingetragen wurde, kann das Firewalling aktiviert werden.
-
-Als erstes ferm installieren.
-
-::
-
-	sudo apt-get install ferm
-
-Bei der Frage, ob ferm beim Systemstart gestartet werden soll, mit ja antworten.
-
-Danach kann das System rebootet werden. Die Konfigurationen für die Supernodes werden später wie unten beschrieben angelegt.
-
-Routing
-.......
-Zum Routing werden Regeln benötigt, die die Pakete aus dem Freifunk Netz und die Pakete vom FFRL Backbone in eine gesonderte Tabelle (Tabelle 42) leiten. In dieser Tabelle wird vom bird per BGP eine Defaultroute ins Backbone gesetzt und manuell Routen zum eigenen Freifunk Netz (zu den Supernodes).
-
-Um eine Menge Handarbeit zu sparen wird das Anlegen der Rules für die einzelnen Communities/Supernodes per Script erledigt:
-
-::
-
-	cd /opt/eulenfunk/konzentrator
-	sudo git clone https://github.com/eulenfunk/konzentrator.git
-	cd konzentrator
-	sudo chmod +x *.sh
-	sudo mkdir config
-
-
-Damit das Script auch beim boot seine Arbeit verrichten kann muss es in die rc.local eingetragen werden.
-
-
-::
-
-	sudo nano /etc/rc.local
-
-
-::
-
-	#!/bin/sh -e
-	# rc.local
-	/opt/eulenfunk/konzentrator/konzentrator/bgp-konzentrator-rc.sh
-	exit 0
-
-Im Ordner **config** wird je Supernode ein config file angelegt. Die Beschreibung zum Hinzufügen von Supernodes erfolgt im Dokument "Supernode einrichten".
-
 
 Monitoring
 ^^^^^^^^^^
@@ -958,7 +847,7 @@ Das Monitoring beinhaltet folgende Komponenten:
 * Check_MK ermöglicht das zentrale Monitoring aller Systemdaten aller eingebundenen Server
 * vnstat erstellt Traffic Statistiken, die sich auf der shell anzeigen lassen
 * vnstati generiert daraus Grafiken
-* lighttpd stellt diese zum Abruf aus dem Internet bereit
+* lighttpd stellt diese Grafiken zum Abruf aus dem Internet bereit
 
 Check_MK Agent installieren
 ...........................
@@ -972,14 +861,14 @@ In die CheckMK-Instanz per Webbrowser einloggen. Dann suchen:
         -> WATO Configuration (Menü/Box)
         -> Monitoring Agents
         -> Packet Agents
-        -> check-mk-agent_1.2.8p11-1_all.deb _(Beispiel)_
+        -> check-mk-agent_1.4.0p8-1_all.deb _(Beispiel)_
 
 Den Download-Link in die Zwischenablage kopieren.
 Im SSH-Terminal nun eingeben: (die Download-URL ist individuell und der Name des .deb-Paketes ändert sich ggf.)
 
 ::
 
-        wget https://monitoring.eulenfunk.de/eulenfunk/check_mk/agents/check-mk-agent_1.2.8p11-1_all.deb
+        wget https://monitoring.eulenfunk.de/eulenfunk/check_mk/agents/check-mk-agent_1.4.0p8-1_all.deb
 
 Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum Ausliefern der Monitoring Daten.
 
@@ -987,7 +876,7 @@ Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 
 ::
 
-	sudo gdebi check-mk-agent_1.2.8p1-1_all.deb
+	sudo gdebi check-mk-agent_1.4.0p8-1_all.deb
 
 Anschließend noch das Konzentrator-Plugin hinzufügen:
 
@@ -1030,17 +919,31 @@ Alle 5 Minuten werden die Grafiken der Durchsatzdaten aktualisiert:
 
 ::
 
-	sudo mkdir -p /var/www/vnstats/eth0
-	sudo mkdir -p /var/www/vnstats/eth1
+	sudo mkdir -p /var/www/vnstats/ens18
+	sudo mkdir -p /var/www/vnstats/ens19
 	sudo nano /etc/cron.d/vnstat
 
 ::
 
-	*/5 * * * * root vnstati -i eth0 -o /var/www/vnstats/eth0/hours.png -h
-	*/5 * * * * root vnstati -i eth0 -o /var/www/vnstats/eth0/days.png -d
-	*/5 * * * * root vnstati -i eth0 -o /var/www/vnstats/eth0/months.png -m
-	*/5 * * * * root vnstati -i eth0 -o /var/www/vnstats/eth0/summary.png -s
-	*/5 * * * * root vnstati -i eth1 -o /var/www/vnstats/eth1/hours.png -h
-	*/5 * * * * root vnstati -i eth1 -o /var/www/vnstats/eth1/days.png -d
-	*/5 * * * * root vnstati -i eth1 -o /var/www/vnstats/eth1/months.png -m
-	*/5 * * * * root vnstati -i eth1 -o /var/www/vnstats/eth1/summary.png -s
+	*/5 * * * * root vnstati -i ens18 -o /var/www/vnstats/ens18/hours.png -h
+	*/5 * * * * root vnstati -i ens18 -o /var/www/vnstats/ens18/days.png -d
+	*/5 * * * * root vnstati -i ens18 -o /var/www/vnstats/ens18/months.png -m
+	*/5 * * * * root vnstati -i ens18 -o /var/www/vnstats/ens18/summary.png -s
+	*/5 * * * * root vnstati -i ens19 -o /var/www/vnstats/ens19/hours.png -h
+	*/5 * * * * root vnstati -i ens19 -o /var/www/vnstats/ens19/days.png -d
+	*/5 * * * * root vnstati -i ens19 -o /var/www/vnstats/ens19/months.png -m
+	*/5 * * * * root vnstati -i ens19 -o /var/www/vnstats/ens19/summary.png -s
+
+Eine index.html anlegen, in der die Grafiken zu sehen sind.
+
+::
+
+	sudo nano /var/www/html/index.html
+	
+::
+
+	<head><title>Konz1</title></head>
+	<body>
+	<!--Diese Zeile für jede Grafik einfügen und anpassen-->
+	<img src="../vnstats/ens18/hours.png">
+	</body>
