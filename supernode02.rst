@@ -346,7 +346,7 @@ Danach den Editor wieder verlassen und den SSH Server neu starten um die Einstel
 
 ::
 
-	sudo service ssh restart
+	sudo systemctl restart ssh
 
 Den nachfolgenden ssh Kommandos muss man die Option "-p 45926" (kleines "p"!) und den scp Kommandos
 die Option "-P 45926" (großes "P"!).
