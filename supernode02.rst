@@ -542,6 +542,16 @@ Hinweis: in diesen Ordner kommt man nicht ohne Root-rechte, muss man aber auch n
 			source address 100.xx.x.xx;
 			neighbor 100.yy.y.yy as 201701;
 		};
+		#BGP Session mit dem Backbone Standort Frankfurt A
+		protocol bgp ffrl_fra_a from uplink {
+			source address 100.xx.x.xx;
+			neighbor 100.yy.y.yy as 201701;
+		};
+		#BGP Session mit dem Backbone Standort Frankfurt B
+		protocol bgp ffrl_fra_b from uplink {
+			source address 100.xx.x.xx;
+			neighbor 100.yy.y.yy as 201701;
+		};
 
 		#AS201701 ist das AS des Freifunk Rheinland
 
