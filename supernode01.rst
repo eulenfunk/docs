@@ -24,7 +24,7 @@ Hier ein Beispiel für die Installation über das Soyoustart Web-Frontend. Zunä
 
 .. image:: http://freifunk-mk.de/gfx/sys01.png
 
-Im nächsten Schritt wählt man VPS Proxmox VE 4.4 (64Bit) als Template aus, der Haken bei "Personalisierte Installation" darf NICHT gesetzt sein. Mit Klick auf "Weiter" startet man jetzt die Installation.
+Im nächsten Schritt wählt man VPS Proxmox VE 5.0 (64Bit) als Template aus, der Haken bei "Personalisierte Installation" darf NICHT gesetzt sein. Mit Klick auf "Weiter" startet man jetzt die Installation.
 
 .. image:: http://freifunk-mk.de/gfx/sys02.png
 
@@ -63,7 +63,7 @@ sudo installieren:
 
 ::
 
-				apt-get install sudo
+				apt install sudo
 
 
 Neuen User anlegen:
@@ -151,9 +151,9 @@ Nun Betriebsystemupdates einspielen und ggf. erfolgende Rückfragen mit einem "J
 
 ::
 
-        sudo apt-get update
-        sudo apt-get dist-upgrade
-        sudo apt-get autoremove
+        sudo apt update
+        sudo apt dist-upgrade
+        sudo apt autoremove
 
 
 Eine Fehlermeldung im Bereich "Proxmox-Enterprise" kann man entweder ignorieren. Das gibt es nur wenn man ein Support-Abo abgeschlossen hat. Wenn Ihr die Arbeit des Proxmox-Teams unterstützen möchtet:
@@ -176,14 +176,14 @@ Dann suchen:
         -> WATO Configuration (Menü/Box)
         -> Monitoring Agents
         -> Packet Agents
-        -> check-mk-agent_1.2.8p18-1_all.deb (Die Versionsnummer kann abweichen)
+        -> check-mk-agent_1.4.0p8-1_all.deb (Die Versionsnummer kann abweichen)
 
 Den Download-Link in die Zwischenablage kopieren.
 Im SSH-Terminal nun eingeben: (die Download-URL ist individuell und der Name des .deb-Paketes ändert sich ggf.)
 
 ::
 
-        wget https://monitoring.eulenfunk.de/eulenfunk/check_mk/agents/check-mk-agent_1.2.8p18-1_all.deb
+        wget https://monitoring.eulenfunk.de/eulenfunk/check_mk/agents/check-mk-agent_1.4.0p8-1_all.deb
 
 Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. 
 Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
@@ -197,7 +197,7 @@ Mit dem nun installierten gdebi das check_mk-Paket installieren:
 
 ::
 
-	sudo gdebi check-mk-agent_1.2.8p18-1_all.deb
+	sudo gdebi check-mk-agent_1.4.0p8-1_all.deb
 
 Nun noch zusätzliche Check_MK Plugins hinzufügen
 
