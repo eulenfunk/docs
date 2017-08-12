@@ -474,6 +474,7 @@ BGP Einrichten
 Um dynamisch Routen vom FFRL zu bekommen und auch Routen in unsere Netze zu propagieren nutzen wir das BorderGatewayProtokol kurz BGP. Hierfür nutzen wir Bird.
 
 Die Bird Config liegt unter /etc/bird/bird.conf
+
 Hinweis: in diesen Ordner kommt man nicht ohne Root-rechte, muss man aber auch nicht.
 
 ::
@@ -483,69 +484,66 @@ Hinweis: in diesen Ordner kommt man nicht ohne Root-rechte, muss man aber auch n
 
 ::
 
-#Die FFRL exit IP als BGP Router ID
-router id 185.66.195.ww;
-
-	protocol direct announce {
-		table master;
-		import where net ~ [185.66.195.ww/32];
-		interface "tun-ffrl-uplink";
-	};
-
-	protocol kernel {
-		table master;
-		device routes;
-		import none;
-		export filter {
-			#FFRL exit IP
-			krt_prefsrc = 185.66.195.ww;
-			accept;
-		};
-		#Die Routingtabelle in die die gelernten Routen durch bird automatisch eingetragen werden
-		kernel table 42;
-	};
-
-	protocol device {
-		scan time 15;
-	};
-
-	function is_default() {
-		return (net ~ [0.0.0.0/0]);
-	};
+	#Die FFRL exit IP als BGP Router ID
+	router id 185.66.195.ww;
 	
-	#Template wird bei jeder BGP Session eingebunden, sodass man die Werte nicht überall einzeln angeben muss
-	template bgp uplink {
-		#Eigene private AS Nummer (vom FFRL zugewiesen)
-		local as 65vvv;
-		import where is_default();
-		export where proto = "announce";
-	};
+		protocol direct announce {
+			table master;
+			import where net ~ [185.66.195.ww/32];
+			interface "tun-ffrl-uplink";
+		};
 
-	#BGP Session mit dem Backbone Standort Berlin A
-	protocol bgp ffrl_ber_a from uplink {
-		source address 100.xx.x.xx;
-		neighbor 100.yy.y.yy as 201701;
-	};
-	#BGP Session mit dem Backbone Standort Berlin B
-	protocol bgp ffrl_ber_b from uplink {
-		source address 100.xx.x.xx;
-		neighbor 100.yy.y.yy as 201701;
-	};
-	#BGP Session mit dem Backbone Standort Düsseldorf A
-	protocol bgp ffrl_dus_a from uplink {
-		source address 100.xx.x.xx;
-		neighbor 100.yy.y.yy as 201701;
-	};
-	#BGP Session mit dem Backbone Standort Düsseldorf B
-	protocol bgp ffrl_dus_b from uplink {
-		source address 100.xx.x.xx;
-		neighbor 100.yy.y.yy as 201701;
-	};
+		protocol kernel {
+			table master;
+			device routes;
+			import none;
+			export filter {
+				#FFRL exit IP
+				krt_prefsrc = 185.66.195.ww;
+				accept;
+			};
+			#Die Routingtabelle in die die gelernten Routen durch bird automatisch eingetragen werden
+			kernel table 42;
+		};
 
-	#AS201701 ist das AS des Freifunk Rheinland
+		protocol device {
+			scan time 15;
+		};
 
+		function is_default() {
+			return (net ~ [0.0.0.0/0]);
+		};
+	
+		#Template wird bei jeder BGP Session eingebunden, sodass man die Werte nicht überall einzeln angeben muss
+		template bgp uplink {
+			#Eigene private AS Nummer (vom FFRL zugewiesen)
+			local as 65vvv;
+			import where is_default();
+			export where proto = "announce";
+		};
+	
+		#BGP Session mit dem Backbone Standort Berlin A
+		protocol bgp ffrl_ber_a from uplink {
+			source address 100.xx.x.xx;
+			neighbor 100.yy.y.yy as 201701;
+		};
+		#BGP Session mit dem Backbone Standort Berlin B
+		protocol bgp ffrl_ber_b from uplink {
+			source address 100.xx.x.xx;
+			neighbor 100.yy.y.yy as 201701;
+		};
+		#BGP Session mit dem Backbone Standort Düsseldorf A
+		protocol bgp ffrl_dus_a from uplink {
+			source address 100.xx.x.xx;
+			neighbor 100.yy.y.yy as 201701;
+		};
+		#BGP Session mit dem Backbone Standort Düsseldorf B
+		protocol bgp ffrl_dus_b from uplink {
+			source address 100.xx.x.xx;
+			neighbor 100.yy.y.yy as 201701;
+		};
 
-
+		#AS201701 ist das AS des Freifunk Rheinland
 
 
 **Die genauen Hintergründe sollten verstanden werden und sind weiter unten beschrieben!**
