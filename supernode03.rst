@@ -257,7 +257,7 @@ Um es den Script-Kiddies und Bots etwas schwerer zu machen, sollte der Port 22 a
 
 ::
 
-	Port 62954
+	Port 45926
 
 WICHTIG: Diesen Port muss man sich dann merken, da man ihn später beim Aufruf von ssh angeben muss.
 
@@ -278,14 +278,14 @@ Danach den Editor wieder verlassen und den SSH Server neu starten um die Einstel
 
 ::
 
-	sudo service ssh restart
+	sudo systemctl restart ssh
 
-Den nachfolgenden ssh Kommandos muss man die Option "-p 62954" (kleines "p"!) und den scp Kommandos
-die Option "-P 62954" (großes "P"!).
+Den nachfolgenden ssh Kommandos muss man die Option "-p 45926" (kleines "p"!) und den scp Kommandos
+die Option "-P 45926" (großes "P"!).
 
 ::
 
-			ssh -p 62954 meinbenutzername@111.222.333.444
+			ssh -p 45926 meinbenutzername@111.222.333.444
 
 Systemaktualisierung
 ^^^^^^^^^^^^^^^^^^^^
@@ -294,117 +294,15 @@ Als Nächstes steht die Systemaktualisierung an; auch hier beim erstmaligen Aufr
 
 ::
 
-	sudo apt-get update
-	sudo apt-get dist-upgrade
-	sudo apt-get autoremove
+	sudo apt update
+	sudo apt dist-upgrade
+	sudo apt autoremove
 
 Pakete installieren
 ^^^^^^^^^^^^^^^^^^^
 
-Ergänzen der /etc/apt/sources.list um das fastd repository
 
-::
-
-	sudo nano /etc/apt/sources.list
-
-Folgende Zeile hinzufügen
-
-::
-
-	deb http://repo.universe-factory.net/debian/ sid main
-
-Editor schließen
-
-Den zugehörigen Schlüssel importieren
-
-::
-
-	sudo apt-key add - <<EOF
-	-----BEGIN PGP PUBLIC KEY BLOCK-----
-	Version: GnuPG v1
-
-	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
-	=XTaw
-	-----END PGP PUBLIC KEY BLOCK-----
-	EOF
-
-
-
-::
-
-	sudo apt-get update
-	sudo apt-get install xinetd git vnstat vnstati gdebi-core lighttpd fastd build-essential \
-	bridge-utils isc-dhcp-server radvd libnl-3-dev pkg-config
+	sudo apt install xinetd git vnstat vnstati gdebi-core lighttpd build-essential bridge-utils isc-dhcp-server radvd libnl-3-dev pkg-config cmake bison libjson0 libjson0-dev doxygen libcap-dev debhelper libusb-1.0-0-dev debhelper
 
 Rückfrage mit "J" bestätigen
 
@@ -415,7 +313,6 @@ Um welche Paket handelt es sich?
 * lighttpd stellt diese zum Abruf bereit
 * gdebi-core ermöglicht uns die Installation des Check_mk Agents
 * xinetd ist der bei Debian übliche Super-Daemon, über ihn wird der Check_mk Agent angesprochen
-* Fastd baut Tunnelverbindungen zu den Routern auf
 * build-essential wird zum kompilieren von Batman benötigt
 * bridge-utils (brctl) steuert Netzwerkbrücken
 * isc-dhcp-server (dhcpd3) verteilt IPv4 Adressen
@@ -423,6 +320,40 @@ Um welche Paket handelt es sich?
 * git wird für die Konfigurationsscripte benötigt
 * libnl-3-dev wird für batman benötigt
 * pkg-config wird für batctl benötigt
+
+Libuecc kompilieren
+^^^^^^^^^^^^^^^^^^^
+
+::
+
+	git clone http://git.universe-factory.net/libuecc
+	cd libuecc
+	cmake ./
+	make
+	sudo make install
+	sudo ldconfig
+
+
+Libsodium kompilieren
+^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+	wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.12.tar.gz
+	tar -xzf libsodium-1.0.12.tar.gz
+	cd libsodium-1.0.12/
+	./configure
+	make && make check
+	sudo make install
+
+Fastd kompilieren
+^^^^^^^^^^^^^^^^^
+
+	git clone git://git.universe-factory.net/fastd
+	cd fastd
+	cmake ./ -DCMAKE_BUILD_TYPE=RELEASE
+	make
+	sudo make install
 
 
 Batman kompilieren
@@ -433,9 +364,9 @@ Batman kann man bei http://www.open-mesh.org/projects/open-mesh/wiki/Download he
 ::
 
 	cd ~
-	wget http://downloads.open-mesh.org/batman/stable/sources/batman-adv/batman-adv-2016.0.tar.gz
-	tar -xf batman-adv-2016.0.tar.gz
-	cd batman-adv-2016.0
+	wget http://downloads.open-mesh.org/batman/stable/sources/batman-adv/batman-adv-2017.2.tar.gz
+	tar -xf batman-adv-2017.2.tar.gz
+	cd batman-adv-2017.2
 	make
 	sudo make install
 
@@ -446,9 +377,9 @@ Batctl kompilieren
 ::
 
 	cd ~
-	sudo wget https://downloads.open-mesh.org/batman/stable/sources/batctl/batctl-2016.0.tar.gz
-	tar -xf batctl-2016.0.tar.gz
-	cd batctl-2016.0
+	sudo wget https://downloads.open-mesh.org/batman/stable/sources/batctl/batctl-2017.2.tar.gz
+	tar -xf batctl-2017.2.tar.gz
+	cd batctl-2017.2
 	make
 	sudo make install
 
@@ -495,7 +426,7 @@ Fastd einrichten
 	mtu 1406;
 	secure handshakes yes;
 	log to syslog level verbose;
-	status socket "/run/fastd.client.sock";
+	#status socket "/run/fastd.client.sock";
 
 	on up "
 			ip link set address 04:EE:EF:CA:FE:3A dev tap0
@@ -588,6 +519,7 @@ Nun muss im Proxmox für die VM eine eth1 hinzugefügt werden, die auf der vmbr1
 
 Danach die VM einmal durchbooten.
 
+####DEV17 ab hier TODO
 
 Verbindung zwischen Supernode und Konzentrator konfigurieren
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
