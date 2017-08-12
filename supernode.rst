@@ -1,7 +1,7 @@
 Server Kochbuch
 ===============
 
-Anleitung zur Einrichtung eines Freifunk Supernodes auf Basis von Proxmox 4.4 und Ubuntu Server 16.04.2 LTS
+Anleitung zur Einrichtung eines Freifunk Supernodes auf Basis von Proxmox 5.0 und Ubuntu Server 16.04.2 LTS
 
 Das Setup besteht im wesentlichen aus 3 Zonen:
 
