@@ -74,39 +74,11 @@ Als Installationssprache jetzt nochmal Deutsch auswählen, die auswahl trotz unv
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-25.png
 
-Sobald der Server versucht das Netzwerk automatisch zu konfigurieren, dies abbrechen und die manuelle Netzwerkkonfiguration auswählen.
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-26.png
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-27.png
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-28.png
-
-Die IP zur mac ist beispielsweise die 555.666.777.888
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-29.png
-
-Die Subnetzmaske von 255.255.255.0 bleibt in der Regel so
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-30.png
-
-Die Gateway Adresse sollte man beim Rechenzentrum bekannt sein.
-
-Bei einem großen Französichen RZ ist das IPv4 Gateway immer auf der 254, also 555.666.777.254
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-31.png
-
-Als DNS geht z.B. der 8.8.8.8 von google.
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-32.png
+Sobald der Server versucht das Netzwerk automatisch zu konfigurieren, dies abbrechen und "Netzwerk unkonfiguriert lassen" auswählen.
 
 Der Rechnername ist frei wählbar z.b. meinestadt-1
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-33.png
-
-Der Domainname ist hier einzutragen
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-34.png
 
 Und der Benutzername.
 
@@ -121,8 +93,6 @@ Das Kennwort sollte sicher sein und nicht bereits für einen anderen Zweck in Ve
 Da auf dem Server keine Persönlichen Dateien gespeichert werden sollen ist es nicht notwendig den persönlichen Ordner zu verschlüsseln.
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-38.png
-
-Zeitzone prüfen und bestätigen.
 
 Festplatte manuell formatieren
 
@@ -207,6 +177,53 @@ Weiter
 
 .. image:: http://freifunk-mk.de/gfx/proxmox-58.png
 
+Netzwerkschnittstelle konfigurieren
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Nach dem Reboot auf der Proxmox Konsole am Server anmelden und die Netzwerkkonfiguration erstellen.
+
+Zuerst muss der Name der Netzwerkkarte ermittelt werden.
+
+::
+
+	ip l
+
+Dort sind zwei Netzwerkkarten aufgelistet einmal :code:`lo:` und einmal z.B. :code:`ens18`,
+letztere muss konfiguriert werden.
+
+In der :code:`/etc/network/interfaces` müssen IP Adresse, Netzmaske, Gateway, DNS Server und Routen konfiguriert werden.
+
+Die Gatewayadresse ist bei OVH/SYS Servern die Adresse des Blechs, wobei der letzte Block durch 254 ersetzt wird.
+
+Hat das Blech also die IP 555.666.777.888 ist die Gatewayadresse 555.666.777.254
+
+::
+
+	sudo nano /etc/network/interfaces
+
+
+::
+
+	auto lo
+	iface lo inet loopback
+
+	auto ens18
+	iface ens18 inet static
+	address 111.222.333.444
+	netmask 255.255.255.255
+	dns-nameservers 8.8.8.8
+	post-up ip r add 555.666.777.254 dev ens18
+	post-up ip r add default via 555.666.777.254
+	post-down ip r del default via 555.666.777.254
+	post-down ip r del 555.666.777.254 dev ens18
+
+Nun erfolgt ein Neustart der Maschine mit
+
+::
+
+	sudo reboot
+
+
 SSH
 ^^^
 
@@ -227,7 +244,7 @@ Den Public-Key für den User hinterlegen:
 Im Editor dann den Public Key ("ssh-rsa AAA.....") einfügen. Wichtig: Alles von diesem Key muss in eine Zeile.
 Weitere Adminuser können später angelegt werden.
 
-Nun das Password-Login auf dem Server deaktivieren. Dazu die sshd_config editieren:
+Nun das Password-Login auf dem Server deaktivieren. Dazu die :code:`sshd_config` editieren:
 
 ::
 
@@ -280,12 +297,27 @@ Danach den Editor wieder verlassen und den SSH Server neu starten um die Einstel
 
 	sudo systemctl restart ssh
 
-Den nachfolgenden ssh Kommandos muss man die Option "-p 45926" (kleines "p"!) und den scp Kommandos
-die Option "-P 45926" (großes "P"!).
+Den nachfolgenden :code:`ssh` Kommandos muss man die Option :code:`-p 45926` (kleines "p"!) und den :code:`scp` Kommandos
+die Option :code:`-P 45926' (großes "P"!).
 
 ::
 
 			ssh -p 45926 meinbenutzername@111.222.333.444
+
+
+Unnötige Pakete deinstallieren und unötige Dienste deaktivieren
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Standardmäßig werden von Canonical Pakete installiert und Dienste gestartet, die man auf den meisten Servern
+nicht benötigt. Wir räumen deshalb auf und deinstallieren Pakete:
+
+::
+	sudo apt remove lxcfs snapd
+
+Danach werden die unnötigen Dienste noch deaktiviert:
+
+::
+
+	sudo systemctl disable mdadm iscsid lvm2-lvmetad
 
 Systemaktualisierung
 ^^^^^^^^^^^^^^^^^^^^
@@ -301,16 +333,17 @@ Als Nächstes steht die Systemaktualisierung an; auch hier beim erstmaligen Aufr
 Pakete installieren
 ^^^^^^^^^^^^^^^^^^^
 
+::
 
-	sudo apt install xinetd git vnstat vnstati gdebi-core lighttpd build-essential bridge-utils isc-dhcp-server radvd libnl-3-dev pkg-config cmake bison libjson0 libjson0-dev doxygen libcap-dev debhelper libusb-1.0-0-dev debhelper
+	sudo apt install htop iftop xinetd git vnstat gdebi-core build-essential \
+		bridge-utils isc-dhcp-server radvd cmake doxygen bison pkg-config \
+		libjson0 libjson0-dev libcap-dev  libnl-3-dev libnl-genel-3-dev
 
-Rückfrage mit "J" bestätigen
+Rückfrage mit "j" bestätigen
 
 Um welche Paket handelt es sich?
 
 * vnstat monitort den Netzwerktraffic
-* vnstati erzeugt daraus Grafiken
-* lighttpd stellt diese zum Abruf bereit
 * gdebi-core ermöglicht uns die Installation des Check_mk Agents
 * xinetd ist der bei Debian übliche Super-Daemon, über ihn wird der Check_mk Agent angesprochen
 * build-essential wird zum kompilieren von Batman benötigt
@@ -320,6 +353,9 @@ Um welche Paket handelt es sich?
 * git wird für die Konfigurationsscripte benötigt
 * libnl-3-dev wird für batman benötigt
 * pkg-config wird für batctl benötigt
+* htop für das Monitoren der Prozesse
+* iftop für das Monitoren des Netzwerktraffics
+* speedtest-cli bietet eine Möglichkeit Netzwerkdurchsatz zu testen
 
 Libuecc kompilieren
 ^^^^^^^^^^^^^^^^^^^
@@ -364,9 +400,9 @@ Batman kann man bei http://www.open-mesh.org/projects/open-mesh/wiki/Download he
 ::
 
 	cd ~
-	wget http://downloads.open-mesh.org/batman/stable/sources/batman-adv/batman-adv-2017.2.tar.gz
-	tar -xf batman-adv-2017.2.tar.gz
-	cd batman-adv-2017.2
+	wget http://downloads.open-mesh.org/batman/stable/sources/batman-adv/batman-adv-2017.3.tar.gz
+	tar -xf batman-adv-2017.3.tar.gz
+	cd batman-adv-2017.3
 	make
 	sudo make install
 
@@ -377,17 +413,17 @@ Batctl kompilieren
 ::
 
 	cd ~
-	sudo wget https://downloads.open-mesh.org/batman/stable/sources/batctl/batctl-2017.2.tar.gz
-	tar -xf batctl-2017.2.tar.gz
-	cd batctl-2017.2
+	sudo wget https://downloads.open-mesh.org/batman/stable/sources/batctl/batctl-2017.3.tar.gz
+	tar -xf batctl-2017.3.tar.gz
+	cd batctl-2017.3
 	make
 	sudo make install
 
 Batman Kernelmodul eintragen
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Damit das Batman Kernelmodul beim boot geladen wird müssen wir es noch in die /etc/modules eintragen.
+Damit das Batman Kernelmodul beim Boot geladen, wird müssen wir es noch in die :code:`/etc/modules` eintragen.
 
-Mehr infos gibt es im ubuntuusers wiki https://wiki.ubuntuusers.de/Kernelmodule#start
+Mehr Infos gibt es im Ubuntuusers wiki https://wiki.ubuntuusers.de/Kernelmodule#start
 
 ::
 
@@ -506,114 +542,26 @@ Die Zeile mit 'Public' muss mit '#' auskommentiert werden, die Zeile 'Secret' mu
 	secret "xxx...";
 	#Public: ...
 
-
-
-Hinzufügen einer Schnittstelle eth1
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Nun muss im Proxmox für die VM eine eth1 hinzugefügt werden, die auf der vmbr1 hängt und Virtio verwendet.
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-59.png
-
-.. image:: http://freifunk-mk.de/gfx/proxmox-60.png
-
-Danach die VM einmal durchbooten.
-
-####DEV17 ab hier TODO
-
-Verbindung zwischen Supernode und Konzentrator konfigurieren
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Auf dem Supernode
-.................
-
-Zunächst müssen die nötigen Scripte auf den Supernode heruntergeladen und ausführbar gemacht werden:
+Sysctl Parameter setzen
+^^^^^^^^^^^^^^^^^^^^^^^
+Es müssen einige Systemparameter die das Networking betreffen per :code:`sysctl` gesetzt werden:
 
 ::
 
-	sudo mkdir -p /opt/eulenfunk
-	cd /opt/eulenfunk
-	sudo git clone https://github.com/eulenfunk/supernode.git
-	cd supernode
-	sudo chmod +x *.sh
-	sudo chmod +x *.py
-
-
-Nun muss man dem jeweiligen Supernode aus dem vom FFRL zugeteilten IPv6-Adressbereich noch ein /56 herausschneiden, ein passendes
-IPv4 Netz für seine Endgeräte festlegen und die Werte in die Konfigurationsdatei supernode.config schreiben:
+	sudo nano /etc/sysctl.d/20-freifunk.conf
 
 ::
 
-	sudo nano /opt/eulenfunk/supernode/supernode.config
+	# Dem System erlauben Pakete zwischen einzelnen Netzwerkinterfaces hin und her zu routen
+	net.ipv4.ip_forward=1
+	net.ipv6.conf.all.forwarding=1
 
+	# Mehr Netzwerkdurchsatz
+	net.ipv4.tcp_window_scaling = 1
+	net.core.rmem_max = 16777216
+	net.ipv4.tcp_rmem = 4096 87380 16777216
+	net.ipv4.tcp_wmem = 4096 16384 16777216
 
-Hier ein Beispiel:
-
-::
-
-	SUPERNODE_IPV6_PREFIX=2a03:2260:X:Y::/56
-	SUPERNODE_IPV4_CLIENT_NET=172.19.0.0/16
-	SUPERNODE_IPV4_TRANS_ADDR=172.31.254.1
-
-
-Die angepasste Konfiguration wird dann durch das Setup verwendet:
-
-::
-
-	cd /opt/eulenfunk/supernode
-	sudo ./supernode-setup.sh
-
-
-::
-
-	Ausgaben in:
-		interfaces.eulenfunk
-		dhcpd.conf.eulenfunk
-		radvd.conf.eulenfunk
-		20-ff-config.conf.eulenfunk
-
-Die so erzeugten Konfigurationsdateien müssen **nach Prüfung** an die passenden Stellen kopiert werden
-
-::
-
-	sudo cp dhcpd.conf.eulenfunk /etc/dhcp/dhcpd.conf
-	sudo cp radvd.conf.eulenfunk /etc/radvd.conf
-	sudo cp 20-ff-config.conf.eulenfunk /etc/sysctl.d/20-ff-config.conf
-
-und die Netzwerkkonfiguration an die vorhandene angehängt werden:
-
-::
-
-	sudo cat interfaces.eulenfunk >> /etc/network/interfaces
-
-Als letzter Schritt auf dem Supernode muss die /etc/rc.local folgendermassen angepasst werden:
-
-::
-
-	sudo nano /etc/rc.local
-
-
-::
-
-	#!/bin/sh -e
-	#
-	# rc.local
-	#
-	# This script is executed at the end of each multiuser runlevel.
-	# Make sure that the script will "exit 0" on success or any other
-	# value on error.
-	#
-	# In order to enable or disable this script just change the execution
-	# bits.
-	#
-	# By default this script does nothing.
-
-	/opt/eulenfunk/supernode/supernode-rc.sh
-
-	exit 0
-
-
-Das sorgt dafür, dass beim Systemstart durch das Script supernode-rc.sh die nötigen Routen und Routing-Policies konfiguriert werden.
 
 Check_MK Agent installieren
 ...........................
@@ -624,17 +572,17 @@ In die CheckMK-Instanz per Webbrowser einloggen. Dann suchen:
 
 ::
 
-        -> WATO Configuration (Menü/Box)
-        -> Monitoring Agents
-        -> Packet Agents
-        -> check-mk-agent_1.2.8p11-1_all.deb _(Beispiel)_
+	-> WATO Configuration (Menü/Box)
+	-> Monitoring Agents
+	-> Packet Agents
+	-> check-mk-agent_1.2.8p11-1_all.deb _(Beispiel)_
 
 Den Download-Link in die Zwischenablage kopieren.
 Im SSH-Terminal nun eingeben: (die Download-URL ist individuell und der Name des .deb-Paketes ändert sich ggf.)
 
 ::
 
-        wget https://monitoring.eulenfunk.de/eulenfunk/check_mk/agents/check-mk-agent_1.2.8p11-1_all.deb
+	wget https://monitoring.eulenfunk.de/eulenfunk/check_mk/agents/check-mk-agent_1.2.8p11-1_all.deb
 
 
 Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum Ausliefern der Monitoring Daten.
@@ -655,7 +603,7 @@ Anschließend noch das Supernode-Plugin hinzufügen:
 	sudo chmod +x supernode
 
 ::
-		sudo nano /etc/xinetd.d/check_mk
+	sudo nano /etc/xinetd.d/check_mk
 
 Dort die Zeile
 
@@ -667,7 +615,7 @@ Dort die Zeile
 
 ::
 
-		only_from = 127.0.0.1 94.23.160.148
+	only_from = 127.0.0.1 94.23.160.148
 
 Damit diese Änderungen aktiviert werden, muss der xinetd durchgestartet werden
 
@@ -681,6 +629,143 @@ Der Rechner hält ab nun Daten zum Abruf bereit.
 JJX Bescheid sagen, der kümmert sich dann darum.
 
 
+Hinzufügen einer Schnittstelle ens19
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Nun muss im Proxmox für die VM eine ens19 hinzugefügt werden, die auf der vmbr1 hängt und Virtio verwendet.
+
+.. image:: http://freifunk-mk.de/gfx/proxmox-59.png
+
+.. image:: http://freifunk-mk.de/gfx/proxmox-60.png
+
+Danach die VM einmal durchbooten.
+
+::
+	sudo nano /etc/network/interfaces
+
+::
+	(...)
+	auto ens19
+	iface ens19 inet static
+		address 172.31.254.1
+		netmask	255.255.255.0
+		post-up ip -6 2a03:2260:xx:xx::2/56 dev ens19
+
+
+Zusätzlich muss eine Bridge :code:`br0` in der :code:`/etc/network/interfaces`
+angelegt werden:
+
+::
+
+	(...)
+	auto br0
+	iface br0 inet static
+		address 172.xx.0.1
+		netmask 255.255.0.0
+		bridge_ports none
+		bridge_stp no
+		post-up ip -6 addr add 2a03:2260:yyy:zzz::3/64 dev br0
+
+DHCP-Server konfigurieren
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+	sudo nano /etc/dhcp/dhcpd.conf
+
+::
+
+	authoritative;
+	subnet 172.19.0.0 netmask 255.255.0.0 {
+        range 172.xx.1.1 172.xx.250.254;
+        default-lease-time 3600;
+        max-lease-time 86400;
+        option domain-name-servers 8.8.8.8;
+        option routers 172.xx.0.1;
+        #option interface-mtu 1372;
+        option interface-mtu 1280;
+        interface br0;
+	}
+	# Statische Zuordnungen
+	host Beispielhost { fixed-address 172.xx.251.1; hardware ethernet yy:yy:yy:yy:yy:yy; }
+
+
+Dann den DHCP-Server für den automatischen Start vorbereiten und starten:
+
+::
+
+	sudo systemctl enable isc-dhcp-server
+	sudo systemctl start isc-dhcp-server
+
+RADVD einrichten
+^^^^^^^^^^^^^^^^
+
+::
+
+	sudo nano /etc/radvd.conf
+
+::
+
+	interface br0 {
+		AdvSendAdvert on;
+		MaxRtrAdvInterval 600;
+		MinDelayBetweenRAs 10;
+		AdvLinkMTU 1280;
+		prefix 2a03:2260:yyy:zzz::/64 {
+			AdvRouterAddr on;
+  		};
+  		RDNSS 2620:0:ccc::2 2001:4860:4860::8888 {
+  		};
+	};
+
+Den Dienst aktivieren und starten:
+
+::
+
+	sudo systemctl enable radvd
+	sudo systemctl start radvd
+
+
+
+
+
+Verbindung zwischen Supernode und Konzentrator konfigurieren
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Auf dem Supernode
+.................
+
+::
+
+	sudo nano /etc/rc.local
+
+::
+
+	# Für IPv4
+	# Tabelle 42 mit  einer Route je Richtung befüllen
+	ip r add t 42 default via 172.31.254.254 dev ens19
+	ip r add t 42 172.19.0.0/16 dev br0
+
+	# Regeln anlegen, damit Pakete durch Tabelle 42 geroutet werden
+	ip rule add prio 1000 from 172.19.0.0/16 lookup 42
+	ip rule add prio 1001 from all iif ens19 lookup 42
+	ip rule add prio 2000 from 172.19.0.0/16 type unreachable
+
+	# Für IPv6
+	# Tabelle 42 mit  einer Route je Richtung befüllen
+	ip -6 r add t 42 2a03:2260:120:300::/64 dev br0
+	ip -6 r add t 42 2a03:2260:120:300::1 dev ens19
+	ip -6 r add t 42 default via 2a03:2260:120:300::1
+
+	# Regeln anlegen, damit Pakete durch Tabelle 42 geroutet werden
+	ip -6 rule add prio 1000 from 2a03:2260:120:300::/56 lookup 42
+	ip -6 rule add prio 1001 from all iif ens19 lookup 42
+	ip -6 rule add prio 2000 from 2a03:2260:120:300::/56 type unreachable
+
+	# IPTables Regeln
+	iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1200
+	ip6tables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1200
+
+
+####DEV17 ab hier TODO
 
 Danach den Supernode rebooten.
 
@@ -688,57 +773,28 @@ Hier eine grafische Übersicht über die beteiligten Konfigurationsdateien auf d
 
 .. image:: https://raw.githubusercontent.com/eulenfunk/supernode/master/Supernode-Routing.png
 
+
 Auf dem Konzentrator
 ....................
 
 Auf dem Konzentrator muss die zum Supernode passende Konfiguration angelegt werden:
 
+::
+
+	sudo nano /etc/rc.local
 
 ::
 
-	cd /opt/eulenfunk/konzentrator/config
-	sudo nano meinestadt-1
+	(...)
+	# Ab hier müssen die Einträge für jeden Supernode wiederholt werden!
+	# Alle Pakete vom ersten Supernode -> Tabelle 42
+	ip -4 rule add prio 1000 from 172.xx.0.0/16 table 42
+	ip -6 rule add prio 1000 from 2a03:2260:yyy:zzz::/56 table 42
 
-::
+	# Unreachable default route, damit Freifunk Pakete nie über die ens18 default route g$
+	ip -4 rule add prio 2000 from 172.xx.0.0/16 type unreachable
+	ip -6 rule add prio 2000 from 2a03:2260:yyy:zzz::/56 type unreachable
 
-Dort müssen folgende Werte eingetragen werden:
-
-::
-
-	# Beschreibender Name "stadt-N"
-	SUPERNODE_NAME=meinestadt-1
-
-	# Soll die Netzwerkkonfiguration automatisch beim Systemstart gesetzt werden
-	AUTOSTART=1
-
-	# IPv4 Konfiguration
-	SUPERNODE_CLIENT_IPV4_NET=<IPv4 Netz fuer die Clients, 172.XX.0.0/16>
-	SUPERNODE_TRANS_IPV4_NET=<IPv4 Transit-Netz, 172.31.YYY.0/24>
-	SUPERNODE_TRANS_IPV4_REMOTE=<Supernode IPv4 eth1 Adresse Transit-Netz, 172.31.YYY.1>
-
-	# IPv6 Konfiguration
-	SUPERNODE_CLIENT_IPV6_NET=<IPv6 Netz fuer die Clients, 2a03:2260:AAAA:BBBB::/64>
-	SUPERNODE_TRANS_IPV6_NET=<IPv6 Supernetz fuer Transit, 2a03:2260:AAAA:BBBB::/56>
-	SUPERNODE_TRANS_IPV6_LOCAL=<IPv6 Supernetz lokale Adresse, 2a03:2260:AAAA:BBBB::1>
-	SUPERNODE_TRANS_IPV6_REMOTE=<IPv6 Supernetz remote Adresse, 2a03:2260:AAAA:BBB::2>
-
-
-Man kann dann die Konfiguration folgendermaßen aktivieren:
-
-::
-
-	cd /opt/eulenfunk/konzentrator
-	sudo ./supernode.sh start meinestadt-1
-
-
-Die Konfiguration kann im laufenden Betrieb auch wieder entfernt werden (damit wird die Stadt allerdings vom Freifunk getrennt!)
-
-::
-
-	cd /opt/eulenfunk/konzentrator
-	sudo ./supernode.sh stop meinestadt-1
-
-
-Durch den Parameter AUTOSTART=1 wird beim Reboot des Konzentrators die Konfiguration für diese Stadt automatisch wieder gesetzt.
-
-Den Konzentrator und den Supernode rebooten, um die Reboot-Festigkeit zu testen.
+	# Pakete, die vom FFRL Tunnel in die Tabelle 42 kommen müssen von dort über die ens19$
+	ip -4 route add 172.xx.0.0/16 via 172.31.254.xx dev ens19 table 42
+	ip -6 route add 2a03:2260:yyy:zzz::/64 via 2a03:2260:yyy:zzz::2 table 42

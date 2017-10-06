@@ -380,9 +380,7 @@ Danach werden die unnötigen Dienste noch disabled:
 
 ::
 
-	sudo systemctl disable mdadm
-	sudo systemctl disable iscsid
-	sudo systemctl disable lvm2-lvmetad
+	sudo systemctl disable mdadm iscsid lvm2-lvmetad
 
 
 Pakete installieren
