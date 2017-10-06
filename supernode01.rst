@@ -166,7 +166,7 @@ Monitoring
 
 Der Check_MK Agent steht in der Weboberfläche des Check_MK als .deb Paket bereit.
 
-In die CheckMK-Instanz per Webbrowser einloggen. 
+In die CheckMK-Instanz per Webbrowser einloggen.
 Wer selbst kein Monitoring betreibt und auch keinen Zugang zum Eulenfunk Monitoring hat meldet sich beim Eulenfunk Admin Team.
 
 Dann suchen:
@@ -185,7 +185,7 @@ Im SSH-Terminal nun eingeben: (die Download-URL ist individuell und der Name des
 
         wget https://monitoring.eulenfunk.de/eulenfunk/check_mk/agents/check-mk-agent_1.4.0p8-1_all.deb
 
-Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten. 
+Um das .deb Paket zu installieren wird gdebi empfohlen, ausserdem benötigt der Agent xinetd zum ausliefern der monitoring Daten.
 Per SSH auf dem Server. (Auch hier: Name des .deb-Files ggf. anpassen)
 
 ::
@@ -258,10 +258,10 @@ Der Zugang zum Proxmox ist absolut sicherheitskritisch, wer Zugriff auf den Hype
 Auf der CLI (per SSH) oathkeygen ausführen.
 
 ::
-	
+
 	$ oathkeygen
 	SCI5UUB5XI6PGKAS
-	
+
 Den generierten Schlüssel merken.
 
 Ab jetzt geht die Konfiguration über das Proxmox Webinterface im Browser:
@@ -334,6 +334,27 @@ Beim Anlegen muss als Name vmbr1 eingetragen werden und der Haken bei Autostart 
 
 Die vmbr steht erst nach dem Neustart des Blechs zu Verfügung, daher in der Ecke oben rechts "Restart" auswählen.
 
+Da es sich bei der neuen Bridge um eine "anonyme" Bridge handelt, d.h. sie hat keine eigene IP-Adresse, müssen wir
+noch Anpassungen an der interface Datei vornehmen.
+
+::
+
+	nano /etc/network/interfaces
+
+
+Hier müssen wir die Parameter "bridge_maxwait 0" und ein "post-up" Kommando wie unten zu sehen eintragen:
+
+::
+
+	auto vmbr1
+	iface vmbr1 inet manual
+		bridge_ports dummy0
+		bridge_stp off
+		bridge_fd 0
+		bridge_maxwait 0
+		post-up echo 1 > /proc/sys/net/ipv6/conf/vmbr1/disable_ipv6
+
+
 Automatisches VM Backup konfigurieren
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -359,4 +380,3 @@ Nun fügen wir einen regelmäßigen Backup Job hinzu.
 "Datacenter" -> "Backup" -> "Add"
 
 .. image:: http://freifunk-mk.de/gfx/backup2.jpg
-
