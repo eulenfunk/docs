@@ -334,14 +334,14 @@ Beim Anlegen muss als Name vmbr1 eingetragen werden und der Haken bei Autostart 
 
 Die vmbr steht erst nach dem Neustart des Blechs zu Verfügung, daher in der Ecke oben rechts "Restart" auswählen.
 
-Dann müssen wir einige Parameter in der "/etc/network/interfaces" Datei anpassen.
+Dann müssen wir einige Parameter in der :code:`/etc/network/interfaces` Datei anpassen.
 
 Da es sich bei der neuen Bridge um eine "anonyme" Bridge handelt, d.h. sie hat keine eigene IP-Adresse, sollte
-der Parameter "bridge_maxwait 0" für die "vmbr1" gesetzt werden. Damit die Bridge keine IPv6 Konfiguration erhält,
-tragen wir noch ein "post-up" Kommando ein (siehe unten).
+der Parameter :code:`bridge_maxwait 0` für die :code:`vmbr1` gesetzt werden. Damit die Bridge keine IPv6 Konfiguration erhält,
+tragen wir noch ein :code:`post-up` Kommando ein (siehe unten).
 
-Außerdem setzen wir noch die Parameter "bridge_ageing 0" und "bridge_maxage 0" für beide Bridges, um eventuellen
-Konnektivitätsproblemen der VMs zuvorzukommen. Hier ein Ausschnitt aus der "/etc/network/interfaces" Datei, der
+Außerdem setzen wir noch die Parameter :code:`bridge_ageing 0` und :code:`bridge_maxage 0` für beide Bridges, um eventuellen
+Konnektivitätsproblemen der VMs zuvorzukommen. Hier ein Ausschnitt aus der :code:`/etc/network/interfaces` Datei, der
 die Änderungen verdeutlicht:
 
 
