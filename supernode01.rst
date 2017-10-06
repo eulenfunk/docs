@@ -341,11 +341,9 @@ der Parameter "bridge_maxwait 0" für die "vmbr1" gesetzt werden. Damit die Brid
 tragen wir noch ein "post-up" Kommando ein (siehe unten).
 
 Außerdem setzen wir noch die Parameter "bridge_ageing 0" und "bridge_maxage 0" für beide Bridges, um eventuellen
-Konnektivitätsproblemen der VMs zuvorzukommen:
+Konnektivitätsproblemen der VMs zuvorzukommen. Hier ein Ausschnitt aus der "/etc/network/interfaces" Datei, der
+die Änderungen verdeutlicht:
 
-::
-
-	nano /etc/network/interfaces
 
 ::
 
@@ -359,7 +357,7 @@ Konnektivitätsproblemen der VMs zuvorzukommen:
 		bridge_ageing 0
 		post-up echo 1 > /proc/sys/net/ipv6/conf/vmbr1/disable_ipv6
 
-    auto vmbr1
+	auto vmbr0
 	iface vmbr0 inet static
 		(...)
 		bridge_maxage 0
