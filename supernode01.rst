@@ -334,15 +334,18 @@ Beim Anlegen muss als Name vmbr1 eingetragen werden und der Haken bei Autostart 
 
 Die vmbr steht erst nach dem Neustart des Blechs zu Verfügung, daher in der Ecke oben rechts "Restart" auswählen.
 
-Da es sich bei der neuen Bridge um eine "anonyme" Bridge handelt, d.h. sie hat keine eigene IP-Adresse, müssen wir
-noch Anpassungen an der interface Datei vornehmen.
+Dann müssen wir einige Parameter in der "/etc/network/interfaces" Datei anpassen.
+
+Da es sich bei der neuen Bridge um eine "anonyme" Bridge handelt, d.h. sie hat keine eigene IP-Adresse, sollte
+der Parameter "bridge_maxwait 0" für die "vmbr1" gesetzt werden. Damit die Bridge keine IPv6 Konfiguration erhält,
+tragen wir noch ein "post-up" Kommando ein (siehe unten).
+
+Außerdem setzen wir noch die Parameter "bridge_ageing 0" und "bridge_maxage 0" für beide Bridges, um eventuellen
+Konnektivitätsproblemen der VMs zuvorzukommen:
 
 ::
 
 	nano /etc/network/interfaces
-
-
-Hier müssen wir die Parameter "bridge_maxwait 0" und ein "post-up" Kommando wie unten zu sehen eintragen:
 
 ::
 
@@ -352,8 +355,19 @@ Hier müssen wir die Parameter "bridge_maxwait 0" und ein "post-up" Kommando wie
 		bridge_stp off
 		bridge_fd 0
 		bridge_maxwait 0
+		bridge_maxage 0
+		bridge_ageing 0
 		post-up echo 1 > /proc/sys/net/ipv6/conf/vmbr1/disable_ipv6
 
+    auto vmbr1
+	iface vmbr0 inet static
+		(...)
+		bridge_maxage 0
+		bridge_ageing 0
+
+
+
+Um eventuellen Problemen mit der Netzwerk-Konnektivität zuvorzukommen, setzen wir auf der
 
 Automatisches VM Backup konfigurieren
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
