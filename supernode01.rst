@@ -363,9 +363,8 @@ die Änderungen verdeutlicht:
 		bridge_maxage 0
 		bridge_ageing 0
 
-
-
-Um eventuellen Problemen mit der Netzwerk-Konnektivität zuvorzukommen, setzen wir auf der
+Danach aktivieren wir diese Änderungen und testen die Reboot-Festigkeit mit einem
+erneuten Reboot der Maschine.
 
 Automatisches VM Backup konfigurieren
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
