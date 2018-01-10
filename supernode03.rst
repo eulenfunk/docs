@@ -385,6 +385,8 @@ Libsodium kompilieren
 Fastd kompilieren
 ^^^^^^^^^^^^^^^^^
 
+::
+
 	git clone git://git.universe-factory.net/fastd
 	cd fastd
 	cmake ./ -DCMAKE_BUILD_TYPE=RELEASE
