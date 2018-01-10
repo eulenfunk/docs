@@ -684,7 +684,7 @@ DHCP-Server konfigurieren
 ::
 
 	authoritative;
-	subnet 172.19.0.0 netmask 255.255.0.0 {
+	subnet 172.xx.0.0 netmask 255.255.0.0 {
         range 172.xx.1.1 172.xx.250.254;
         default-lease-time 3600;
         max-lease-time 86400;
@@ -751,23 +751,23 @@ Auf dem Supernode
 	# Für IPv4
 	# Tabelle 42 mit  einer Route je Richtung befüllen
 	ip r add t 42 default via 172.31.254.254 dev ens19
-	ip r add t 42 172.19.0.0/16 dev br0
+	ip r add t 42 172.xx.0.0/16 dev br0
 
 	# Regeln anlegen, damit Pakete durch Tabelle 42 geroutet werden
-	ip rule add prio 1000 from 172.19.0.0/16 lookup 42
+	ip rule add prio 1000 from 172.xx.0.0/16 lookup 42
 	ip rule add prio 1001 from all iif ens19 lookup 42
-	ip rule add prio 2000 from 172.19.0.0/16 type unreachable
+	ip rule add prio 2000 from 172.xx.0.0/16 type unreachable
 
 	# Für IPv6
 	# Tabelle 42 mit  einer Route je Richtung befüllen
-	ip -6 r add t 42 2a03:2260:120:300::/64 dev br0
-	ip -6 r add t 42 2a03:2260:120:300::1 dev ens19
-	ip -6 r add t 42 default via 2a03:2260:120:300::1
+	ip -6 r add t 42 2a03:2260:yyy:zzz::/64 dev br0
+	ip -6 r add t 42 2a03:2260:yyy:zzz::1 dev ens19
+	ip -6 r add t 42 default via 2a03:2260:yyy:zzz::1
 
 	# Regeln anlegen, damit Pakete durch Tabelle 42 geroutet werden
-	ip -6 rule add prio 1000 from 2a03:2260:120:300::/56 lookup 42
+	ip -6 rule add prio 1000 from 2a03:2260:yyy:zzz::/56 lookup 42
 	ip -6 rule add prio 1001 from all iif ens19 lookup 42
-	ip -6 rule add prio 2000 from 2a03:2260:120:300::/56 type unreachable
+	ip -6 rule add prio 2000 from 2a03:2260:yyy:zzz::/56 type unreachable
 
 	# IPTables Regeln
 	iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1200
