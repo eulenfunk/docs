@@ -337,7 +337,7 @@ Pakete installieren
 
 	sudo apt install htop iftop xinetd git vnstat gdebi-core build-essential \
 		bridge-utils isc-dhcp-server radvd cmake doxygen bison pkg-config \
-		libjson0 libjson0-dev libcap-dev  libnl-3-dev libnl-genel-3-dev
+		libjson0 libjson0-dev libcap-dev  libnl-3-dev libnl-genl-3-dev
 
 Rückfrage mit "j" bestätigen
 
