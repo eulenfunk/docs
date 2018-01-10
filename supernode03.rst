@@ -586,6 +586,7 @@ Im SSH-Terminal nun eingeben: (die Download-URL ist individuell und der Name des
 
 ::
 
+	cd ~
 	wget https://monitoring.eulenfunk.de/eulenfunk/check_mk/agents/check-mk-agent_1.2.8p11-1_all.deb
 
 
