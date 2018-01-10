@@ -530,7 +530,9 @@ Den Editor wieder verlassen und nun einen fastd Key erzeugen, der in passender S
 
 ::
 
-	sudo fastd --generate-key > secret.conf
+	sudo su
+	fastd --generate-key > secret.conf
+	exit
 
 In der Datei secret.conf müssen dann manuell Änderungen vorgenommen werden:
 Die Zeile mit 'Public' muss mit '#' auskommentiert werden, die Zeile 'Secret' muss angepasst werden.
