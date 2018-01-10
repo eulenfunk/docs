@@ -608,6 +608,7 @@ Anschließend noch das Supernode-Plugin hinzufügen:
 	sudo chmod +x supernode
 
 ::
+
 	sudo nano /etc/xinetd.d/check_mk
 
 Dort die Zeile
