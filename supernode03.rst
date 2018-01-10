@@ -647,9 +647,11 @@ Nun muss im Proxmox für die VM eine ens19 hinzugefügt werden, die auf der vmbr
 Danach die VM einmal durchbooten.
 
 ::
+
 	sudo nano /etc/network/interfaces
 
 ::
+
 	(...)
 	auto ens19
 	iface ens19 inet static
@@ -676,6 +678,7 @@ DHCP-Server konfigurieren
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
+
 	sudo nano /etc/dhcp/dhcpd.conf
 
 ::
