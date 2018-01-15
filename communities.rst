@@ -17,10 +17,7 @@ Organigramm
     * Neuenrade
     * Plettenberg
     * Schalksmühle (sm)
-    * Werdohl
-    * Bergneustadt
-    * Gummersbach
-    * Marienheide
+    * Werdohl 
 * GL.Eulenfunk
     * Leichlingen (lln)
     * Bergisch-Gladbach (bgl)
@@ -86,7 +83,7 @@ Team
 +------------+---------------+----------------------------------+------------------------------------------------+
 |domfi       |               |                                  |                                                |
 +------------+---------------+----------------------------------+------------------------------------------------+
-|ling        |               |                                  |                                                |
+|ling        |               |linn@freifunk-mk.de               |                                                |
 +------------+---------------+----------------------------------+------------------------------------------------+
 |jjx         |               |julian.bog@freifunk-mk.de         |                                                |
 +------------+---------------+----------------------------------+------------------------------------------------+
@@ -201,7 +198,7 @@ Websites
 +---------+-----------------------------------+
 |Karte    |http://siegerland.map.eulenfunk.de |
 +---------+-----------------------------------+
-|Firmware |http://firmware.freifunk-mk.de     |
+|Firmware |                                   |
 |         |http://images.ff-si.ovh            |
 +---------+-----------------------------------+
 |Webseiten|http://freifunk-siegen.de          |
